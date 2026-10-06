@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40" fill="none">
+  <defs>
+    <!-- Vertical Wing Gradient -->
+    <linearGradient id="laknes-grad-vert" x1="15%" y1="95%" x2="90%" y2="5%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="35%" stop-color="#6366F1" />
+      <stop offset="70%" stop-color="#818CF8" />
+      <stop offset="100%" stop-color="#BAE6FD" />
+    </linearGradient>
+
+    <!-- Horizontal Wing Gradient -->
+    <linearGradient id="laknes-grad-horiz" x1="5%" y1="90%" x2="95%" y2="25%">
+      <stop offset="0%" stop-color="#4338CA" />
+      <stop offset="40%" stop-color="#6366F1" />
+      <stop offset="75%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <!-- Inner Crease / Shading -->
+    <linearGradient id="laknes-grad-crease" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#312E81" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- L-Mark Symbol -->
+  <g transform="translate(2, 2)">
+    <!-- Vertical Ribbon -->
+    <path
+      d="M 14.5 35.5 C 10 32 6 24 5.5 15 C 5.2 10.5 7.5 5 9.5 4 C 10 3.8 11.5 3.5 13 2.5 C 16.5 0.5 19.5 0 20.5 0 L 20.5 16 C 18 16.5 15.5 19 14.5 22 C 13.8 24.5 14 28 14.5 35.5 Z"
+      fill="url(#laknes-grad-vert)"
+    />
+    <!-- Vertical Ribbon Inner Shading -->
+    <path
+      d="M 14.5 22 C 15.5 19 18 16.5 20.5 16 L 20.5 23 C 18.5 23 16 26 14.5 35.5 Z"
+      fill="url(#laknes-grad-crease)"
+      opacity="0.45"
+    />
+
+    <!-- Horizontal Ribbon -->
+    <path
+      d="M 14.5 35.5 C 14.5 28 17 24 21 23 C 24 22 28.5 22 34 22.5 C 36 22.7 37 23.5 35.5 25 C 33 27.5 28 31.5 22.5 34 C 18.5 35.8 15.5 35.8 14.5 35.5 Z"
+      fill="url(#laknes-grad-horiz)"
+    />
+  </g>
+
+  <!-- LAKNES Wordmark (Futuristic Wide Geometric Type matching uploaded brand logo) -->
+  <g fill="#09090b" transform="translate(56, 12)">
+    <!-- L -->
+    <path d="M 0 0.5 L 3.5 0.5 L 3.5 13 L 13 13 L 13 16 L 0 16 Z" />
+    <!-- A (Futuristic crossbar-less chevron matching the brand logo) -->
+    <path d="M 23 0.5 L 26.5 0.5 L 34.5 16 L 30.5 16 L 24.8 4.2 L 19 16 L 15 16 Z" />
+    <!-- K -->
+    <path d="M 39 0.5 L 42.5 0.5 L 42.5 7.5 L 48.5 0.5 L 53 0.5 L 45.8 8.5 L 53.5 16 L 49 16 L 42.5 9.5 L 42.5 16 L 39 16 Z" />
+    <!-- N -->
+    <path d="M 58 0.5 L 61.5 0.5 L 69.5 12 L 69.5 0.5 L 73 0.5 L 73 16 L 69.5 16 L 61.5 4.5 L 61.5 16 L 58 16 Z" />
+    <!-- E -->
+    <path d="M 78 0.5 L 90.5 0.5 L 90.5 3.5 L 81.5 3.5 L 81.5 6.8 L 89 6.8 L 89 9.8 L 81.5 9.8 L 81.5 13 L 90.5 13 L 90.5 16 L 78 16 Z" />
+    <!-- S -->
+    <path d="M 96 3 C 97.5 1 100.5 0.5 104 0.5 C 107.5 0.5 110.5 1.5 110.5 4.5 C 110.5 8 105 8.5 101.5 9.5 C 98.5 10.3 96.5 11.2 96.5 13.5 C 96.5 16 99.5 16.5 103.5 16.5 C 107.5 16.5 110 15 111 13.8 L 111 16.2 C 109 17.5 106 18 103.5 18 C 98 18 93 16.5 93 12.8 C 93 9 98.5 8.2 102 7.2 C 105 6.5 107 5.5 107 3.8 C 107 2.2 105 1.8 103 1.8 C 100.5 1.8 98.5 2.5 97 3.5 Z" />
+  </g>
+</svg>

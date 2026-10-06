@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <defs>
+    <linearGradient id="laknes-mark-vert" x1="15%" y1="95%" x2="90%" y2="5%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="35%" stop-color="#6366F1" />
+      <stop offset="70%" stop-color="#818CF8" />
+      <stop offset="100%" stop-color="#BAE6FD" />
+    </linearGradient>
+
+    <linearGradient id="laknes-mark-horiz" x1="5%" y1="90%" x2="95%" y2="25%">
+      <stop offset="0%" stop-color="#4338CA" />
+      <stop offset="40%" stop-color="#6366F1" />
+      <stop offset="75%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <linearGradient id="laknes-mark-crease" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#312E81" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(1, 1)">
+    <!-- Vertical Ribbon -->
+    <path
+      d="M 14.5 35.5 C 10 32 6 24 5.5 15 C 5.2 10.5 7.5 5 9.5 4 C 10 3.8 11.5 3.5 13 2.5 C 16.5 0.5 19.5 0 20.5 0 L 20.5 16 C 18 16.5 15.5 19 14.5 22 C 13.8 24.5 14 28 14.5 35.5 Z"
+      fill="url(#laknes-mark-vert)"
+    />
+    <!-- Vertical Ribbon Inner Shading -->
+    <path
+      d="M 14.5 22 C 15.5 19 18 16.5 20.5 16 L 20.5 23 C 18.5 23 16 26 14.5 35.5 Z"
+      fill="url(#laknes-mark-crease)"
+      opacity="0.45"
+    />
+
+    <!-- Horizontal Ribbon -->
+    <path
+      d="M 14.5 35.5 C 14.5 28 17 24 21 23 C 24 22 28.5 22 34 22.5 C 36 22.7 37 23.5 35.5 25 C 33 27.5 28 31.5 22.5 34 C 18.5 35.8 15.5 35.8 14.5 35.5 Z"
+      fill="url(#laknes-mark-horiz)"
+    />
+  </g>
+</svg>
