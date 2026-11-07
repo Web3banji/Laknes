@@ -2,7 +2,7 @@
  * LAKNES Central Express Error Handler
  */
 
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import { AppError } from '../../core/errors.ts';
 import { buildErrorResponse } from '../../core/response.ts';
 import { logger } from '../../core/logger.ts';

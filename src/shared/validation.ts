@@ -33,8 +33,9 @@ export function validateSlug(slug: string): void {
 
 export function validateUrl(url: string, fieldName = 'URL'): void {
   if (!url) return;
+  if (url.startsWith('/') || url.startsWith('data:image/')) return;
   if (!URL_REGEX.test(url)) {
-    throw new ValidationError(`Invalid URL for ${fieldName}: '${url}'. Must start with http:// or https://.`);
+    throw new ValidationError(`Invalid URL for ${fieldName}: '${url}'. Must start with http://, https://, or be a local asset path or image data URI.`);
   }
 }
 

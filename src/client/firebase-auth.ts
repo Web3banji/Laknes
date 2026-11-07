@@ -1,6 +1,7 @@
 /**
  * LAKNES Firebase Google Authentication Integration
- * Provides standard, automatic Google Sign-In with real account selection and approval.
+ * Provides standard Google Sign-In with popup timeout protection,
+ * Google Identity Services support, and robust fallback handling.
  */
 
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
@@ -33,35 +34,61 @@ export interface GoogleAuthResult {
   name?: string;
   picture?: string;
   idToken?: string;
-  firebaseUser: FirebaseUser;
+  firebaseUser?: FirebaseUser;
 }
 
 /**
- * Initiates the standard Google Sign-In popup flow.
- * Directs user to accounts.google.com to choose their Gmail and approve access.
+ * Initiates Google Sign-In popup with strict timeout protection.
+ * If popups are blocked by browser iframe sandboxes or unauthorized domains,
+ * it rejects with a descriptive error code instead of hanging.
  */
-export async function triggerGoogleSignIn(): Promise<GoogleAuthResult> {
+export async function triggerGoogleSignIn(timeoutMs = 7000): Promise<GoogleAuthResult> {
   const { auth } = getFirebaseInstance();
   const provider = new GoogleAuthProvider();
 
-  // Add scopes
   provider.addScope('https://www.googleapis.com/auth/userinfo.email');
   provider.addScope('https://www.googleapis.com/auth/userinfo.profile');
-
-  // Ensure user is presented with their Google accounts list to choose their Gmail
   provider.setCustomParameters({
     prompt: 'select_account',
   });
 
-  const result = await signInWithPopup(auth, provider);
-  const user = result.user;
-  const idToken = await user.getIdToken();
+  // Create a timeout race so the UI NEVER hangs indefinitely
+  const popupPromise = signInWithPopup(auth, provider);
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => {
+      reject({
+        code: 'auth/timeout-or-blocked',
+        message: 'Google Sign-In popup timed out or was blocked by the browser. Please use the direct Google Account sign-in below.',
+      });
+    }, timeoutMs);
+  });
 
-  return {
-    email: user.email || '',
-    name: user.displayName || user.email?.split('@')[0] || 'Elysian Member',
-    picture: user.photoURL || undefined,
-    idToken,
-    firebaseUser: user,
-  };
+  try {
+    const result = await Promise.race([popupPromise, timeoutPromise]);
+    const user = result.user;
+    const idToken = await user.getIdToken();
+
+    return {
+      email: user.email || '',
+      name: user.displayName || user.email?.split('@')[0] || 'Elysian Member',
+      picture: user.photoURL || undefined,
+      idToken,
+      firebaseUser: user,
+    };
+  } catch (err: any) {
+    // Standardize error codes for iframe and sandbox environments
+    if (err?.code === 'auth/unauthorized-domain') {
+      throw {
+        code: 'auth/unauthorized-domain',
+        message: 'This domain is restricted from opening external popups in the current iframe. Please sign in with your Google email directly.',
+      };
+    }
+    if (err?.code === 'auth/popup-blocked') {
+      throw {
+        code: 'auth/popup-blocked',
+        message: 'Popup window was blocked by your browser settings. Please allow popups or use direct Google email sign-in.',
+      };
+    }
+    throw err;
+  }
 }

@@ -4,8 +4,8 @@
  * Prevents silent in-memory or localStorage fallbacks.
  */
 
-import { IDatabaseAdapter, DatabaseStatus, DatabaseHealth } from './adapter.ts';
-import {
+import type { IDatabaseAdapter, DatabaseStatus, DatabaseHealth } from './adapter.ts';
+import type {
   RepositoryRegistry,
   IUserRepository,
   IProjectRepository,

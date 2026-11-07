@@ -4,12 +4,12 @@
  */
 
 import {
-  Project,
-  ProjectMembership,
-  ProjectMemberWithUser,
-  ProjectAnalytics,
-  ProjectDashboardData,
-  EntityId,
+  type Project,
+  type ProjectMembership,
+  type ProjectMemberWithUser,
+  type ProjectAnalytics,
+  type ProjectDashboardData,
+  type EntityId,
   ProjectVerificationStatus,
   MembershipRole,
   MembershipStatus,
@@ -17,15 +17,16 @@ import {
   UserRole,
   PublicationStatus,
 } from '../../types/contracts.ts';
-import {
+import type {
   SubmitProjectRequest,
   UpdateProjectRequest,
   SubmitProjectCorrectionsRequest,
   ProjectSearchFilters,
   InviteMemberRequest,
 } from '../../types/api.ts';
-import { SecurityUserContext } from '../../types/auth.ts';
-import { getRepositories, PaginatedResult } from '../../dal/index.ts';
+import type { SecurityUserContext } from '../../types/auth.ts';
+import { getRepositories } from '../../dal/index.ts';
+import type { PaginatedResult } from '../../dal/repositories.ts';
 import { assertCanManageProject } from '../auth/permissions.ts';
 import { NotFoundError, ConflictError, ValidationError, ForbiddenError } from '../../core/errors.ts';
 import { validateRequired, validateSlug, validateUrl, sanitizeString } from '../../shared/validation.ts';
@@ -86,6 +87,10 @@ export class ProjectService implements IProjectService {
   }
 
   async submitProject(creator: SecurityUserContext, request: SubmitProjectRequest): Promise<Project> {
+    if (!creator || !creator.id) {
+      throw new ForbiddenError('You must be signed in with Google to register a project.');
+    }
+
     validateRequired(request.name, 'name');
     validateRequired(request.shortDescription, 'shortDescription');
     validateRequired(request.description, 'description');

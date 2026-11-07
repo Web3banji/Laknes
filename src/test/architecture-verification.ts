@@ -87,14 +87,52 @@ async function runVerification() {
     throw new Error('Session verification failed: ' + JSON.stringify(meData));
   }
 
-  // 5. Project Submission (Should be PENDING_REVIEW)
-  console.log('\n[5/10] Verifying Project Submission & Verification State Machine...');
+  // 5. Project Submission (Standard users forbidden; Project Representatives accepted in PENDING_REVIEW)
+  console.log('\n[5/10] Verifying Project Submission & Role Isolation...');
   const projectSlug = `arch-protocol-${rand}`;
-  const subRes = await fetch(`${base}/projects/submit`, {
+  
+  // Standard user attempt must fail (403 Forbidden)
+  const userSubRes = await fetch(`${base}/projects/submit`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${userToken}`,
+    },
+    body: JSON.stringify({
+      name: `User Rejected Protocol ${rand}`,
+      slug: `user-rejected-${rand}`,
+      category: 'DEFI',
+      shortDescription: 'Should be rejected.',
+      description: 'Standard user submission test.',
+      websiteUrl: 'https://test.elysium.org',
+    }),
+  });
+  if (userSubRes.status === 403) {
+    console.log('  ✓ Standard user account correctly rejected from submitting project (403 Forbidden).');
+  } else {
+    throw new Error('Standard user should not be able to submit project!');
+  }
+
+  // Register dedicated Project Account
+  const projReg = await fetch(`${base}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: `proj_rep_${rand}`,
+      email: `rep_${rand}@protocol.io`,
+      password: 'RepSecurePassword2026!',
+      bio: 'Verified protocol representative',
+      accountType: 'project',
+    }),
+  });
+  const projRegData = await projReg.json();
+  const projToken = projRegData.data.token;
+
+  const subRes = await fetch(`${base}/projects/submit`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${projToken}`,
     },
     body: JSON.stringify({
       name: `Arch Protocol ${rand}`,
@@ -108,7 +146,7 @@ async function runVerification() {
   });
   const subData = await subRes.json();
   if (subRes.status === 201 && subData.data?.verificationStatus === 'PENDING_REVIEW') {
-    console.log(`  ✓ Project submitted in PENDING_REVIEW status: ${subData.data.name}`);
+    console.log(`  ✓ Project representative submitted project in PENDING_REVIEW status: ${subData.data.name}`);
     passedSteps++;
   } else {
     throw new Error('Project submission failed: ' + JSON.stringify(subData));
@@ -174,7 +212,7 @@ async function runVerification() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${userToken}`,
+      Authorization: `Bearer ${projToken}`,
     },
     body: JSON.stringify({
       title: `Genesis Testnet Quest ${rand}`,

@@ -10,117 +10,135 @@ export type ISODateString = string;
 // Enums & Domain Taxonomies
 // ==========================================
 
-export enum UserRole {
-  USER = 'USER',
-  PROJECT_MEMBER = 'PROJECT_MEMBER',
-  ADMIN = 'ADMIN',
-}
+export const UserRole = {
+  USER: 'USER',
+  CREATOR: 'CREATOR',
+  PROJECT_MEMBER: 'PROJECT_MEMBER',
+  PROJECT_REPRESENTATIVE: 'PROJECT_REPRESENTATIVE',
+  ADMIN: 'ADMIN',
+} as const;
+export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
-export enum ProjectCategory {
-  DEFI = 'DEFI',
-  GAMING = 'GAMING',
-  INFRASTRUCTURE = 'INFRASTRUCTURE',
-  NFT_METAVERSE = 'NFT_METAVERSE',
-  TOOLING = 'TOOLING',
-  SOCIAL = 'SOCIAL',
-  DAO = 'DAO',
-  OTHER = 'OTHER',
-}
+export const ProjectCategory = {
+  DEFI: 'DEFI',
+  INFRASTRUCTURE: 'INFRASTRUCTURE',
+  NFT: 'NFT',
+  NFT_METAVERSE: 'NFT',
+  LAUNCHPAD: 'LAUNCHPAD',
+  MEMECOIN: 'MEMECOIN',
+  GAMING: 'GAMING',
+  SOCIAL: 'SOCIAL',
+  DAO: 'DAO',
+  TOOLING: 'TOOLING',
+  OTHER: 'OTHER',
+} as const;
+export type ProjectCategory = (typeof ProjectCategory)[keyof typeof ProjectCategory] | string;
 
-export enum ProjectVerificationStatus {
-  UNVERIFIED = 'UNVERIFIED',
-  PENDING_REVIEW = 'PENDING_REVIEW',
-  VERIFIED = 'VERIFIED',
-  CHANGES_REQUESTED = 'CHANGES_REQUESTED',
-  REJECTED = 'REJECTED',
-  SUSPENDED = 'SUSPENDED',
-}
+export const ProjectVerificationStatus = {
+  UNVERIFIED: 'UNVERIFIED',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  VERIFIED: 'VERIFIED',
+  CHANGES_REQUESTED: 'CHANGES_REQUESTED',
+  REJECTED: 'REJECTED',
+  SUSPENDED: 'SUSPENDED',
+} as const;
+export type ProjectVerificationStatus = (typeof ProjectVerificationStatus)[keyof typeof ProjectVerificationStatus];
 
-export enum MembershipRole {
-  OWNER = 'OWNER',
-  MAINTAINER = 'MAINTAINER',
-  CONTRIBUTOR = 'CONTRIBUTOR',
-}
+export const MembershipRole = {
+  OWNER: 'OWNER',
+  MAINTAINER: 'MAINTAINER',
+  CONTRIBUTOR: 'CONTRIBUTOR',
+} as const;
+export type MembershipRole = (typeof MembershipRole)[keyof typeof MembershipRole];
 
-export enum MembershipStatus {
-  INVITED = 'INVITED',
-  ACTIVE = 'ACTIVE',
-  SUSPENDED = 'SUSPENDED',
-}
+export const MembershipStatus = {
+  INVITED: 'INVITED',
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+} as const;
+export type MembershipStatus = (typeof MembershipStatus)[keyof typeof MembershipStatus];
 
-export enum PublicationStatus {
-  DRAFT = 'DRAFT',
-  PENDING_REVIEW = 'PENDING_REVIEW',
-  SCHEDULED = 'SCHEDULED',
-  PUBLISHED = 'PUBLISHED',
-  REJECTED = 'REJECTED',
-  ARCHIVED = 'ARCHIVED',
-}
+export const PublicationStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  SCHEDULED: 'SCHEDULED',
+  PUBLISHED: 'PUBLISHED',
+  REJECTED: 'REJECTED',
+  ARCHIVED: 'ARCHIVED',
+} as const;
+export type PublicationStatus = (typeof PublicationStatus)[keyof typeof PublicationStatus];
 
-export enum QuestType {
-  COMMUNITY = 'COMMUNITY',
-  ONCHAIN = 'ONCHAIN',
-  SOCIAL = 'SOCIAL',
-  DEVELOPER = 'DEVELOPER',
-  FEEDBACK = 'FEEDBACK',
-}
+export const QuestType = {
+  COMMUNITY: 'COMMUNITY',
+  ONCHAIN: 'ONCHAIN',
+  SOCIAL: 'SOCIAL',
+  DEVELOPER: 'DEVELOPER',
+  FEEDBACK: 'FEEDBACK',
+} as const;
+export type QuestType = (typeof QuestType)[keyof typeof QuestType];
 
-export enum QuestParticipationStatus {
-  NOT_STARTED = 'NOT_STARTED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
-  ABANDONED = 'ABANDONED',
-}
+export const QuestParticipationStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  ABANDONED: 'ABANDONED',
+} as const;
+export type QuestParticipationStatus = (typeof QuestParticipationStatus)[keyof typeof QuestParticipationStatus];
 
-export enum QuestCompletionStatus {
-  NOT_SUBMITTED = 'NOT_SUBMITTED',
-  PENDING_VERIFICATION = 'PENDING_VERIFICATION',
-  VERIFIED = 'VERIFIED',
-  REJECTED = 'REJECTED',
-}
+export const QuestCompletionStatus = {
+  NOT_SUBMITTED: 'NOT_SUBMITTED',
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED',
+} as const;
+export type QuestCompletionStatus = (typeof QuestCompletionStatus)[keyof typeof QuestCompletionStatus];
 
-export enum ReviewDecision {
-  APPROVED = 'APPROVED',
-  CHANGES_REQUESTED = 'CHANGES_REQUESTED',
-  REQUEST_CHANGES = 'CHANGES_REQUESTED', // Alias for compatibility
-  REJECTED = 'REJECTED',
-}
+export const ReviewDecision = {
+  APPROVED: 'APPROVED',
+  CHANGES_REQUESTED: 'CHANGES_REQUESTED',
+  REQUEST_CHANGES: 'CHANGES_REQUESTED',
+  REJECTED: 'REJECTED',
+} as const;
+export type ReviewDecision = (typeof ReviewDecision)[keyof typeof ReviewDecision];
 
-export enum ContentReportTargetType {
-  PROJECT = 'PROJECT',
-  PROJECT_UPDATE = 'PROJECT_UPDATE',
-  QUEST = 'QUEST',
-  USER = 'USER',
-}
+export const ContentReportTargetType = {
+  PROJECT: 'PROJECT',
+  PROJECT_UPDATE: 'PROJECT_UPDATE',
+  QUEST: 'QUEST',
+  USER: 'USER',
+} as const;
+export type ContentReportTargetType = (typeof ContentReportTargetType)[keyof typeof ContentReportTargetType];
 
-export enum ContentReportStatus {
-  PENDING = 'PENDING',
-  INVESTIGATING = 'INVESTIGATING',
-  RESOLVED = 'RESOLVED',
-  DISMISSED = 'DISMISSED',
-}
+export const ContentReportStatus = {
+  PENDING: 'PENDING',
+  INVESTIGATING: 'INVESTIGATING',
+  RESOLVED: 'RESOLVED',
+  DISMISSED: 'DISMISSED',
+} as const;
+export type ContentReportStatus = (typeof ContentReportStatus)[keyof typeof ContentReportStatus];
 
-export enum AuditAction {
-  USER_REGISTERED = 'USER_REGISTERED',
-  USER_UPDATED = 'USER_UPDATED',
-  PROJECT_SUBMITTED = 'PROJECT_SUBMITTED',
-  PROJECT_UPDATED = 'PROJECT_UPDATED',
-  PROJECT_CORRECTIONS_SUBMITTED = 'PROJECT_CORRECTIONS_SUBMITTED',
-  PROJECT_REVIEWED = 'PROJECT_REVIEWED',
-  PROJECT_VERIFIED = 'PROJECT_VERIFIED',
-  PROJECT_SUSPENDED = 'PROJECT_SUSPENDED',
-  MEMBERSHIP_GRANTED = 'MEMBERSHIP_GRANTED',
-  MEMBERSHIP_REVOKED = 'MEMBERSHIP_REVOKED',
-  UPDATE_CREATED = 'UPDATE_CREATED',
-  UPDATE_UPDATED = 'UPDATE_UPDATED',
-  UPDATE_PUBLISHED = 'UPDATE_PUBLISHED',
-  UPDATE_ARCHIVED = 'UPDATE_ARCHIVED',
-  QUEST_CREATED = 'QUEST_CREATED',
-  QUEST_PUBLISHED = 'QUEST_PUBLISHED',
-  QUEST_VERIFIED = 'QUEST_VERIFIED',
-  CONTENT_REPORT_SUBMITTED = 'CONTENT_REPORT_SUBMITTED',
-  CONTENT_MODERATED = 'CONTENT_MODERATED',
-}
+export const AuditAction = {
+  USER_REGISTERED: 'USER_REGISTERED',
+  USER_UPDATED: 'USER_UPDATED',
+  PROJECT_SUBMITTED: 'PROJECT_SUBMITTED',
+  PROJECT_UPDATED: 'PROJECT_UPDATED',
+  PROJECT_CORRECTIONS_SUBMITTED: 'PROJECT_CORRECTIONS_SUBMITTED',
+  PROJECT_REVIEWED: 'PROJECT_REVIEWED',
+  PROJECT_VERIFIED: 'PROJECT_VERIFIED',
+  PROJECT_SUSPENDED: 'PROJECT_SUSPENDED',
+  MEMBERSHIP_GRANTED: 'MEMBERSHIP_GRANTED',
+  MEMBERSHIP_REVOKED: 'MEMBERSHIP_REVOKED',
+  UPDATE_CREATED: 'UPDATE_CREATED',
+  UPDATE_UPDATED: 'UPDATE_UPDATED',
+  UPDATE_PUBLISHED: 'UPDATE_PUBLISHED',
+  UPDATE_ARCHIVED: 'UPDATE_ARCHIVED',
+  QUEST_CREATED: 'QUEST_CREATED',
+  QUEST_PUBLISHED: 'QUEST_PUBLISHED',
+  QUEST_VERIFIED: 'QUEST_VERIFIED',
+  CONTENT_REPORT_SUBMITTED: 'CONTENT_REPORT_SUBMITTED',
+  CONTENT_MODERATED: 'CONTENT_MODERATED',
+} as const;
+export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
 
 // ==========================================
 // Sub-types & Interfaces
@@ -130,6 +148,8 @@ export interface SocialLinks {
   twitter?: string;
   telegram?: string;
   instagram?: string;
+  tiktok?: string;
+  youtube?: string;
   discord?: string;
   github?: string;
   medium?: string;
@@ -388,3 +408,129 @@ export interface ProjectDashboardData {
   latestReview?: ProjectReview;
   reviewHistory: ProjectReview[];
 }
+
+// ==========================================
+// 12. CREATOR STUDIO CONTRACTS
+// ==========================================
+
+export const CreatorApplicationStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+} as const;
+export type CreatorApplicationStatus = (typeof CreatorApplicationStatus)[keyof typeof CreatorApplicationStatus];
+
+export interface CreatorApplication {
+  id: EntityId;
+  userId: EntityId;
+  creatorName: string;
+  email?: string;
+  socialLinks: Record<string, string>;
+  contentNiche: string;
+  audienceInfo?: string;
+  portfolioLinks: string[];
+  strengthsDescription: string;
+  status: CreatorApplicationStatus;
+  adminNotes?: string;
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+}
+
+export const PartnershipRequestStatus = {
+  PENDING: 'PENDING',
+  CONTACTED: 'CONTACTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  ARCHIVED: 'ARCHIVED',
+} as const;
+export type PartnershipRequestStatus = (typeof PartnershipRequestStatus)[keyof typeof PartnershipRequestStatus];
+
+export interface PartnershipRequest {
+  id: EntityId;
+  userId?: EntityId;
+  projectId?: EntityId;
+  projectName: string;
+  contactInfo: string;
+  campaignObjective: string;
+  requestedService: string;
+  budgetRange: string;
+  relevantLinks?: string;
+  status: PartnershipRequestStatus;
+  adminNotes?: string;
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+}
+
+export const CreatorCampaignStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  ARCHIVED: 'ARCHIVED',
+} as const;
+export type CreatorCampaignStatus = (typeof CreatorCampaignStatus)[keyof typeof CreatorCampaignStatus];
+
+export interface CreatorCampaign {
+  id: EntityId;
+  title: string;
+  brandProjectName: string;
+  objective: string;
+  deliverables: string;
+  targetNiches: string[];
+  rewardPool: string;
+  rewardPerCreator: string;
+  briefGuidelines: string;
+  deadline?: ISODateString;
+  status: CreatorCampaignStatus;
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+}
+
+export const CreatorCampaignSubmissionStatus = {
+  PENDING: 'PENDING',
+  INVITED: 'INVITED',
+  ACCEPTED: 'ACCEPTED',
+  SUBMITTED: 'SUBMITTED',
+  REVISION_REQUESTED: 'REVISION_REQUESTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+} as const;
+export type CreatorCampaignSubmissionStatus =
+  (typeof CreatorCampaignSubmissionStatus)[keyof typeof CreatorCampaignSubmissionStatus];
+
+export interface CreatorCampaignSubmission {
+  id: EntityId;
+  campaignId: EntityId;
+  creatorId: EntityId;
+  creatorName?: string;
+  campaignTitle?: string;
+  brandProjectName?: string;
+  status: CreatorCampaignSubmissionStatus;
+  submissionLinks: string[];
+  proofNotes?: string;
+  revisionFeedback?: string;
+  payoutAmount?: string;
+  payoutStatus: 'PENDING' | 'AWARDED';
+  submittedAt?: ISODateString;
+  reviewedAt?: ISODateString;
+  createdAt: ISODateString;
+  updatedAt: ISODateString;
+}
+
+export interface CreatorCampaignLeaderboardEntry {
+  rank: number;
+  userId: string;
+  username: string;
+  displayName: string;
+  profileImage?: string | null;
+  approvedCount: number;
+  isWinner: boolean;
+}
+
+export interface CreatorCampaignLeaderboardResponse {
+  campaignId: string;
+  campaignTitle: string;
+  status: string;
+  isEnded: boolean;
+  leaderboard: CreatorCampaignLeaderboardEntry[];
+}
+

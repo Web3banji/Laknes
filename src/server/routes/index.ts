@@ -7,6 +7,7 @@ import { reviewRoutes } from './review.routes.ts';
 import { reportRoutes } from './report.routes.ts';
 import { adminRoutes } from './admin.routes.ts';
 import { systemRoutes } from './system.routes.ts';
+import { creatorRoutes } from './creator.routes.ts';
 
 const apiRouter = Router();
 
@@ -18,6 +19,7 @@ apiRouter.use('/quests', questRoutes);
 apiRouter.use('/reviews', reviewRoutes);
 apiRouter.use('/reports', reportRoutes);
 apiRouter.use('/admin', adminRoutes);
+apiRouter.use('/creators', creatorRoutes);
 
 // Top level aliases
 apiRouter.get('/health', (req, res) => res.redirect('/api/system/health'));

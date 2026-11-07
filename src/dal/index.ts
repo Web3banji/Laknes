@@ -3,9 +3,9 @@
  * Automatically provisions persistent native SQLite adapter with fallback capability.
  */
 
-import { IDatabaseAdapter } from './adapter.ts';
+import type { IDatabaseAdapter } from './adapter.ts';
 import { SqliteDatabaseAdapter } from './sqlite-adapter.ts';
-import { RepositoryRegistry } from './repositories.ts';
+import type { RepositoryRegistry } from './repositories.ts';
 
 let currentAdapter: IDatabaseAdapter = new SqliteDatabaseAdapter();
 

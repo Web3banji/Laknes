@@ -2,9 +2,9 @@
  * LAKNES Server Authentication and Authorization Middleware
  */
 
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import { authService } from '../../modules/auth/auth.service.ts';
-import { SecurityUserContext } from '../../types/auth.ts';
+import type { SecurityUserContext } from '../../types/auth.ts';
 import { UnauthorizedError, ForbiddenError } from '../../core/errors.ts';
 import { isAdmin } from '../../modules/auth/permissions.ts';
 

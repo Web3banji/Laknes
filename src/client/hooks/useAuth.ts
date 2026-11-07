@@ -66,11 +66,11 @@ export function useAuth() {
     }
   };
 
-  const register = async (username: string, email: string, password?: string, bio?: string) => {
+  const register = async (username: string, email: string, password?: string, bio?: string, accountType?: 'user' | 'project') => {
     setIsLoading(true);
     setError(null);
     try {
-      const result = await laknesClient.register({ username, email, password, bio });
+      const result = await laknesClient.register({ username, email, password, bio, accountType });
       setToken(result.token);
       setUser(result.user);
       return result;
@@ -92,7 +92,7 @@ export function useAuth() {
     }
   };
 
-  const loginWithGoogle = async (payload: { credential?: string; email?: string; name?: string; picture?: string }) => {
+  const loginWithGoogle = async (payload: { credential?: string; email?: string; name?: string; picture?: string; accountType?: 'user' | 'project' }) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -121,6 +121,15 @@ export function useAuth() {
     return await laknesClient.confirmPasswordReset(resetToken, newPassword);
   };
 
+  const setSession = (newUser: User, newToken: string) => {
+    setToken(newToken);
+    setUser(newUser);
+  };
+
+  const updateUser = (updatedUser: User) => {
+    setUser(updatedUser);
+  };
+
   return {
     user,
     token,
@@ -132,8 +141,10 @@ export function useAuth() {
     register,
     logout,
     refreshUser,
+    updateUser,
     changePassword,
     requestPasswordReset,
     confirmPasswordReset,
+    setSession,
   };
 }

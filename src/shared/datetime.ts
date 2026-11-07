@@ -2,7 +2,7 @@
  * LAKNES Date & Time Utilities
  */
 
-import { ISODateString } from '../types/contracts.ts';
+import type { ISODateString } from '../types/contracts.ts';
 
 export function nowISO(): ISODateString {
   return new Date().toISOString();

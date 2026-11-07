@@ -2,7 +2,7 @@
  * LAKNES Standardized API Response Builders
  */
 
-import { ApiResponse, PaginationMeta } from '../types/api.ts';
+import type { ApiResponse, PaginationMeta } from '../types/api.ts';
 import { AppError } from './errors.ts';
 
 export function buildSuccessResponse<T>(data: T, pagination?: PaginationMeta): ApiResponse<T> {

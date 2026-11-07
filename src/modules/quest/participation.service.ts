@@ -4,13 +4,13 @@
  */
 
 import {
-  QuestParticipation,
-  EntityId,
+  type QuestParticipation,
+  type EntityId,
   QuestParticipationStatus,
   QuestCompletionStatus,
   AuditAction,
 } from '../../types/contracts.ts';
-import { SecurityUserContext } from '../../types/auth.ts';
+import type { SecurityUserContext } from '../../types/auth.ts';
 import { getRepositories } from '../../dal/index.ts';
 import { assertCanVerifyQuest } from '../auth/permissions.ts';
 import { NotFoundError, ValidationError, ConflictError } from '../../core/errors.ts';

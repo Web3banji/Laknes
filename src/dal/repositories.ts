@@ -4,24 +4,24 @@
  */
 
 import {
-  EntityId,
-  User,
-  UserRecord,
-  Project,
-  ProjectMembership,
-  ProjectMemberWithUser,
-  ProjectUpdate,
-  Quest,
-  QuestParticipation,
-  ProjectFollow,
-  SavedProject,
-  ProjectReview,
-  ContentReport,
-  AuditLog,
+  type EntityId,
+  type User,
+  type UserRecord,
+  type Project,
+  type ProjectMembership,
+  type ProjectMemberWithUser,
+  type ProjectUpdate,
+  type Quest,
+  type QuestParticipation,
+  type ProjectFollow,
+  type SavedProject,
+  type ProjectReview,
+  type ContentReport,
+  type AuditLog,
   ProjectCategory,
   ProjectVerificationStatus,
 } from '../types/contracts.ts';
-import { PaginationParams, PaginationMeta } from '../types/api.ts';
+import type { PaginationParams, PaginationMeta } from '../types/api.ts';
 
 export interface PaginatedResult<T> {
   items: T[];

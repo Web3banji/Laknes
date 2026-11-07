@@ -7,8 +7,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import { IDatabaseAdapter, DatabaseStatus, DatabaseHealth } from './adapter.ts';
-import {
+import type { IDatabaseAdapter, DatabaseStatus, DatabaseHealth } from './adapter.ts';
+import type {
   RepositoryRegistry,
   IUserRepository,
   IProjectRepository,
@@ -26,19 +26,19 @@ import {
   PaginatedResult,
 } from './repositories.ts';
 import {
-  User,
-  UserRecord,
-  Project,
-  ProjectMembership,
-  ProjectMemberWithUser,
-  ProjectUpdate,
-  Quest,
-  QuestParticipation,
-  ProjectFollow,
-  SavedProject,
-  ProjectReview,
-  ContentReport,
-  AuditLog,
+  type User,
+  type UserRecord,
+  type Project,
+  type ProjectMembership,
+  type ProjectMemberWithUser,
+  type ProjectUpdate,
+  type Quest,
+  type QuestParticipation,
+  type ProjectFollow,
+  type SavedProject,
+  type ProjectReview,
+  type ContentReport,
+  type AuditLog,
   ProjectCategory,
   ProjectVerificationStatus,
   PublicationStatus,
@@ -52,7 +52,7 @@ import {
   MembershipRole,
   MembershipStatus,
 } from '../types/contracts.ts';
-import { PaginationParams } from '../types/api.ts';
+import type { PaginationParams } from '../types/api.ts';
 import { sanitizePagination, buildPaginationMeta } from '../shared/pagination.ts';
 import { nowISO } from '../shared/datetime.ts';
 
@@ -322,8 +322,83 @@ export class SqliteDatabaseAdapter implements IDatabaseAdapter {
           FOREIGN KEY (quest_id) REFERENCES quests(id) ON DELETE CASCADE
         );
         CREATE INDEX IF NOT EXISTS idx_saved_quests_user ON saved_quests(user_id);
+
+        CREATE TABLE IF NOT EXISTS creator_applications (
+          id TEXT PRIMARY KEY,
+          user_id TEXT NOT NULL,
+          creator_name TEXT NOT NULL,
+          email TEXT,
+          social_links TEXT NOT NULL,
+          content_niche TEXT NOT NULL,
+          audience_info TEXT,
+          portfolio_links TEXT NOT NULL,
+          strengths_description TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'PENDING',
+          admin_notes TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          UNIQUE(user_id),
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_creator_app_user ON creator_applications(user_id);
+        CREATE INDEX IF NOT EXISTS idx_creator_app_status ON creator_applications(status);
+
+        CREATE TABLE IF NOT EXISTS partnership_requests (
+          id TEXT PRIMARY KEY,
+          user_id TEXT,
+          project_id TEXT,
+          project_name TEXT NOT NULL,
+          contact_info TEXT NOT NULL,
+          campaign_objective TEXT NOT NULL,
+          requested_service TEXT NOT NULL,
+          budget_range TEXT NOT NULL,
+          relevant_links TEXT,
+          status TEXT NOT NULL DEFAULT 'PENDING',
+          admin_notes TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS creator_campaigns (
+          id TEXT PRIMARY KEY,
+          title TEXT NOT NULL,
+          brand_project_name TEXT NOT NULL,
+          objective TEXT NOT NULL,
+          deliverables TEXT NOT NULL,
+          target_niches TEXT NOT NULL,
+          reward_pool TEXT NOT NULL,
+          reward_per_creator TEXT NOT NULL,
+          brief_guidelines TEXT NOT NULL,
+          deadline TEXT,
+          status TEXT NOT NULL DEFAULT 'ACTIVE',
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_campaigns_status ON creator_campaigns(status);
+
+        CREATE TABLE IF NOT EXISTS creator_campaign_submissions (
+          id TEXT PRIMARY KEY,
+          campaign_id TEXT NOT NULL,
+          creator_id TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'SUBMITTED',
+          submission_links TEXT NOT NULL,
+          proof_notes TEXT,
+          revision_feedback TEXT,
+          payout_amount TEXT,
+          payout_status TEXT NOT NULL DEFAULT 'PENDING',
+          submitted_at TEXT,
+          reviewed_at TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          FOREIGN KEY (campaign_id) REFERENCES creator_campaigns(id) ON DELETE CASCADE,
+          FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_submissions_creator ON creator_campaign_submissions(creator_id);
+        CREATE INDEX IF NOT EXISTS idx_submissions_campaign ON creator_campaign_submissions(campaign_id);
       `);
-    } catch {}
+    } catch (err) {
+      console.warn('Creator studio tables setup note:', err);
+    }
 
     this.seedCanonicalDataIfNeeded();
   }
@@ -355,7 +430,7 @@ export class SqliteDatabaseAdapter implements IDatabaseAdapter {
         );
       }
     } catch (err) {
-      console.warn('Admin user setup notice:', err);
+      console.warn('Data seeding notice:', err);
     }
   }
 
@@ -1329,21 +1404,20 @@ export class SqliteDatabaseAdapter implements IDatabaseAdapter {
         const total = countRow ? Number(countRow.c) : 0;
         const { page, limit, offset } = sanitizePagination(pagination);
         const rows = db.prepare(`
-          SELECT p.*, r.id as review_id, r.reviewer_id, r.decision, r.review_notes, r.created_at as review_created_at
+          SELECT p.*
           FROM projects p
-          LEFT JOIN project_reviews r ON p.id = r.project_id
           WHERE p.verification_status IN ('PENDING_REVIEW', 'CHANGES_REQUESTED')
           ORDER BY p.created_at DESC
           LIMIT ? OFFSET ?
         `).all(limit, offset);
 
         const items = rows.map((r) => ({
-          id: r.review_id ? String(r.review_id) : String(r.id),
+          id: String(r.id),
           projectId: String(r.id),
-          reviewerId: r.reviewer_id ? String(r.reviewer_id) : 'SYSTEM',
-          decision: (r.decision || 'PENDING') as ReviewDecision,
-          reviewNotes: r.review_notes ? String(r.review_notes) : 'Pending administrative evaluation',
-          createdAt: r.review_created_at ? String(r.review_created_at) : String(r.created_at),
+          reviewerId: 'SYSTEM',
+          decision: (r.verification_status === 'CHANGES_REQUESTED' ? ReviewDecision.CHANGES_REQUESTED : ('PENDING' as any)) as ReviewDecision,
+          reviewNotes: 'Pending administrative evaluation',
+          createdAt: String(r.created_at),
           project: mapProject(r),
         }));
         return { items, meta: buildPaginationMeta(total, page, limit) };

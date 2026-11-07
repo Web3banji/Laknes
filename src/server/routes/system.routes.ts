@@ -7,7 +7,7 @@ import { Router } from 'express';
 import { getDatabaseAdapter } from '../../dal/index.ts';
 import { appConfig } from '../../core/config.ts';
 import { buildSuccessResponse } from '../../core/response.ts';
-import { SystemStatusResponse } from '../../types/api.ts';
+import type { SystemStatusResponse } from '../../types/api.ts';
 
 const router = Router();
 

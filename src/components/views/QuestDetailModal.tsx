@@ -355,7 +355,7 @@ export function QuestDetailModal({
                   className={`px-5 py-2.5 rounded-full font-label-caps uppercase font-semibold text-xs transition-all shrink-0 ${
                     isExpired
                       ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                      : 'bg-primary-container text-on-primary-container hover:bg-primary-fixed-dim shadow-[0_0_20px_rgba(0,210,255,0.3)]'
+                      : 'bg-primary-container text-on-primary-container hover:bg-primary-fixed-dim shadow-[0_0_20px_rgba(212,163,39,0.35)]'
                   }`}
                 >
                   {isSubmitting ? 'Joining...' : isExpired ? 'Quest Expired' : 'Join Quest'}

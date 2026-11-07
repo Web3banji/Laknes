@@ -3,10 +3,11 @@
  * Follow and save projects with database uniqueness enforcement and error guards.
  */
 
-import { EntityId, ProjectFollow, SavedProject, Project } from '../../types/contracts.ts';
-import { PaginationParams } from '../../types/api.ts';
-import { SecurityUserContext } from '../../types/auth.ts';
-import { getRepositories, PaginatedResult } from '../../dal/index.ts';
+import type { EntityId, ProjectFollow, SavedProject, Project } from '../../types/contracts.ts';
+import type { PaginationParams } from '../../types/api.ts';
+import type { SecurityUserContext } from '../../types/auth.ts';
+import { getRepositories } from '../../dal/index.ts';
+import type { PaginatedResult } from '../../dal/repositories.ts';
 import { NotFoundError, ConflictError } from '../../core/errors.ts';
 
 export interface IEngagementService {

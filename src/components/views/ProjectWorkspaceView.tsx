@@ -55,7 +55,7 @@ export function ProjectWorkspaceView({
   // Edit Project Profile state
   const [editForm, setEditForm] = useState({
     name: '',
-    category: ProjectCategory.DEFI,
+    category: ProjectCategory.DEFI as ProjectCategory,
     shortDescription: '',
     description: '',
     websiteUrl: '',
@@ -97,9 +97,32 @@ export function ProjectWorkspaceView({
   const [inviteRole, setInviteRole] = useState<MembershipRole>(MembershipRole.MAINTAINER);
   const [isInviting, setIsInviting] = useState(false);
 
+  // Creator Distribution Partnership Request State
+  const [partnershipContact, setPartnershipContact] = useState('');
+  const [partnershipObjective, setPartnershipObjective] = useState('');
+  const [partnershipDescription, setPartnershipDescription] = useState('');
+  const [partnershipBudget, setPartnershipBudget] = useState('');
+  const [partnershipLinks, setPartnershipLinks] = useState('');
+  const [isSubmittingPartnership, setIsSubmittingPartnership] = useState(false);
+  const [myPartnerships, setMyPartnerships] = useState<any[]>([]);
+  const [isLoadingPartnerships, setIsLoadingPartnerships] = useState(false);
+
   useEffect(() => {
     loadDashboardData(projectId);
+    loadPartnershipRequests();
   }, [projectId]);
+
+  const loadPartnershipRequests = async () => {
+    setIsLoadingPartnerships(true);
+    try {
+      const list = await laknesClient.getMyPartnershipRequests();
+      setMyPartnerships(Array.isArray(list) ? list : []);
+    } catch (e) {
+      console.error('Failed to load partnership requests', e);
+    } finally {
+      setIsLoadingPartnerships(false);
+    }
+  };
 
   const loadDashboardData = async (id: string) => {
     setIsLoading(true);
@@ -124,6 +147,9 @@ export function ProjectWorkspaceView({
         github: p.socialLinks?.github || '',
         contracts: (p.contractAddresses || []).join('\n'),
       });
+      if (p.representativeInfo?.email && !partnershipContact) {
+        setPartnershipContact(p.representativeInfo.email);
+      }
     } catch (err: any) {
       setFeedbackMessage({ text: `Failed to load project telemetry: ${err?.message}`, isError: true });
     } finally {
@@ -259,13 +285,49 @@ export function ProjectWorkspaceView({
       setQuestDescription('');
       setQuestInstructions('');
       setIsQuestModalOpen(false);
-      showNotification('Community quest successfully launched!');
+      showNotification('Community quest successfully launched and sent for admin review!');
       await loadDashboardData(projectId);
       if (onProjectUpdated) onProjectUpdated();
     } catch (err: any) {
       showNotification(`Failed to launch quest: ${err?.message}`, true);
     } finally {
       setIsCreatingQuest(false);
+    }
+  };
+
+  // 4b. Submit Creator Distribution Partnership Request
+  const handleSubmitPartnership = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!partnershipContact.trim() || !partnershipObjective.trim() || !partnershipDescription.trim()) {
+      showNotification('Please fill in all required partnership fields.', true);
+      return;
+    }
+
+    setIsSubmittingPartnership(true);
+    try {
+      const parsedLinks = partnershipLinks
+        .split('\n')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      await laknesClient.submitPartnershipRequest({
+        projectName: dashboard?.project?.name || 'Project',
+        contactInfo: partnershipContact.trim(),
+        campaignObjective: partnershipObjective.trim(),
+        requestedService: partnershipDescription.trim(),
+        budgetRange: partnershipBudget,
+        relevantLinks: parsedLinks.join('\n'),
+      });
+
+      showNotification('Partnership request submitted! LAKNES admins will inspect your distribution brief.');
+      setPartnershipObjective('');
+      setPartnershipDescription('');
+      setPartnershipLinks('');
+      await loadPartnershipRequests();
+    } catch (err: any) {
+      showNotification(`Partnership submission failed: ${err?.message}`, true);
+    } finally {
+      setIsSubmittingPartnership(false);
     }
   };
 
@@ -968,20 +1030,48 @@ export function ProjectWorkspaceView({
       {/* ==================================================== */}
       {activeTab === 'quests' && (
         <div className="space-y-6">
+          {/* Verification requirement warning banner */}
+          {!isVerified && (
+            <div className="p-5 rounded-2xl bg-amber-950/30 border border-amber-500/40 flex items-start gap-3">
+              <span className="material-symbols-outlined text-amber-400 text-xl shrink-0 mt-0.5">lock</span>
+              <div className="flex-1">
+                <h4 className="text-xs font-bold text-amber-200 uppercase font-mono tracking-wider">
+                  Quest Publishing Locked &bull; Verification Required
+                </h4>
+                <p className="text-xs text-amber-200/80 mt-1 leading-relaxed">
+                  Only approved, verified projects can publish community quests. Your project status is currently{' '}
+                  <strong className="text-white font-mono uppercase">{project.verificationStatus}</strong>.
+                  Once administrators inspect and approve your credentials, quest publishing will be unlocked.
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-surface-container-low border border-slate-800">
             <div>
               <h3 className="text-base font-bold text-on-surface">Community Quests</h3>
               <p className="text-xs text-on-surface-variant mt-0.5">
-                Design interactive on-chain and social challenges to incentivize community engagement and reward loyal contributors.
+                Design interactive on-chain and social challenges to incentivize community engagement. All quests enter admin review before publication.
               </p>
             </div>
 
             <button
-              onClick={() => setIsQuestModalOpen(true)}
-              className="px-5 py-2.5 rounded-full bg-primary-container text-on-primary-container font-label-caps uppercase font-semibold text-xs shadow-md shrink-0 flex items-center gap-1.5"
+              onClick={() => {
+                if (!isVerified) {
+                  showNotification('Quest creation is restricted until your project is verified by administrators.', true);
+                  return;
+                }
+                setIsQuestModalOpen(true);
+              }}
+              disabled={!isVerified}
+              className={`px-5 py-2.5 rounded-full font-label-caps uppercase font-semibold text-xs shadow-md shrink-0 flex items-center gap-1.5 transition-all ${
+                isVerified
+                  ? 'bg-primary-container text-on-primary-container hover:bg-primary-fixed-dim cursor-pointer'
+                  : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+              }`}
             >
-              <span className="material-symbols-outlined text-[16px]">add</span>
-              <span>Launch New Quest</span>
+              <span className="material-symbols-outlined text-[16px]">{isVerified ? 'add' : 'lock'}</span>
+              <span>{isVerified ? 'Launch New Quest' : 'Verification Required'}</span>
             </button>
           </div>
 
@@ -991,14 +1081,18 @@ export function ProjectWorkspaceView({
               <span className="material-symbols-outlined text-4xl text-on-surface-variant mb-2">military_tech</span>
               <h4 className="text-base font-bold text-on-surface mb-1">No Quests Active</h4>
               <p className="text-xs text-on-surface-variant max-w-sm mb-4">
-                Launch your first community quest to grow your protocol's verified user base.
+                {isVerified
+                  ? "Launch your first community quest to grow your protocol's verified user base."
+                  : 'Once your project receives foundation verification, you will be able to launch community and on-chain quests.'}
               </p>
-              <button
-                onClick={() => setIsQuestModalOpen(true)}
-                className="px-4 py-2 rounded-full bg-primary-container text-on-primary-container text-xs font-semibold uppercase font-label-caps"
-              >
-                Create Quest Now
-              </button>
+              {isVerified && (
+                <button
+                  onClick={() => setIsQuestModalOpen(true)}
+                  className="px-4 py-2 rounded-full bg-primary-container text-on-primary-container text-xs font-semibold uppercase font-label-caps cursor-pointer"
+                >
+                  Create Quest Now
+                </button>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1256,21 +1350,188 @@ export function ProjectWorkspaceView({
       )}
 
       {/* ==================================================== */}
-      {/* TAB 5: CREATOR STUDIO */}
+      {/* TAB 5: CREATOR PARTNERSHIPS & BROADCASTS */}
       {/* ==================================================== */}
       {activeTab === 'creator-studio' && (
         <div className="space-y-8">
-          {/* Studio Header */}
-          <div className="p-6 rounded-2xl bg-surface-container-low border border-slate-800 relative overflow-hidden">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <span className="font-label-caps text-[10px] uppercase px-2 py-0.5 rounded bg-tertiary-container/15 text-tertiary-container font-bold mb-2 inline-block">
-                  Broadcast Suite
+          {/* Creator Distribution Partnership Box */}
+          <div className="p-6 rounded-3xl bg-gradient-to-r from-amber-950/30 via-[#181c26] to-amber-950/20 border border-amber-500/40 relative overflow-hidden shadow-xl">
+            <div className="pointer-events-none absolute -right-20 -top-20 w-80 h-80 bg-amber-500/10 blur-[90px] rounded-full"></div>
+
+            <div className="relative z-10 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300">
+                    <span className="material-symbols-outlined text-xl">campaign</span>
+                  </span>
+                  <div>
+                    <span className="font-label-caps text-[10px] uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">
+                      Curated Distribution
+                    </span>
+                    <h3 className="text-xl font-bold text-white tracking-tight mt-0.5">
+                      Request Creator Distribution Partnership
+                    </h3>
+                  </div>
+                </div>
+
+                <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800 px-3 py-1 rounded-full self-start sm:self-center">
+                  Managed by LAKNES
                 </span>
-                <h3 className="text-xl font-bold text-on-surface">Creator Studio</h3>
-                <p className="text-xs text-on-surface-variant mt-1">
-                  Draft, schedule, and publish official announcements and releases directly to your followers and the curated ecosystem gateway.
-                </p>
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
+                Creator Studio is owned and managed entirely by LAKNES. Protocols do not independently manage or select creators. Instead, submit a distribution request below, and LAKNES editorial will review your brief, select vetted creators from our network, and coordinate sponsored content campaigns.
+              </p>
+
+              {/* Partnership Form */}
+              <form onSubmit={handleSubmitPartnership} className="p-5 rounded-2xl bg-[#0a1310] border border-amber-500/30 space-y-4 shadow-lg text-left">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase text-slate-300 mb-1">
+                      Project Name *
+                    </label>
+                    <input
+                      type="text"
+                      readOnly
+                      value={project.name}
+                      className="w-full px-3 py-2 bg-surface-container-lowest text-slate-400 border border-slate-700 rounded-lg text-xs font-mono select-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase text-slate-300 mb-1">
+                      Contact Information (Email / Telegram) *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={partnershipContact}
+                      onChange={(e) => setPartnershipContact(e.target.value)}
+                      placeholder="e.g. founder@project.io or @tg_handle"
+                      className="w-full px-3 py-2 bg-surface-container-lowest text-white border border-slate-700 rounded-lg text-xs font-mono focus:outline-none focus:border-primary"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase text-slate-300 mb-1">
+                      Campaign or Promotional Objective *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={partnershipObjective}
+                      onChange={(e) => setPartnershipObjective(e.target.value)}
+                      placeholder="e.g. Testnet Genesis Adoption, Token TGE, Liquidity Sprint"
+                      className="w-full px-3 py-2 bg-surface-container-lowest text-white border border-slate-700 rounded-lg text-xs focus:outline-none focus:border-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase text-slate-300 mb-1">
+                      Estimated Campaign Budget Range *
+                    </label>
+                    <select
+                      value={partnershipBudget}
+                      onChange={(e) => setPartnershipBudget(e.target.value)}
+                      className="w-full px-3 py-2 bg-surface-container-lowest text-white border border-slate-700 rounded-lg text-xs focus:outline-none focus:border-primary"
+                    >
+                      <option value="$1,000 - $3,000">$1,000 - $3,000 USD (Starter Sprint)</option>
+                      <option value="$3,000 - $7,500">$3,000 - $7,500 USD (Multi-Creator Push)</option>
+                      <option value="$7,500 - $20,000">$7,500 - $20,000 USD (Comprehensive Campaign)</option>
+                      <option value="$20,000+">$20,000+ USD (Flagship Ecosystem Distribution)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-mono uppercase text-slate-300 mb-1">
+                    Description of Requested Creator Services *
+                  </label>
+                  <textarea
+                    required
+                    rows={3}
+                    value={partnershipDescription}
+                    onChange={(e) => setPartnershipDescription(e.target.value)}
+                    placeholder="Describe the desired content formats (e.g. YouTube video breakdowns, X in-depth technical threads, TikTok quick demos, Twitter Space AMAs)..."
+                    className="w-full px-3 py-2 bg-surface-container-lowest text-white border border-slate-700 rounded-lg text-xs focus:outline-none focus:border-primary leading-relaxed"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-mono uppercase text-slate-300 mb-1">
+                    Relevant Documentation & Asset Links (one per line)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={partnershipLinks}
+                    onChange={(e) => setPartnershipLinks(e.target.value)}
+                    placeholder="https://docs.project.xyz/deck&#10;https://app.testnet.project.xyz"
+                    className="w-full px-3 py-2 bg-surface-container-lowest text-white border border-slate-700 rounded-lg text-xs font-mono focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    disabled={isSubmittingPartnership}
+                    className="px-6 py-2.5 rounded-full bg-primary-container text-on-primary-container font-mono uppercase font-bold text-xs shadow-md hover:bg-primary-fixed-dim transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">send</span>
+                    <span>{isSubmittingPartnership ? 'Submitting Brief...' : 'Submit Distribution Brief'}</span>
+                  </button>
+                </div>
+              </form>
+
+              {/* My Partnership Requests */}
+              <div className="pt-4 border-t border-slate-800">
+                <h4 className="text-xs font-mono uppercase text-slate-400 font-bold mb-3">
+                  Submitted Partnership Requests ({myPartnerships.length})
+                </h4>
+
+                {isLoadingPartnerships ? (
+                  <p className="text-xs text-slate-500 font-mono">Loading requests...</p>
+                ) : myPartnerships.length === 0 ? (
+                  <p className="text-xs text-slate-500 font-mono italic">
+                    No active partnership requests yet. Fill in the brief above to request creator distribution.
+                  </p>
+                ) : (
+                  <div className="space-y-2.5">
+                    {myPartnerships.map((req) => (
+                      <div
+                        key={req.id}
+                        className="p-3.5 rounded-xl bg-[#0a1310] border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                      >
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <strong className="text-white font-mono">{req.campaignObjective}</strong>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
+                              req.status === 'APPROVED'
+                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                : req.status === 'IN_DISCUSSION'
+                                ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
+                                : req.status === 'REJECTED' || req.status === 'CLOSED'
+                                ? 'bg-slate-800 text-slate-400 border border-slate-700'
+                                : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                            }`}>
+                              {req.status}
+                            </span>
+                          </div>
+                          <p className="text-slate-400 font-mono line-clamp-1">{req.requestedService || req.serviceDescription}</p>
+                          <div className="text-[10px] text-slate-500 font-mono mt-1">
+                            Budget: {req.budgetRange || req.estimatedBudgetRange || 'N/A'} &bull; Contact: {req.contactInfo} &bull; Submitted {new Date(req.createdAt).toLocaleDateString()}
+                          </div>
+                          {req.adminNotes && (
+                            <p className="mt-1 text-[11px] text-primary font-mono bg-surface-container-lowest p-1.5 rounded border border-slate-800">
+                              LAKNES Team Note: {req.adminNotes}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1279,7 +1540,7 @@ export function ProjectWorkspaceView({
           <form onSubmit={handlePostUpdate} className="p-6 rounded-2xl bg-surface-container-low border border-slate-800 space-y-4 shadow-xl">
             <h4 className="text-xs font-semibold uppercase font-label-caps text-primary flex items-center gap-2">
               <span className="material-symbols-outlined text-[16px]">edit_note</span>
-              Broadcast Official Announcement
+              Broadcast Official Announcement to Followers
             </h4>
 
             <div>
@@ -1304,7 +1565,7 @@ export function ProjectWorkspaceView({
                 value={updateContent}
                 onChange={(e) => setUpdateContent(e.target.value)}
                 placeholder="Write the full update text. Share details of technical releases, audits, staking pools, or governance updates..."
-                rows={5}
+                rows={4}
                 required
                 className="w-full px-3 py-2 bg-surface-container-lowest text-on-surface border border-outline-variant/40 rounded-lg text-xs focus:outline-none focus:border-primary-container leading-relaxed"
               />
@@ -1327,10 +1588,10 @@ export function ProjectWorkspaceView({
               <button
                 type="submit"
                 disabled={isPostingUpdate || !updateTitle.trim() || !updateContent.trim()}
-                className="px-6 py-2.5 rounded-full bg-primary-container text-on-primary-container font-label-caps uppercase font-bold text-xs shadow-md disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-2.5 rounded-full bg-primary-container text-on-primary-container font-label-caps uppercase font-bold text-xs shadow-md disabled:opacity-50 flex items-center gap-2 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[16px]">send</span>
-                <span>{isPostingUpdate ? 'Broadcasting...' : 'Publish to Follower Feed'}</span>
+                <span>{isPostingUpdate ? 'Broadcasting...' : 'Publish Announcement'}</span>
               </button>
             </div>
           </form>

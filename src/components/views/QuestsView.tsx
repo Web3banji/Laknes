@@ -192,22 +192,39 @@ export function QuestsView({
           ))}
         </div>
       ) : filteredQuests.length === 0 ? (
-        <div className="p-16 rounded-2xl bg-surface-container-low border border-slate-800 text-center flex flex-col items-center justify-center">
-          <span className="material-symbols-outlined text-4xl text-on-surface-variant mb-2">explore_off</span>
-          <h3 className="text-base font-semibold text-on-surface mb-1">No Quests Match Filters</h3>
-          <p className="text-xs text-on-surface-variant max-w-sm mb-4">
-            Try adjusting your search query or selecting a different quest type category.
+        <div className="p-16 rounded-2xl bg-surface-container-low border border-slate-800 text-center flex flex-col items-center justify-center shadow-xl">
+          <div className="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-on-surface-variant mb-3">
+            <span className="material-symbols-outlined text-3xl">
+              {quests.length === 0 ? 'assignment_late' : 'explore_off'}
+            </span>
+          </div>
+          <h3 className="text-base font-semibold text-on-surface mb-1">
+            {quests.length === 0 ? 'No Ecosystem Quests Available Yet' : 'No Quests Match Filters'}
+          </h3>
+          <p className="text-xs text-on-surface-variant max-w-md mb-5 leading-relaxed">
+            {quests.length === 0
+              ? 'Verified ecosystem projects publish community bounties, feedback forms, and activities here. Check back soon or explore verified projects.'
+              : 'Try adjusting your search query or selecting a different quest type category.'}
           </p>
-          <button
-            onClick={() => {
-              setSelectedType('ALL');
-              setParticipationFilter('ALL');
-              setSearchQuery('');
-            }}
-            className="px-4 py-2 rounded-full bg-surface-container-high text-on-surface hover:bg-surface-container-highest text-xs uppercase font-label-caps"
-          >
-            Clear Filters
-          </button>
+          {quests.length === 0 ? (
+            <button
+              onClick={() => onNavigate('projects')}
+              className="px-6 py-2.5 rounded-full bg-primary-container text-on-primary-container text-xs font-semibold uppercase font-label-caps hover:bg-primary-fixed-dim transition-all cursor-pointer shadow-md"
+            >
+              Browse Projects
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setSelectedType('ALL');
+                setParticipationFilter('ALL');
+                setSearchQuery('');
+              }}
+              className="px-5 py-2 rounded-full bg-surface-container-high text-on-surface hover:bg-surface-container-highest text-xs uppercase font-label-caps transition-all cursor-pointer"
+            >
+              Clear Filters
+            </button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg">

@@ -4,16 +4,17 @@
  */
 
 import {
-  ProjectUpdate,
-  EntityId,
+  type ProjectUpdate,
+  type EntityId,
   PublicationStatus,
   MembershipRole,
   AuditAction,
   ProjectVerificationStatus,
 } from '../../types/contracts.ts';
-import { CreateProjectUpdateRequest, UpdateProjectUpdateRequest, PaginationParams } from '../../types/api.ts';
-import { SecurityUserContext } from '../../types/auth.ts';
-import { getRepositories, PaginatedResult } from '../../dal/index.ts';
+import type { CreateProjectUpdateRequest, UpdateProjectUpdateRequest, PaginationParams } from '../../types/api.ts';
+import type { SecurityUserContext } from '../../types/auth.ts';
+import { getRepositories } from '../../dal/index.ts';
+import type { PaginatedResult } from '../../dal/repositories.ts';
 import { assertCanManageProject } from '../auth/permissions.ts';
 import { validateRequired, sanitizeString } from '../../shared/validation.ts';
 import { NotFoundError, ForbiddenError, ValidationError } from '../../core/errors.ts';

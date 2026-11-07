@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LAKNES — Discover. Participate. Build. | Web3 Ecosystem Platform</title>
+<!-- Google Fonts: Space Grotesk & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-highest": "#353534",
+            "surface-tint": "#ffb5a0",
+            "surface-container-low": "#1c1b1b",
+            "surface": "#131313",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed": "#3b0900",
+            "outline-variant": "#5b4039",
+            "primary-fixed-dim": "#ffb5a0",
+            "tertiary-fixed": "#ffdbcf",
+            "on-tertiary": "#5b1b00",
+            "primary-fixed": "#ffdbd1",
+            "primary-container": "#ff5722",
+            "surface-dim": "#131313",
+            "surface-variant": "#353534",
+            "on-primary": "#5f1500",
+            "primary": "#ffb5a0",
+            "on-tertiary-fixed": "#380d00",
+            "surface-container-high": "#2a2a2a",
+            "secondary": "#ffb692",
+            "secondary-fixed": "#ffdbcb",
+            "on-primary-fixed-variant": "#862200",
+            "on-error": "#690005",
+            "on-secondary-container": "#562000",
+            "secondary-container": "#fd6c00",
+            "background": "#131313",
+            "surface-container": "#201f1f",
+            "inverse-primary": "#b02f00",
+            "secondary-fixed-dim": "#ffb692",
+            "on-secondary": "#562000",
+            "tertiary": "#ffb59a",
+            "tertiary-fixed-dim": "#ffb59a",
+            "on-surface": "#e5e2e1",
+            "error-container": "#93000a",
+            "on-secondary-fixed": "#341100",
+            "surface-container-lowest": "#0e0e0e",
+            "on-background": "#e5e2e1",
+            "on-tertiary-fixed-variant": "#802a00",
+            "on-primary-container": "#541200",
+            "error": "#ffb4ab",
+            "inverse-surface": "#e5e2e1",
+            "on-surface-variant": "#e4beb4",
+            "on-secondary-fixed-variant": "#7a3000",
+            "tertiary-container": "#f95e15",
+            "inverse-on-surface": "#313030",
+            "surface-bright": "#3a3939",
+            "on-tertiary-container": "#501700",
+            "outline": "#ab8980"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem",
+            "margin-lg": "4rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "gutter-sm": "1rem",
+            "gutter-lg": "2rem",
+            "margin-sm": "1rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "headline-sm": ["Space Grotesk", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "label-sm": ["Space Grotesk", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "headline-lg": ["Space Grotesk", "sans-serif"],
+            "headline-md": ["Space Grotesk", "sans-serif"],
+            "display": ["Space Grotesk", "sans-serif"],
+            "headline-lg-mobile": ["Space Grotesk", "sans-serif"],
+            "display-mobile": ["Space Grotesk", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "label-md": ["Space Grotesk", "sans-serif"]
+          },
+          "fontSize": {
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "600" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface antialiased selection:bg-primary-container selection:text-surface-container-lowest overflow-x-hidden min-h-screen flex flex-col font-body-md">
+<!-- ======================================================== -->
+<!-- A. Top Navigation Bar                                    -->
+<!-- ======================================================== -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 lg:px-12 h-20 max-w-7xl mx-auto border-b border-outline-variant/30 bg-surface/80 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+<!-- Brand Logo -->
+<a class="flex items-center gap-3 group active:scale-[0.98] transition-transform duration-150" href="#">
+<div class="relative w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center p-0.5 bg-surface-container-low border border-outline-variant/40 group-hover:border-primary-container transition-colors">
+<img alt="LAKNES Emblem" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbCx-Ngfnb-71P9gWXiRQl9QYfJXesChsUORwVa8lQAmx74wJCLYHmRCtrhvhOxkbempTZ0hlp3FvhidOnFAOYl1TcCMVFrdHxBcWgq6OhoWY4tb-8laDiOHFQztpVebLwdlgdRnT-N2_QtStLeD-PsP7BRsJ95I6u2EFNclu1zI9zBuYgjfDf2Lpg9HiT1vGR8EsiBz34GPWhUYyTotU9-H2vvchOMlDYiZFDr3x6RmkS9obxDnq6"/>
+</div>
+<span class="text-headline-sm font-headline-sm font-bold tracking-tight text-on-surface">LAKNES</span>
+</a>
+<!-- Desktop Nav Links -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary-container dark:text-primary font-semibold border-b-2 border-primary-container dark:border-primary pb-1 font-label-md text-label-md active:scale-[0.98] transition-all" href="#explore">Explore</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md pb-1 active:scale-[0.98]" href="#opportunities">Opportunities</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md pb-1 active:scale-[0.98]" href="#projects">Projects</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md pb-1 active:scale-[0.98]" href="#creators">For Creators</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<a class="hidden sm:inline-flex text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-3 py-2 active:scale-[0.98]" href="#">
+    Sign In
+  </a>
+<a class="inline-flex items-center justify-center bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold px-5 py-2.5 rounded-lg shadow-[0_0_20px_rgba(255,87,34,0.4)] hover:shadow-[0_0_26px_rgba(255,87,34,0.65)] hover:brightness-110 active:scale-[0.98] transition-all" href="#explore">
+    Get Started
+  </a>
+</div>
+</header>
+<main class="flex-grow pt-20">
+<!-- ======================================================== -->
+<!-- B. Hero Section: Discover. Participate. Build.           -->
+<!-- ======================================================== -->
+<section class="relative min-h-[88vh] flex items-center justify-center px-6 lg:px-12 py-20 overflow-hidden bg-surface-container-lowest">
+<!-- Subtle ambient radial aura -->
+<div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[360px] bg-primary-container/10 blur-[140px] rounded-full pointer-events-none"></div>
+<div class="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+<!-- Left: Copy & Callouts -->
+<div class="lg:col-span-6 flex flex-col items-start space-y-6">
+<div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-surface-container-low border border-primary-container/30">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Web3 Ecosystem Platform</span>
+</div>
+<h1 class="text-display-mobile md:text-display font-display text-on-surface tracking-tight leading-[1.08]">
+        Discover. <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-on-surface via-primary to-primary-container">Participate.</span> <br/>
+        Build.
+      </h1>
+<p class="text-body-md md:text-body-lg font-body-lg text-on-surface-variant max-w-xl leading-relaxed">
+        Your gateway to Web3 projects, quests, opportunities, and communities. Discover ecosystems, contribute to meaningful initiatives, and grow alongside the projects shaping Web3.
+      </p>
+<div class="flex flex-wrap items-center gap-4 pt-2 w-full sm:w-auto">
+<a class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary-container to-secondary-container text-surface-container-lowest font-headline-sm text-headline-sm font-bold px-7 py-3 rounded-lg shadow-[0_0_24px_rgba(255,87,34,0.45)] hover:shadow-[0_0_32px_rgba(255,87,34,0.7)] active:scale-[0.98] transition-all" href="#explore">
+<span>Explore LAKNES</span>
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+<a class="inline-flex items-center justify-center gap-2 bg-surface-container-low hover:bg-surface-container border border-primary-container/40 hover:border-primary-container text-on-surface font-headline-sm text-headline-sm px-6 py-3 rounded-lg backdrop-blur-sm active:scale-[0.98] transition-all" href="#projects">
+          Launch Your Project
+        </a>
+</div>
+</div>
+<!-- Right: Authentic Tripartite Architecture Diagram (Users, Creators, Projects around LAKNES) -->
+<div class="lg:col-span-6 relative">
+<div class="relative w-full aspect-[4/3.6] rounded-xl border border-primary-container/20 bg-surface-container-low/80 backdrop-blur-xl p-8 shadow-[0_8px_32px_rgba(0,0,0,0.8)] overflow-hidden flex items-center justify-center">
+<!-- Minimal Grid Background -->
+<div class="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#ff5722_1px,transparent_1px)] [background-size:24px_24px]"></div>
+<!-- Connection SVG Lines (Triangular Nexus) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-10" fill="none" viewbox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+<!-- Triangle connecting the three nodes -->
+<polygon points="250,75 90,315 410,315" stroke="rgba(255, 87, 34, 0.2)" stroke-dasharray="4 4" stroke-width="1.5"></polygon>
+<!-- Radial spokes connecting to central core -->
+<line stroke="rgba(255, 87, 34, 0.45)" stroke-width="1.5" x1="250" x2="250" y1="205" y2="90"></line>
+<line stroke="rgba(255, 87, 34, 0.45)" stroke-width="1.5" x1="250" x2="110" y1="205" y2="305"></line>
+<line stroke="rgba(255, 87, 34, 0.45)" stroke-width="1.5" x1="250" x2="390" y1="205" y2="305"></line>
+<!-- Orbit ring -->
+<circle cx="250" cy="205" r="70" stroke="rgba(255, 87, 34, 0.25)" stroke-width="1"></circle>
+</svg>
+<!-- Central Platform Hub: LAKNES Core -->
+<div class="relative z-20 flex flex-col items-center">
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest border-2 border-primary-container flex items-center justify-center p-2.5 shadow-[0_0_24px_rgba(255,87,34,0.45)]">
+<img alt="LAKNES Core" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbCx-Ngfnb-71P9gWXiRQl9QYfJXesChsUORwVa8lQAmx74wJCLYHmRCtrhvhOxkbempTZ0hlp3FvhidOnFAOYl1TcCMVFrdHxBcWgq6OhoWY4tb-8laDiOHFQztpVebLwdlgdRnT-N2_QtStLeD-PsP7BRsJ95I6u2EFNclu1zI9zBuYgjfDf2Lpg9HiT1vGR8EsiBz34GPWhUYyTotU9-H2vvchOMlDYiZFDr3x6RmkS9obxDnq6"/>
+</div>
+<div class="mt-2 px-3 py-0.5 rounded-full bg-surface-container-high border border-primary-container/40">
+<span class="text-label-sm font-label-sm text-primary tracking-wider uppercase font-semibold">LAKNES Platform Core</span>
+</div>
+</div>
+<!-- Node 1: Projects (Top Apex) -->
+<div class="absolute top-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+<div class="px-4 py-2.5 rounded-lg bg-surface-container border border-outline-variant/50 flex items-center gap-2.5 shadow-lg">
+<span class="material-symbols-outlined text-primary-container text-[20px]" data-icon="deployed_code">deployed_code</span>
+<div>
+<p class="text-label-md font-label-md text-on-surface font-semibold">Web3 Projects</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Protocols &amp; Ecosystems</p>
+</div>
+</div>
+</div>
+<!-- Node 2: Users & Participants (Bottom Left) -->
+<div class="absolute bottom-6 left-6 z-20">
+<div class="px-4 py-2.5 rounded-lg bg-surface-container border border-outline-variant/50 flex items-center gap-2.5 shadow-lg">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="groups">groups</span>
+<div>
+<p class="text-label-md font-label-md text-on-surface font-semibold">Participants</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Quests &amp; Governance</p>
+</div>
+</div>
+</div>
+<!-- Node 3: Creators (Bottom Right) -->
+<div class="absolute bottom-6 right-6 z-20">
+<div class="px-4 py-2.5 rounded-lg bg-surface-container border border-outline-variant/50 flex items-center gap-2.5 shadow-lg">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="brush">brush</span>
+<div>
+<p class="text-label-md font-label-md text-on-surface font-semibold">Creators</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Media &amp; Documentation</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- C. Ecosystem Discovery Framework Section                 -->
+<!-- ======================================================== -->
+<section class="px-6 lg:px-12 py-24 max-w-7xl mx-auto w-full border-t border-outline-variant/20" id="explore">
+<div class="max-w-3xl mb-14">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-surface-container border border-outline-variant/30 mb-3">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="travel_explore">travel_explore</span>
+<span class="text-label-sm font-label-sm text-primary uppercase">Discovery Framework</span>
+</div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">
+      Explore Verified Web3 Ecosystems
+    </h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-2 leading-relaxed">
+      LAKNES provides a structured discovery engine designed to navigate genuine protocol ecosystems, upcoming initiatives, and active initiatives without fabricated metrics or artificial hype.
+    </p>
+</div>
+<!-- Real Capability Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Feature 1 -->
+<div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/50 transition-all flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary-container mb-4 border border-outline-variant/30">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Verified Ecosystems</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
+          Access authenticated profiles representing live networks and protocols with confirmed documentation, contract registries, and official links.
+        </p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20">
+<span class="text-label-sm font-label-sm text-primary">Source-of-Truth Registry</span>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/50 transition-all flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary mb-4 border border-outline-variant/30">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Milestone Tracking</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
+          Follow verified protocol roadmaps, mainnet transitions, testnet schedules, and developmental stages as they progress in real time.
+        </p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20">
+<span class="text-label-sm font-label-sm text-primary">Transparent Roadmaps</span>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/50 transition-all flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary mb-4 border border-outline-variant/30">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Sector Classification</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
+          Filter and discover ecosystems by technical architectural domain including Infrastructure, DeFi, Layer 1 &amp; Layer 2, Tooling, and DAOs.
+        </p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20">
+<span class="text-label-sm font-label-sm text-secondary">Categorized Architecture</span>
+</div>
+</div>
+<!-- Feature 4 -->
+<div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/50 transition-all flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-tertiary mb-4 border border-outline-variant/30">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Direct Participation</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
+          Jump directly from project discovery into open technical quests, community initiatives, or active ecosystem contribution avenues.
+        </p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20">
+<span class="text-label-sm font-label-sm text-tertiary">Frictionless Onboarding</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- D. Quests and Campaigns Section                          -->
+<!-- ======================================================== -->
+<section class="bg-surface-container-low/40 border-y border-outline-variant/20 py-24 px-6 lg:px-12">
+<div class="max-w-7xl mx-auto">
+<div class="max-w-3xl mb-16">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-surface-container border border-primary-container/30 mb-3">
+<span class="material-symbols-outlined text-primary-container text-[16px]" data-icon="task_alt">task_alt</span>
+<span class="text-label-sm font-label-sm text-primary uppercase">The Participation Layer</span>
+</div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">
+        Quests &amp; Structured Campaigns
+      </h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-3 leading-relaxed">
+        Understand how users engage directly with protocols through verified participation mechanisms, milestone fulfillment, and tangible on-chain activities.
+      </p>
+</div>
+<!-- Functional Participation Workflow Blocks -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Workflow Block 1 -->
+<div class="p-8 rounded-xl bg-surface-container border border-outline-variant/40 flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-low border border-primary-container/30 flex items-center justify-center text-primary-container mb-6">
+<span class="material-symbols-outlined" data-icon="playlist_add_check">playlist_add_check</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">
+            Quest Discovery &amp; Scope
+          </h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-3 leading-relaxed">
+            Browse clearly defined quests initiated by verified project foundations. Each quest includes specific technical parameters, prerequisite criteria, and clear contribution guidelines.
+          </p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Step 01 • Scope &amp; Requirements</span>
+</div>
+</div>
+<!-- Workflow Block 2 -->
+<div class="p-8 rounded-xl bg-surface-container border border-outline-variant/40 flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-low border border-primary-container/30 flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">
+            Direct Protocol Engagement
+          </h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-3 leading-relaxed">
+            Execute tangible ecosystem tasks such as running testnet nodes, validating smart contracts, interacting with dApps, or participating in governance signaling.
+          </p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20">
+<span class="text-label-sm font-label-sm text-primary">Step 02 • Active Execution</span>
+</div>
+</div>
+<!-- Workflow Block 3 -->
+<div class="p-8 rounded-xl bg-surface-container border border-outline-variant/40 flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-low border border-primary-container/30 flex items-center justify-center text-secondary mb-6">
+<span class="material-symbols-outlined" data-icon="approval_delegation">approval_delegation</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">
+            Milestone Verification
+          </h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-3 leading-relaxed">
+            Submit milestone proofs reviewed directly by project maintainers or verifiable signatures. Completed campaigns establish recognized standing within the project's network.
+          </p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20">
+<span class="text-label-sm font-label-sm text-secondary">Step 03 • Verified Recognition</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- E. Opportunities Section (Dedicated Hub)                 -->
+<!-- ======================================================== -->
+<section class="px-6 lg:px-12 py-24 max-w-7xl mx-auto w-full" id="opportunities">
+<div class="mb-14">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-surface-container border border-outline-variant/30 mb-3">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="work">work</span>
+<span class="text-label-sm font-label-sm text-primary uppercase">Ecosystem Opportunities</span>
+</div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">
+      A Dedicated Discovery Hub for Contributors and Builders
+    </h2>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-2xl mt-2 leading-relaxed">
+      A structured platform where users, contributors, and creators discover meaningful initiatives across Web3 ecosystems.
+    </p>
+</div>
+<!-- 4 Core Genuine Pillars -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- 1. Creator Collaborations -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/50 transition-all flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container border border-outline-variant/30 flex items-center justify-center text-primary-container mb-6">
+<span class="material-symbols-outlined" data-icon="draw">draw</span>
+</div>
+<span class="text-label-sm font-label-sm text-primary uppercase tracking-wider">Avenue 01</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mt-1 font-semibold">
+          Creator Collaborations
+        </h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-3 leading-relaxed">
+          Media production, technical documentation, community education, and brand storytelling tailored for nascent and established protocols. Work directly from approved briefs with established milestone definitions.
+        </p>
+</div>
+<div class="pt-6 mt-8 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Focus: Content &amp; Design</span>
+<span class="text-label-sm font-label-sm font-semibold text-primary">Direct Briefs</span>
+</div>
+</div>
+<!-- 2. Community Contributions -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/50 transition-all flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container border border-outline-variant/30 flex items-center justify-center text-secondary mb-6">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+</div>
+<span class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Avenue 02</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mt-1 font-semibold">
+          Community Contributions
+        </h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-3 leading-relaxed">
+          Protocol ambassadorship, ecosystem localization, community moderation, and regional event organization across multi-chain ecosystems.
+        </p>
+</div>
+<div class="pt-6 mt-8 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Focus: Community Growth</span>
+<span class="text-label-sm font-label-sm font-semibold text-secondary">Ecosystem Roles</span>
+</div>
+</div>
+<!-- 3. Ecosystem Grant Initiatives -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/50 transition-all flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container border border-outline-variant/30 flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined" data-icon="token">token</span>
+</div>
+<span class="text-label-sm font-label-sm text-primary uppercase tracking-wider">Avenue 03</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mt-1 font-semibold">
+          Ecosystem Grant Initiatives
+        </h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-3 leading-relaxed">
+          Open grants, builder bounties, and technical request-for-proposals (RFPs) aligned directly with foundational protocol roadmaps and foundation grants.
+        </p>
+</div>
+<div class="pt-6 mt-8 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Focus: Protocol Funding</span>
+<span class="text-label-sm font-label-sm font-semibold text-primary">Open Applications</span>
+</div>
+</div>
+<!-- 4. Project-Related Activities -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/50 transition-all flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container border border-outline-variant/30 flex items-center justify-center text-on-surface mb-6">
+<span class="material-symbols-outlined" data-icon="science">science</span>
+</div>
+<span class="text-label-sm font-label-sm text-primary uppercase tracking-wider">Avenue 04</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mt-1 font-semibold">
+          Project-Related Activities
+        </h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-3 leading-relaxed">
+          Early protocol research participation, testnet deployment validation, and product feedback cycles providing qualitative data to engineering teams.
+        </p>
+</div>
+<div class="pt-6 mt-8 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Focus: Technical Validation</span>
+<span class="text-label-sm font-label-sm font-semibold text-primary">Direct Feedback</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- F. For Projects Section                                  -->
+<!-- ======================================================== -->
+<section class="py-24 px-6 lg:px-12 bg-surface-container-lowest border-t border-outline-variant/20" id="projects">
+<div class="max-w-7xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
+<div class="lg:col-span-6">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-surface-container border border-primary-container/30 mb-3">
+<span class="material-symbols-outlined text-primary-container text-[16px]" data-icon="domain">domain</span>
+<span class="text-label-sm font-label-sm text-primary uppercase">Ecosystem Infrastructure</span>
+</div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">
+          Establish, Manage, and Scale Your Ecosystem Presence
+        </h2>
+</div>
+<div class="lg:col-span-6 lg:pt-8">
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed">
+          LAKNES provides the verifiable framework for Web3 foundations and engineering teams to attract authentic contributors, launch milestone campaigns, and foster durable retention over ephemeral hype.
+        </p>
+</div>
+</div>
+<!-- Platform Capabilities Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+<div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container mb-4">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Project Profile Verification</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-2 leading-relaxed">
+          Maintain an official source of truth with verified repositories, documentation, contract addresses, and team credentials.
+        </p>
+</div>
+<div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container mb-4">
+<span class="material-symbols-outlined text-[20px]" data-icon="route">route</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Campaign &amp; Quest Creation</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-2 leading-relaxed">
+          Design targeted multi-step milestones for developer onboarding, feature feedback, and community engagement.
+        </p>
+</div>
+<div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container mb-4">
+<span class="material-symbols-outlined text-[20px]" data-icon="person_search">person_search</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Direct Contributor Sourcing</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-2 leading-relaxed">
+          Connect directly with verified smart-contract engineers, technical writers, and committed ecosystem participants.
+        </p>
+</div>
+<div class="p-6 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container mb-4">
+<span class="material-symbols-outlined text-[20px]" data-icon="trending_up">trending_up</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Ecosystem Growth</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-2 leading-relaxed">
+          Transition short-term visitors into permanent protocol participants, documentation contributors, and community pillars.
+        </p>
+</div>
+</div>
+<!-- Clear Project CTA -->
+<div class="p-8 rounded-xl bg-surface-container-low border border-primary-container/30 flex flex-col sm:flex-row items-center justify-between gap-6">
+<div>
+<h4 class="text-headline-sm font-headline-sm text-on-surface font-bold">Ready to integrate your protocol with LAKNES?</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Get verified access to contributor pipelines and campaign staging tools.</p>
+</div>
+<div>
+<a class="inline-flex items-center justify-center bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold px-6 py-3 rounded-lg shadow-[0_0_20px_rgba(255,87,34,0.4)] hover:shadow-[0_0_26px_rgba(255,87,34,0.6)] active:scale-[0.98] transition-all whitespace-nowrap" href="#">
+          Bring Your Project to LAKNES
+        </a>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- G. For Creators Section                                  -->
+<!-- ======================================================== -->
+<section class="py-24 px-6 lg:px-12 max-w-7xl mx-auto w-full border-t border-outline-variant/20" id="creators">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-6 space-y-6">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-surface-container border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="brush">brush</span>
+<span class="text-label-sm font-label-sm text-primary uppercase">Creator Hub</span>
+</div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface tracking-tight leading-tight">
+        Connect Directly with Protocol Builders
+      </h2>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed">
+        Discover campaigns tailored to content creators, technical writers, educators, and designers. Collaborate directly with Web3 protocols without intermediaries through transparent project briefs and clear deliverables.
+      </p>
+</div>
+<!-- 3 Core Creator Capabilities -->
+<div class="lg:col-span-6 space-y-4">
+<div class="flex items-start gap-4 p-5 rounded-lg bg-surface-container-low border border-outline-variant/30">
+<div class="w-9 h-9 rounded bg-surface-container flex items-center justify-center text-primary-container shrink-0 mt-0.5 border border-outline-variant/30">
+<span class="material-symbols-outlined text-[20px]" data-icon="search_insights">search_insights</span>
+</div>
+<div>
+<h4 class="text-headline-sm font-headline-sm text-on-surface font-semibold text-base">Access Verified Briefs</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1 leading-relaxed">Explore an open directory of active protocol deliverables, bounties, and media requests published directly by official project teams.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-5 rounded-lg bg-surface-container-low border border-outline-variant/30">
+<div class="w-9 h-9 rounded bg-surface-container flex items-center justify-center text-primary-container shrink-0 mt-0.5 border border-outline-variant/30">
+<span class="material-symbols-outlined text-[20px]" data-icon="fact_check">fact_check</span>
+</div>
+<div>
+<h4 class="text-headline-sm font-headline-sm text-on-surface font-semibold text-base">Deliver Against Clear Criteria</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1 leading-relaxed">Submit completed documentation, visuals, or educational assets against unambiguous milestone requirements defined from the start.</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-5 rounded-lg bg-surface-container-low border border-outline-variant/30">
+<div class="w-9 h-9 rounded bg-surface-container flex items-center justify-center text-primary-container shrink-0 mt-0.5 border border-outline-variant/30">
+<span class="material-symbols-outlined text-[20px]" data-icon="badge">badge</span>
+</div>
+<div>
+<h4 class="text-headline-sm font-headline-sm text-on-surface font-semibold text-base">Build Verifiable Standing</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1 leading-relaxed">Construct a clear portfolio of verified ecosystem contributions recognized across the Web3 landscape.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- H. How LAKNES Works Section                              -->
+<!-- ======================================================== -->
+<section class="py-24 px-6 lg:px-12 bg-surface-container-low/40 border-t border-outline-variant/20">
+<div class="max-w-7xl mx-auto">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-surface-container border border-outline-variant/30 mb-3">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="schema">schema</span>
+<span class="text-label-sm font-label-sm text-primary uppercase">Ecosystem Architecture</span>
+</div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">
+        How LAKNES Works
+      </h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-2">
+        A three-step participatory pathway connecting curious contributors with foundational decentralized technology.
+      </p>
+</div>
+<!-- 3-Step Process -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Step 01 -->
+<div class="p-8 rounded-xl bg-surface-container border border-outline-variant/30 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="text-display font-display text-primary/30 font-bold">01</span>
+<span class="w-10 h-10 rounded-full bg-surface-container-low border border-primary-container/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="radar">radar</span>
+</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Discover</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-3 leading-relaxed">
+            Find projects, ecosystems, active quests, and emerging opportunities across Web3 through intuitive curated registries.
+          </p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20 text-label-sm font-label-sm text-primary">
+          Phase 01 // Ecosystem Navigation
+        </div>
+</div>
+<!-- Step 02 -->
+<div class="p-8 rounded-xl bg-surface-container border border-outline-variant/30 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="text-display font-display text-primary-container/40 font-bold">02</span>
+<span class="w-10 h-10 rounded-full bg-surface-container-low border border-primary-container/30 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="handshake">handshake</span>
+</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Participate</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-3 leading-relaxed">
+            Engage with verified projects, complete technical or community activities, and contribute directly with transparent proof.
+          </p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20 text-label-sm font-label-sm text-primary-container">
+          Phase 02 // Verified Execution
+        </div>
+</div>
+<!-- Step 03 -->
+<div class="p-8 rounded-xl bg-surface-container border border-outline-variant/30 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="text-display font-display text-secondary/30 font-bold">03</span>
+<span class="w-10 h-10 rounded-full bg-surface-container-low border border-primary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Grow</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-3 leading-relaxed">
+            Build meaningful cross-project relationships, gain verifiable experience, and access high-impact ecosystem roles.
+          </p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20 text-label-sm font-label-sm text-secondary">
+          Phase 03 // Long-Term Alignment
+        </div>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- I. Final Conversion Section                              -->
+<!-- ======================================================== -->
+<section class="py-24 px-6 lg:px-12 max-w-7xl mx-auto w-full">
+<div class="relative rounded-2xl bg-gradient-to-b from-surface-container-low to-surface-container-lowest border border-primary-container/30 p-10 md:p-16 overflow-hidden text-center shadow-[0_16px_48px_rgba(0,0,0,0.9),0_0_36px_rgba(255,87,34,0.18)]">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary-container/15 blur-[100px] rounded-full pointer-events-none"></div>
+<div class="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+<div class="w-14 h-14 rounded-xl bg-surface-container-low border border-primary-container/40 p-1 mb-6 flex items-center justify-center shadow-[0_0_20px_rgba(255,87,34,0.3)]">
+<img alt="LAKNES Emblem" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbCx-Ngfnb-71P9gWXiRQl9QYfJXesChsUORwVa8lQAmx74wJCLYHmRCtrhvhOxkbempTZ0hlp3FvhidOnFAOYl1TcCMVFrdHxBcWgq6OhoWY4tb-8laDiOHFQztpVebLwdlgdRnT-N2_QtStLeD-PsP7BRsJ95I6u2EFNclu1zI9zBuYgjfDf2Lpg9HiT1vGR8EsiBz34GPWhUYyTotU9-H2vvchOMlDYiZFDr3x6RmkS9obxDnq6"/>
+</div>
+<h2 class="text-headline-lg md:text-display font-display text-on-surface tracking-tight">
+        Find Your Place in Web3.
+      </h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant mt-4 max-w-xl">
+        Discover projects, unlock opportunities, and become part of what is being built.
+      </p>
+<div class="flex flex-wrap items-center justify-center gap-4 mt-8 w-full">
+<a class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary-container to-secondary-container text-surface-container-lowest font-headline-sm text-headline-sm font-bold px-8 py-3.5 rounded-lg shadow-[0_0_24px_rgba(255,87,34,0.5)] hover:shadow-[0_0_32px_rgba(255,87,34,0.7)] active:scale-[0.98] transition-all" href="#explore">
+<span>Get Started</span>
+<span class="material-symbols-outlined text-[20px]" data-icon="rocket">rocket</span>
+</a>
+<a class="inline-flex items-center justify-center gap-2 bg-surface-container-low hover:bg-surface-container border border-outline-variant/40 hover:border-primary-container text-on-surface font-headline-sm text-headline-sm px-7 py-3.5 rounded-lg backdrop-blur-sm active:scale-[0.98] transition-all" href="#projects">
+          Launch Your Project
+        </a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ======================================================== -->
+<!-- J. Footer                                                -->
+<!-- ======================================================== -->
+<footer class="w-full px-6 lg:px-12 py-16 max-w-7xl mx-auto flex flex-col bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-12">
+<!-- Brand Block -->
+<div class="md:col-span-4 flex flex-col items-start space-y-4">
+<a class="flex items-center gap-3" href="#">
+<div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center p-0.5 bg-surface-container border border-outline-variant/40">
+<img alt="LAKNES" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbCx-Ngfnb-71P9gWXiRQl9QYfJXesChsUORwVa8lQAmx74wJCLYHmRCtrhvhOxkbempTZ0hlp3FvhidOnFAOYl1TcCMVFrdHxBcWgq6OhoWY4tb-8laDiOHFQztpVebLwdlgdRnT-N2_QtStLeD-PsP7BRsJ95I6u2EFNclu1zI9zBuYgjfDf2Lpg9HiT1vGR8EsiBz34GPWhUYyTotU9-H2vvchOMlDYiZFDr3x6RmkS9obxDnq6"/>
+</div>
+<span class="text-headline-md font-headline-md font-bold text-on-surface tracking-tight">LAKNES</span>
+</a>
+<p class="text-body-sm font-body-sm text-on-surface-variant max-w-sm leading-relaxed">
+        The Web3 ecosystem platform connecting users, creators, and blockchain projects through discovery, participation, and growth.
+      </p>
+<div class="pt-2 flex items-center gap-3 text-on-surface-variant">
+<a class="w-8 h-8 rounded bg-surface-container flex items-center justify-center hover:text-primary transition-colors" href="#">
+<span class="text-label-md font-label-md">𝕏</span>
+</a>
+<a class="w-8 h-8 rounded bg-surface-container flex items-center justify-center hover:text-primary transition-colors" href="#">
+<span class="text-label-md font-label-md">DC</span>
+</a>
+<a class="w-8 h-8 rounded bg-surface-container flex items-center justify-center hover:text-primary transition-colors" href="#">
+<span class="text-label-md font-label-md">GH</span>
+</a>
+<a class="w-8 h-8 rounded bg-surface-container flex items-center justify-center hover:text-primary transition-colors" href="#">
+<span class="text-label-md font-label-md">TG</span>
+</a>
+</div>
+</div>
+<!-- Navigation Columns -->
+<div class="md:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
+<!-- Col 1: Explore -->
+<div>
+<h4 class="text-label-md font-label-md font-semibold text-on-surface uppercase tracking-wider mb-4">Explore</h4>
+<ul class="space-y-2.5 text-body-sm font-body-sm">
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#explore">Ecosystem Discovery</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#explore">Verified Projects</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#explore">Campaigns</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#explore">Quests</a></li>
+</ul>
+</div>
+<!-- Col 2: Opportunities -->
+<div>
+<h4 class="text-label-md font-label-md font-semibold text-on-surface uppercase tracking-wider mb-4">Opportunities</h4>
+<ul class="space-y-2.5 text-body-sm font-body-sm">
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#opportunities">Creator Collaborations</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#opportunities">Community Initiatives</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#opportunities">Grant Programs</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#opportunities">Activities</a></li>
+</ul>
+</div>
+<!-- Col 3: Builders -->
+<div>
+<h4 class="text-label-md font-label-md font-semibold text-on-surface uppercase tracking-wider mb-4">For Builders</h4>
+<ul class="space-y-2.5 text-body-sm font-body-sm">
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#projects">Launch on LAKNES</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#projects">Campaign Framework</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#projects">Project Registry</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#creators">Creator Sourcing</a></li>
+</ul>
+</div>
+<!-- Col 4: Platform -->
+<div>
+<h4 class="text-label-md font-label-md font-semibold text-on-surface uppercase tracking-wider mb-4">Platform</h4>
+<ul class="space-y-2.5 text-body-sm font-body-sm">
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">About LAKNES</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Documentation</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Team</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Security Policy</a></li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Copyright and Links -->
+<div class="pt-8 border-t border-outline-variant/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-body-sm font-body-sm text-on-surface-variant">
+<div>
+      © 2025 LAKNES Platform. All rights reserved. Web3 ecosystem discovery, participation, and growth.
+    </div>
+<div class="flex items-center gap-6 text-label-sm font-label-sm">
+<a class="hover:text-primary transition-colors" href="#">Terms</a>
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary transition-colors" href="#">Security</a>
+</div>
+</div>
+</footer>
+</body></html>

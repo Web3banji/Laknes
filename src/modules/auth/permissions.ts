@@ -8,7 +8,7 @@ import {
   MembershipRole,
   MembershipStatus,
 } from '../../types/contracts.ts';
-import { SecurityUserContext } from '../../types/auth.ts';
+import type { SecurityUserContext } from '../../types/auth.ts';
 import { ForbiddenError, UnauthorizedError } from '../../core/errors.ts';
 
 const ROLE_HIERARCHY: Record<MembershipRole, number> = {

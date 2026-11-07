@@ -3,12 +3,13 @@
  * Role-Based Access Control and Permission Specifications.
  */
 
-import { EntityId, UserRole, MembershipRole, User } from './contracts.ts';
+import { UserRole, MembershipRole, type EntityId, type User } from './contracts.ts';
 
 export interface AuthCredentials {
   email: string;
   password?: string;
   authToken?: string;
+  accountType?: 'user' | 'project';
 }
 
 export interface RegisterPayload {
@@ -16,6 +17,7 @@ export interface RegisterPayload {
   email: string;
   password?: string;
   bio?: string;
+  accountType?: 'user' | 'project';
 }
 
 export interface PasswordResetRequestPayload {
@@ -60,27 +62,29 @@ export interface SecurityUserContext {
 /**
  * Granular platform permissions
  */
-export enum Permission {
+export const Permission = {
   // User permissions
-  MANAGE_OWN_PROFILE = 'MANAGE_OWN_PROFILE',
-  PARTICIPATE_IN_QUEST = 'PARTICIPATE_IN_QUEST',
-  FOLLOW_PROJECT = 'FOLLOW_PROJECT',
-  SAVE_PROJECT = 'SAVE_PROJECT',
-  SUBMIT_CONTENT_REPORT = 'SUBMIT_CONTENT_REPORT',
+  MANAGE_OWN_PROFILE: 'MANAGE_OWN_PROFILE',
+  PARTICIPATE_IN_QUEST: 'PARTICIPATE_IN_QUEST',
+  FOLLOW_PROJECT: 'FOLLOW_PROJECT',
+  SAVE_PROJECT: 'SAVE_PROJECT',
+  SUBMIT_CONTENT_REPORT: 'SUBMIT_CONTENT_REPORT',
 
   // Project management permissions
-  SUBMIT_PROJECT = 'SUBMIT_PROJECT',
-  UPDATE_PROJECT_PROFILE = 'UPDATE_PROJECT_PROFILE',
-  MANAGE_PROJECT_MEMBERS = 'MANAGE_PROJECT_MEMBERS',
-  PUBLISH_PROJECT_UPDATE = 'PUBLISH_PROJECT_UPDATE',
-  CREATE_PROJECT_QUEST = 'CREATE_PROJECT_QUEST',
-  VERIFY_QUEST_COMPLETION = 'VERIFY_QUEST_COMPLETION',
-  VIEW_PROJECT_ANALYTICS = 'VIEW_PROJECT_ANALYTICS',
+  SUBMIT_PROJECT: 'SUBMIT_PROJECT',
+  UPDATE_PROJECT_PROFILE: 'UPDATE_PROJECT_PROFILE',
+  MANAGE_PROJECT_MEMBERS: 'MANAGE_PROJECT_MEMBERS',
+  PUBLISH_PROJECT_UPDATE: 'PUBLISH_PROJECT_UPDATE',
+  CREATE_PROJECT_QUEST: 'CREATE_PROJECT_QUEST',
+  VERIFY_QUEST_COMPLETION: 'VERIFY_QUEST_COMPLETION',
+  VIEW_PROJECT_ANALYTICS: 'VIEW_PROJECT_ANALYTICS',
 
   // Admin permissions
-  REVIEW_PROJECT_SUBMISSIONS = 'REVIEW_PROJECT_SUBMISSIONS',
-  MODERATE_CONTENT = 'MODERATE_CONTENT',
-  RESOLVE_REPORTS = 'RESOLVE_REPORTS',
-  ACCESS_AUDIT_LOGS = 'ACCESS_AUDIT_LOGS',
-  MANAGE_GLOBAL_SETTINGS = 'MANAGE_GLOBAL_SETTINGS',
-}
+  REVIEW_PROJECT_SUBMISSIONS: 'REVIEW_PROJECT_SUBMISSIONS',
+  MODERATE_CONTENT: 'MODERATE_CONTENT',
+  RESOLVE_REPORTS: 'RESOLVE_REPORTS',
+  ACCESS_AUDIT_LOGS: 'ACCESS_AUDIT_LOGS',
+  MANAGE_GLOBAL_SETTINGS: 'MANAGE_GLOBAL_SETTINGS',
+} as const;
+
+export type Permission = (typeof Permission)[keyof typeof Permission];

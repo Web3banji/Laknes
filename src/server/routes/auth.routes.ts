@@ -27,6 +27,19 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
+router.post('/admin-master-login', async (req, res, next) => {
+  try {
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({ success: false, error: { message: 'Admin master password is required.' } });
+    }
+    const session = await authService.adminMasterLogin(password);
+    res.json(buildSuccessResponse(session));
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/me', requireAuth, async (req, res, next) => {
   try {
     const user = await authService.getCurrentUser(req.user!.id);

@@ -2,7 +2,7 @@
  * LAKNES Database Adapter Contract & Health Checks
  */
 
-import { RepositoryRegistry } from './repositories.ts';
+import type { RepositoryRegistry } from './repositories.ts';
 
 export type DatabaseStatus = 'UNCONFIGURED' | 'CONNECTING' | 'CONNECTED' | 'DISCONNECTED' | 'ERROR';
 

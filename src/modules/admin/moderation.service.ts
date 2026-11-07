@@ -4,15 +4,16 @@
  */
 
 import {
-  ContentReport,
-  EntityId,
+  type ContentReport,
+  type EntityId,
   ContentReportStatus,
   ContentReportTargetType,
   AuditAction,
 } from '../../types/contracts.ts';
-import { SubmitContentReportRequest, PaginationParams } from '../../types/api.ts';
-import { SecurityUserContext } from '../../types/auth.ts';
-import { getRepositories, PaginatedResult } from '../../dal/index.ts';
+import type { SubmitContentReportRequest, PaginationParams } from '../../types/api.ts';
+import type { SecurityUserContext } from '../../types/auth.ts';
+import { getRepositories } from '../../dal/index.ts';
+import type { PaginatedResult } from '../../dal/repositories.ts';
 import { assertAdmin } from '../auth/permissions.ts';
 import { NotFoundError, ValidationError } from '../../core/errors.ts';
 import { validateRequired, sanitizeString } from '../../shared/validation.ts';

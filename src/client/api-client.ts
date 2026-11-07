@@ -22,6 +22,11 @@ import {
   MembershipRole,
   PublicationStatus,
   ContentReportStatus,
+  CreatorApplication,
+  PartnershipRequest,
+  CreatorCampaign,
+  CreatorCampaignSubmission,
+  CreatorCampaignLeaderboardResponse,
 } from '../types/contracts.ts';
 import {
   SubmitProjectRequest,
@@ -92,7 +97,7 @@ export class LaknesApiClient {
   }
 
   // Authentication
-  async register(payload: { username: string; email: string; password?: string; bio?: string }) {
+  async register(payload: { username: string; email: string; password?: string; bio?: string; accountType?: 'user' | 'project' }) {
     return this.request<{ token: string; user: User }>('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify(payload),
@@ -141,6 +146,7 @@ export class LaknesApiClient {
     email?: string;
     name?: string;
     picture?: string;
+    accountType?: 'user' | 'project';
   }) {
     return this.request<{ token: string; user: User }>('/api/auth/google', {
       method: 'POST',
@@ -417,6 +423,173 @@ export class LaknesApiClient {
 
   async getAuditLogs(): Promise<AuditLog[]> {
     return this.request<AuditLog[]>('/api/admin/audit-logs');
+  }
+
+  // Master Admin Clearance
+  async adminMasterLogin(password: string): Promise<{ token: string; user: User }> {
+    const res = await this.request<{ token: string; user: User }>('/api/auth/admin-master-login', {
+      method: 'POST',
+      body: JSON.stringify({ password }),
+    });
+    if (res.token) {
+      this.setToken(res.token);
+    }
+    return res;
+  }
+
+  // Admin Quest Management & Submissions
+  async getAdminPendingCompletions(): Promise<any[]> {
+    return this.request<any[]>('/api/quests/admin/pending-completions');
+  }
+
+  async getAdminAllQuests(): Promise<any[]> {
+    return this.request<any[]>('/api/quests/admin/all');
+  }
+
+  async updateQuestPublicationStatus(questId: string, publicationStatus: string): Promise<any> {
+    return this.request<any>(`/api/quests/admin/${questId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ publicationStatus }),
+    });
+  }
+
+  async verifyQuestParticipation(participationId: string, decision: 'APPROVE' | 'REJECT', notes?: string): Promise<any> {
+    return this.request<any>(`/api/quests/${participationId}/verify`, {
+      method: 'POST',
+      body: JSON.stringify({ decision, verificationNotes: notes }),
+    });
+  }
+
+  async getAdminProjects(status?: string): Promise<Project[]> {
+    const qs = status ? `?status=${encodeURIComponent(status)}` : '';
+    return this.request<Project[]>(`/api/admin/projects${qs}`);
+  }
+
+  // Creator Studio & Partnerships
+  async getMyCreatorApplication(): Promise<CreatorApplication | { status: 'NOT_APPLIED' }> {
+    return this.request<CreatorApplication | { status: 'NOT_APPLIED' }>('/api/creators/me/application');
+  }
+
+  async applyForCreatorStudio(payload: {
+    creatorName: string;
+    socialLinks: Record<string, string>;
+    contentNiche: string;
+    audienceInfo?: string;
+    portfolioLinks: string[];
+    strengthsDescription: string;
+  }): Promise<CreatorApplication> {
+    return this.request<CreatorApplication>('/api/creators/apply', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async getCreatorCampaigns(): Promise<CreatorCampaign[]> {
+    return this.request<CreatorCampaign[]>('/api/creators/campaigns');
+  }
+
+  async getCampaignLeaderboard(campaignId: string): Promise<CreatorCampaignLeaderboardResponse> {
+    return this.request<CreatorCampaignLeaderboardResponse>(`/api/creators/campaigns/${campaignId}/leaderboard`);
+  }
+
+  async submitCampaignContent(
+    campaignId: string,
+    payload: { postUrl?: string; submissionLinks?: string[]; proofNotes?: string }
+  ): Promise<CreatorCampaignSubmission & { dailyNotice?: string }> {
+    return this.request<CreatorCampaignSubmission & { dailyNotice?: string }>(`/api/creators/campaigns/${campaignId}/submit`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async getMyCampaignSubmissions(): Promise<CreatorCampaignSubmission[]> {
+    return this.request<CreatorCampaignSubmission[]>('/api/creators/me/submissions');
+  }
+
+  async submitPartnershipRequest(payload: {
+    projectName: string;
+    contactInfo: string;
+    campaignObjective: string;
+    requestedService: string;
+    budgetRange: string;
+    relevantLinks?: string;
+  }): Promise<PartnershipRequest> {
+    return this.request<PartnershipRequest>('/api/creators/partnerships', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async getMyPartnershipRequests(): Promise<PartnershipRequest[]> {
+    return this.request<PartnershipRequest[]>('/api/creators/partnerships/my');
+  }
+
+  // Admin Creator Studio Management
+  async getAdminCreatorApplications(status?: string): Promise<any[]> {
+    const qs = status ? `?status=${encodeURIComponent(status)}` : '';
+    return this.request<any[]>(`/api/creators/admin/applications${qs}`);
+  }
+
+  async reviewCreatorApplication(id: string, decision: 'APPROVED' | 'REJECTED', adminNotes?: string): Promise<any> {
+    return this.request<any>(`/api/creators/admin/applications/${id}/review`, {
+      method: 'POST',
+      body: JSON.stringify({ decision, adminNotes }),
+    });
+  }
+
+  async getAdminCampaigns(): Promise<CreatorCampaign[]> {
+    return this.request<CreatorCampaign[]>('/api/creators/admin/campaigns');
+  }
+
+  async createAdminCampaign(payload: {
+    title: string;
+    brandProjectName: string;
+    objective: string;
+    deliverables: string;
+    targetNiches: string[];
+    rewardPool: string;
+    rewardPerCreator: string;
+    briefGuidelines: string;
+    deadline?: string;
+  }): Promise<CreatorCampaign> {
+    return this.request<CreatorCampaign>('/api/creators/admin/campaigns', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async updateCampaignStatus(campaignId: string, status: string): Promise<any> {
+    return this.request<any>(`/api/creators/admin/campaigns/${campaignId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async getAdminCampaignSubmissions(): Promise<any[]> {
+    return this.request<any[]>('/api/creators/admin/submissions');
+  }
+
+  async reviewCampaignSubmission(
+    submissionId: string,
+    decision: 'APPROVED' | 'REVISION_REQUESTED' | 'REJECTED',
+    feedback?: string,
+    payoutAmount?: string
+  ): Promise<any> {
+    return this.request<any>(`/api/creators/admin/submissions/${submissionId}/review`, {
+      method: 'POST',
+      body: JSON.stringify({ decision, feedback, payoutAmount }),
+    });
+  }
+
+  async getAdminPartnershipRequests(): Promise<PartnershipRequest[]> {
+    return this.request<PartnershipRequest[]>('/api/creators/admin/partnerships');
+  }
+
+  async updatePartnershipStatus(id: string, status?: string, adminNotes?: string): Promise<any> {
+    return this.request<any>(`/api/creators/admin/partnerships/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status, adminNotes }),
+    });
   }
 }
 

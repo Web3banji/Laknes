@@ -2,7 +2,7 @@
  * LAKNES Pagination Utilities
  */
 
-import { PaginationParams, PaginationMeta } from '../types/api.ts';
+import type { PaginationParams, PaginationMeta } from '../types/api.ts';
 
 export const DEFAULT_PAGE = 1;
 export const DEFAULT_LIMIT = 20;

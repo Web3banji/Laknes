@@ -6,7 +6,7 @@ import { Router } from 'express';
 import { questService } from '../../modules/quest/quest.service.ts';
 import { questParticipationService } from '../../modules/quest/participation.service.ts';
 import { buildSuccessResponse } from '../../core/response.ts';
-import { requireAuth } from '../middleware/auth.middleware.ts';
+import { requireAuth, requireAdmin } from '../middleware/auth.middleware.ts';
 
 const router = Router();
 
@@ -95,6 +95,59 @@ router.delete('/:id/save', requireAuth, async (req, res, next) => {
       req.params.id
     );
     res.json(buildSuccessResponse({ saved: false }));
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Admin Quest Management & Stack Approval
+router.get('/admin/pending-completions', requireAdmin, async (_req, res, next) => {
+  try {
+    const { getDatabase } = await import('../../dal/index.ts');
+    const db = getDatabase();
+    const rows = db.prepare(`
+      SELECT qp.*, q.title as quest_title, q.project_id, p.name as project_name, u.username, u.email
+      FROM quest_participations qp
+      JOIN quests q ON q.id = qp.quest_id
+      JOIN projects p ON p.id = q.project_id
+      JOIN users u ON u.id = qp.user_id
+      WHERE qp.verification_status = 'PENDING_VERIFICATION' OR qp.completion_status = 'PENDING_VERIFICATION'
+      ORDER BY qp.completed_at DESC
+    `).all();
+    res.json(buildSuccessResponse(rows));
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/admin/all', requireAdmin, async (_req, res, next) => {
+  try {
+    const { getDatabase } = await import('../../dal/index.ts');
+    const db = getDatabase();
+    const rows = db.prepare(`
+      SELECT q.*, p.name as project_name, p.logo_url as project_logo
+      FROM quests q
+      JOIN projects p ON p.id = q.project_id
+      ORDER BY q.created_at DESC
+    `).all();
+    res.json(buildSuccessResponse(rows));
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/admin/:id/status', requireAdmin, async (req, res, next) => {
+  try {
+    const { getDatabase } = await import('../../dal/index.ts');
+    const db = getDatabase();
+    const { publicationStatus } = req.body;
+    db.prepare('UPDATE quests SET publication_status = ?, updated_at = ? WHERE id = ?').run(
+      publicationStatus || 'PUBLISHED',
+      new Date().toISOString(),
+      req.params.id
+    );
+    const updated = db.prepare('SELECT * FROM quests WHERE id = ?').get(req.params.id);
+    res.json(buildSuccessResponse(updated));
   } catch (error) {
     next(error);
   }

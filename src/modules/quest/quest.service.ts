@@ -4,15 +4,17 @@
  */
 
 import {
-  Quest,
-  EntityId,
+  type Quest,
+  type EntityId,
   PublicationStatus,
   MembershipRole,
   AuditAction,
+  ProjectVerificationStatus,
 } from '../../types/contracts.ts';
-import { CreateQuestRequest, PaginationParams } from '../../types/api.ts';
-import { SecurityUserContext } from '../../types/auth.ts';
-import { getRepositories, PaginatedResult } from '../../dal/index.ts';
+import type { CreateQuestRequest, PaginationParams } from '../../types/api.ts';
+import type { SecurityUserContext } from '../../types/auth.ts';
+import { getRepositories } from '../../dal/index.ts';
+import type { PaginatedResult } from '../../dal/repositories.ts';
 import { assertCanManageProject } from '../auth/permissions.ts';
 import { NotFoundError, ValidationError } from '../../core/errors.ts';
 import { validateRequired, sanitizeString } from '../../shared/validation.ts';
@@ -54,10 +56,15 @@ export class QuestService implements IQuestService {
 
     const repos = getRepositories();
 
-    // Verify project exists
+    // Verify project exists and is approved/verified
     const project = await repos.projects.findById(projectId);
     if (!project) {
       throw new NotFoundError('Project', projectId);
+    }
+    if (project.verificationStatus !== ProjectVerificationStatus.VERIFIED) {
+      throw new ValidationError(
+        `Only approved projects can submit quests. Your project status is currently '${project.verificationStatus}'. Please await administrative approval before publishing quests.`
+      );
     }
 
     const quest = await repos.quests.create({
@@ -71,7 +78,7 @@ export class QuestService implements IQuestService {
       startAt: request.startAt,
       deadline: request.deadline,
       rewardConfiguration: request.rewardConfiguration,
-      publicationStatus: PublicationStatus.PUBLISHED,
+      publicationStatus: PublicationStatus.PENDING_REVIEW,
     });
 
     await repos.auditLogs.create({

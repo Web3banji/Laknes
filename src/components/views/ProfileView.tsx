@@ -11,7 +11,7 @@
  * - Comprehensive tabs: Overview, Quests History, Followed Protocols, Saved Bookmarks, Security
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User, Project, Quest, QuestParticipation, UserRole } from '../../types/contracts.ts';
 import { laknesClient } from '../../client/api-client.ts';
 import { ProjectCard } from '../common/ProjectCard.tsx';
@@ -90,6 +90,95 @@ export function ProfileView({
 
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileMessage, setProfileMessage] = useState<{ text: string; isError: boolean } | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [quickUpdateToast, setQuickUpdateToast] = useState<{ text: string; isError: boolean } | null>(null);
+
+  // Synchronize edit inputs whenever user prop changes
+  useEffect(() => {
+    if (user) {
+      setUsernameInput(user.username || '');
+      setNameInput(user.name || '');
+      setBioInput(user.bio || '');
+      setImageInput(user.profileImage || '');
+      setHeaderInput(user.headerImage || '');
+      setSelectedInterests(user.interests || []);
+      setTwitterInput(user.socialLinks?.twitter || user.xAccount || '');
+      setTelegramInput(user.socialLinks?.telegram || '');
+      setInstagramInput(user.socialLinks?.instagram || '');
+      setDiscordInput(user.socialLinks?.discord || '');
+      setGithubInput(user.socialLinks?.github || '');
+      setWebsiteInput(user.socialLinks?.website || '');
+      setCustomLinks(user.socialLinks?.customLinks || []);
+    }
+  }, [user]);
+
+  // Hidden File Inputs for Device Gallery Picture Picking
+  const directAvatarInputRef = useRef<HTMLInputElement | null>(null);
+  const directHeaderInputRef = useRef<HTMLInputElement | null>(null);
+  const modalAvatarInputRef = useRef<HTMLInputElement | null>(null);
+  const modalHeaderInputRef = useRef<HTMLInputElement | null>(null);
+
+  /**
+   * Handle image picked from device gallery / local storage
+   */
+  const handleImageFileChange = (
+    file: File | undefined,
+    target: 'avatar' | 'header',
+    immediateSave = false
+  ) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file (PNG, JPG, WEBP, etc.) from your device.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataUrl = e.target?.result as string;
+      if (!dataUrl) return;
+
+      if (target === 'avatar') {
+        setImageInput(dataUrl);
+        if (immediateSave && user) {
+          try {
+            setIsUploadingImage(true);
+            const updated = await laknesClient.updateUserProfile(user.id, {
+              profileImage: dataUrl,
+            });
+            onUserUpdated(updated);
+            setQuickUpdateToast({ text: 'Profile picture updated successfully!', isError: false });
+            setTimeout(() => setQuickUpdateToast(null), 3500);
+          } catch (err: any) {
+            console.error('Failed to update avatar image', err);
+            setQuickUpdateToast({ text: err?.message || 'Failed to update avatar.', isError: true });
+            setTimeout(() => setQuickUpdateToast(null), 3500);
+          } finally {
+            setIsUploadingImage(false);
+          }
+        }
+      } else {
+        setHeaderInput(dataUrl);
+        if (immediateSave && user) {
+          try {
+            setIsUploadingImage(true);
+            const updated = await laknesClient.updateUserProfile(user.id, {
+              headerImage: dataUrl,
+            });
+            onUserUpdated(updated);
+            setQuickUpdateToast({ text: 'Header banner updated successfully!', isError: false });
+            setTimeout(() => setQuickUpdateToast(null), 3500);
+          } catch (err: any) {
+            console.error('Failed to update header image', err);
+            setQuickUpdateToast({ text: err?.message || 'Failed to update header banner.', isError: true });
+            setTimeout(() => setQuickUpdateToast(null), 3500);
+          } finally {
+            setIsUploadingImage(false);
+          }
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Security password fields
   const [currentPassword, setCurrentPassword] = useState('');
@@ -331,34 +420,110 @@ export function ProfileView({
       {/* X-STYLE PROFILE HEADER CARD */}
       {/* ========================================================= */}
       <div className="relative rounded-3xl overflow-hidden bg-[#12161f] border border-slate-800/90 shadow-2xl mb-8">
-        {/* 1. Header Banner (3:1 Aspect Ratio like on X) */}
-        <div className="relative w-full h-48 sm:h-64 md:h-72 bg-slate-900 overflow-hidden group">
+        {/* Hidden File Inputs for Device Gallery Picture Picking */}
+        <input
+          type="file"
+          ref={directHeaderInputRef}
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleImageFileChange(file, 'header', true);
+            e.target.value = '';
+          }}
+        />
+        <input
+          type="file"
+          ref={directAvatarInputRef}
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleImageFileChange(file, 'avatar', true);
+            e.target.value = '';
+          }}
+        />
+        <input
+          type="file"
+          ref={modalHeaderInputRef}
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleImageFileChange(file, 'header', false);
+            e.target.value = '';
+          }}
+        />
+        <input
+          type="file"
+          ref={modalAvatarInputRef}
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleImageFileChange(file, 'avatar', false);
+            e.target.value = '';
+          }}
+        />
+
+        {/* Quick Picture Update Toast Notification */}
+        {quickUpdateToast && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-40 px-4 py-2 rounded-full bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 text-xs font-medium shadow-2xl flex items-center gap-2 backdrop-blur-md animate-fade-in">
+            <span className="material-symbols-outlined text-[16px] text-emerald-400">check_circle</span>
+            <span>{quickUpdateToast.text}</span>
+          </div>
+        )}
+
+        {isUploadingImage && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-40 px-4 py-2 rounded-full bg-slate-900/90 border border-amber-500/60 text-amber-300 text-xs font-medium shadow-2xl flex items-center gap-2 backdrop-blur-md">
+            <span className="material-symbols-outlined text-[16px] animate-spin text-amber-400">progress_activity</span>
+            <span>Updating picture across LAKNES...</span>
+          </div>
+        )}
+
+        {/* 1. Header Banner (Strict 3:1 Aspect Ratio like on X / Twitter: 1500×500px standard) */}
+        <div className="relative w-full aspect-[3/1] max-h-[380px] bg-slate-900 overflow-hidden group">
           <img
             src={currentBanner}
-            alt="Profile Banner"
+            alt="Profile Banner (1500x500 3:1 ratio)"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             onError={(e) => {
               (e.target as HTMLImageElement).src = DEFAULT_BANNER;
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#12161f] via-black/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#12161f] via-black/15 to-transparent"></div>
 
-          {/* Banner Edit Trigger */}
-          <button
-            type="button"
-            onClick={() => setIsEditModalOpen(true)}
-            className="absolute top-4 right-4 px-3.5 py-1.5 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 text-white text-xs font-medium flex items-center gap-1.5 shadow-lg transition-all opacity-90 hover:opacity-100 cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[16px]">photo_camera</span>
-            <span>Change Header</span>
-          </button>
+          {/* Banner Direct Gallery & Options Triggers (Similitude of X) */}
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => directHeaderInputRef.current?.click()}
+              className="px-3.5 py-1.5 rounded-full bg-black/75 hover:bg-black/95 backdrop-blur-md border border-amber-500/50 text-amber-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 shadow-xl transition-all cursor-pointer"
+              title="Pick header banner from your device gallery (Standard 3:1 ratio)"
+            >
+              <span className="material-symbols-outlined text-[16px] text-primary">add_photo_alternate</span>
+              <span>Upload Header</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsEditModalOpen(true)}
+              className="px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 text-white text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[15px]">edit</span>
+              <span>Edit</span>
+            </button>
+          </div>
+
+          <div className="absolute bottom-3 right-4 px-2.5 py-0.5 rounded-md bg-black/50 backdrop-blur-sm text-[10px] font-mono text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            X Header Ratio 3:1 (1500×500px)
+          </div>
         </div>
 
-        {/* 2. Overlapping Avatar & Action Bar Row */}
+        {/* 2. Overlapping Avatar & Action Bar Row (Similitude of X / Twitter: 400×400px circle overlapping 50% bottom-left) */}
         <div className="px-6 sm:px-8 pb-6 sm:pb-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 sm:-mt-20 mb-4">
-            {/* Avatar (PFP overlapping the banner) */}
-            <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-[#12161f] bg-slate-900 shadow-2xl overflow-hidden group shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 sm:-mt-20 md:-mt-24 mb-4">
+            {/* Avatar (Circular PFP overlapping the banner with direct gallery picker) */}
+            <div className="relative w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full border-4 border-[#12161f] bg-slate-900 shadow-2xl overflow-hidden group shrink-0 ring-2 ring-white/10">
               <img
                 src={currentAvatar}
                 alt={user.name || user.username}
@@ -369,11 +534,13 @@ export function ProfileView({
               />
               <button
                 type="button"
-                onClick={() => setIsEditModalOpen(true)}
-                className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white cursor-pointer"
-                title="Change Avatar"
+                onClick={() => directAvatarInputRef.current?.click()}
+                className="absolute inset-0 bg-black/65 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white cursor-pointer"
+                title="Change profile picture from device gallery (1:1 circular PFP like on X)"
               >
-                <span className="material-symbols-outlined text-2xl">photo_camera</span>
+                <span className="material-symbols-outlined text-3xl text-primary">add_a_photo</span>
+                <span className="text-[11px] font-mono mt-1 font-bold text-amber-300">Pick from Gallery</span>
+                <span className="text-[9px] font-mono text-slate-300">400×400 PFP</span>
               </button>
             </div>
 
@@ -841,7 +1008,7 @@ export function ProfileView({
                 <div key={project.id} className="relative group">
                   <ProjectCard
                     project={project}
-                    onSelectProject={onSelectProject}
+                    onSelect={onSelectProject}
                     onToggleSave={() => {}}
                     isSaved={false}
                   />
@@ -895,10 +1062,13 @@ export function ProfileView({
                     <div key={quest.id} className="relative">
                       <QuestCard
                         quest={quest}
-                        onSelectQuest={onSelectQuest || (() => {})}
-                        isEnrolled={participations.some((p) => p.questId === quest.id)}
+                        onSelect={onSelectQuest || (() => {})}
+                        isParticipating={participations.some((p) => p.questId === quest.id)}
                         isSaved={true}
-                        onToggleSave={() => handleUnsaveQuest(quest.id)}
+                        onToggleSave={(_id, e) => {
+                          e?.stopPropagation?.();
+                          handleUnsaveQuest(quest.id);
+                        }}
                       />
                     </div>
                   ))}
@@ -919,8 +1089,11 @@ export function ProfileView({
                     <div key={project.id} className="relative group">
                       <ProjectCard
                         project={project}
-                        onSelectProject={onSelectProject}
-                        onToggleSave={() => handleUnsaveProject(project.id)}
+                        onSelect={onSelectProject}
+                        onToggleSave={(_id, e) => {
+                          e?.stopPropagation?.();
+                          handleUnsaveProject(project.id);
+                        }}
                         isSaved={true}
                       />
                     </div>
@@ -1049,41 +1222,57 @@ export function ProfileView({
                   Header & Avatar Preview
                 </span>
                 <div className="relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800">
-                  <div className="relative h-32 sm:h-40 w-full overflow-hidden">
+                  <div className="relative w-full aspect-[3/1] max-h-[190px] overflow-hidden">
                     <img
                       src={headerInput || DEFAULT_BANNER}
-                      alt="Banner Preview"
+                      alt="Banner Preview (3:1)"
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = DEFAULT_BANNER;
                       }}
                     />
-                    <div className="absolute inset-0 bg-black/20"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#12161f] via-black/15 to-transparent"></div>
+                    <span className="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] font-mono bg-black/60 text-slate-300">
+                      3:1 Ratio
+                    </span>
                   </div>
 
-                  <div className="p-4 pt-0 -mt-10 flex items-end justify-between">
-                    <div className="w-20 h-20 rounded-full border-4 border-[#12161f] bg-slate-900 overflow-hidden shadow-xl">
+                  <div className="px-4 pb-3 -mt-10 sm:-mt-12 flex items-end justify-between">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-[#12161f] bg-slate-900 overflow-hidden shadow-xl ring-1 ring-white/10 shrink-0">
                       <img
                         src={imageInput || DEFAULT_AVATAR}
-                        alt="Avatar Preview"
+                        alt="Avatar Preview (1:1)"
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = DEFAULT_AVATAR;
                         }}
                       />
                     </div>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      Circular 1:1 PFP
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* Header Image URL & Presets */}
-              <div className="space-y-2">
-                <label className="block text-slate-300 font-semibold text-xs">Header Image URL</label>
+              {/* Header Image Gallery Upload & Presets */}
+              <div className="space-y-2 p-3.5 rounded-2xl bg-surface-container-lowest/80 border border-slate-800">
+                <div className="flex items-center justify-between">
+                  <label className="block text-slate-300 font-semibold text-xs">Header Banner</label>
+                  <button
+                    type="button"
+                    onClick={() => modalHeaderInputRef.current?.click()}
+                    className="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/35 text-[11px] font-medium flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                  >
+                    <span className="material-symbols-outlined text-[15px] text-primary">add_photo_alternate</span>
+                    <span>Pick from Gallery</span>
+                  </button>
+                </div>
                 <input
-                  type="url"
+                  type="text"
                   value={headerInput}
                   onChange={(e) => setHeaderInput(e.target.value)}
-                  placeholder="https://... or select a preset below"
+                  placeholder="Paste URL or click Pick from Gallery above"
                   className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-primary"
                 />
                 <div className="flex flex-wrap items-center gap-1.5 pt-1">
@@ -1105,14 +1294,24 @@ export function ProfileView({
                 </div>
               </div>
 
-              {/* Avatar / PFP URL & Presets */}
-              <div className="space-y-2">
-                <label className="block text-slate-300 font-semibold text-xs">Profile Picture (PFP) URL</label>
+              {/* Avatar / PFP Gallery Upload & Presets */}
+              <div className="space-y-2 p-3.5 rounded-2xl bg-surface-container-lowest/80 border border-slate-800">
+                <div className="flex items-center justify-between">
+                  <label className="block text-slate-300 font-semibold text-xs">Profile Picture (PFP)</label>
+                  <button
+                    type="button"
+                    onClick={() => modalAvatarInputRef.current?.click()}
+                    className="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/35 text-[11px] font-medium flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                  >
+                    <span className="material-symbols-outlined text-[15px] text-primary">add_a_photo</span>
+                    <span>Pick from Gallery</span>
+                  </button>
+                </div>
                 <input
-                  type="url"
+                  type="text"
                   value={imageInput}
                   onChange={(e) => setImageInput(e.target.value)}
-                  placeholder="https://... or select a preset below"
+                  placeholder="Paste URL or click Pick from Gallery above"
                   className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-primary"
                 />
                 <div className="flex flex-wrap items-center gap-1.5 pt-1">

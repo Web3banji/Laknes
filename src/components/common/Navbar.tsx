@@ -35,354 +35,313 @@ export function Navbar({
   onLogout,
   onOpenArchitecture,
 }: NavbarProps) {
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [workspaceDropdownOpen, setWorkspaceDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const isAdmin = user?.roles.includes(UserRole.ADMIN);
+  const isAdmin = user?.roles?.includes(UserRole.ADMIN);
 
-  // Navigation Items depending on active workspace
-  const userNavItems = [
+  // Four clear top-level destinations as requested: Explore, Creator Studio, Register Project, Profile
+  const navTabs = [
     { id: 'explore', label: 'Explore' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'quests', label: 'Quests' },
-    { id: 'following', label: 'Following' },
-    { id: 'user-dashboard', label: 'My Dashboard' },
-    ...(isAdmin ? [{ id: 'admin', label: 'Admin Review' }] : []),
+    { id: 'creator-studio', label: 'Creator Studio' },
+    { id: 'submit-project', label: 'Register Project' },
+    { id: 'profile', label: 'Profile' },
   ];
-
-  const projectNavItems = [
-    { id: 'project-overview', label: 'Overview' },
-    { id: 'project-profile', label: 'My Project' },
-    { id: 'project-quests', label: 'Quests' },
-    { id: 'project-audience', label: 'Audience' },
-    { id: 'project-creator-studio', label: 'Creator Studio' },
-    { id: 'project-settings', label: 'Settings' },
-  ];
-
-  const activeNavItems = workspace === 'project' ? projectNavItems : userNavItems;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.35)] border-b border-slate-800/80">
-      <div className="h-20 max-w-[1440px] mx-auto px-margin-mobile lg:px-margin flex items-center justify-between gap-4">
-        {/* Zone 1: Wordmark & Workspace Indicator */}
-        <div className="flex items-center gap-3 shrink-0">
+    <header className="fixed top-0 left-0 w-full z-50 bg-surface/85 backdrop-blur-md border-b border-outline-variant/30 shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+      <div className="max-w-7xl mx-auto h-20 px-6 lg:px-12 flex items-center justify-between gap-6">
+        {/* Brand Anchor with Official Logo */}
+        <div className="flex items-center gap-8 shrink-0">
           <button
-            onClick={() => {
-              if (workspace === 'project') {
-                onNavigate('project-overview');
-              } else {
-                onNavigate('explore');
-              }
-              setMobileMenuOpen(false);
-            }}
-            className="flex items-center gap-2.5 group focus:outline-none cursor-pointer"
+            onClick={() => onNavigate('explore')}
+            className="flex items-center gap-3 group active:scale-[0.98] transition-transform text-left cursor-pointer"
           >
-            <BrandLogo size={34} showText={true} />
+            <BrandLogo size={38} />
+            <span className="text-headline-sm font-headline-sm font-bold tracking-tight text-on-surface group-hover:text-primary transition-colors">
+              LAKNES
+            </span>
           </button>
 
-          {/* Active Workspace Tag */}
-          {user && (
-            <div className="hidden sm:flex items-center">
-              <span className="text-slate-600 mx-1.5">&bull;</span>
-              {workspace === 'project' && activeProject ? (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-container/15 border border-primary-container/30 text-primary text-[11px] font-label-mono">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
-                  <span className="font-bold truncate max-w-[120px]">{activeProject.name}</span>
-                  {activeProject.verificationStatus === ProjectVerificationStatus.VERIFIED && (
-                    <span className="material-symbols-outlined text-[13px] text-emerald-400">verified</span>
-                  )}
-                </div>
-              ) : (
-                <span className="px-2.5 py-1 rounded-full bg-surface-container text-slate-300 text-[11px] font-label-mono border border-slate-800">
-                  User Workspace
-                </span>
-              )}
-            </div>
-          )}
+          {/* Top-Level Destination Tabs */}
+          <nav className="hidden md:flex items-center gap-6">
+            {navTabs.map((tab) => {
+              const isActive =
+                currentView === tab.id ||
+                (tab.id === 'creator-studio' && (currentView === 'creators' || currentView === 'creator-studio')) ||
+                (tab.id === 'submit-project' && (currentView === 'submit-project' || currentView === 'register-project')) ||
+                (tab.id === 'profile' && (currentView === 'user-dashboard' || currentView === 'profile'));
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => onNavigate(tab.id)}
+                  className={`pb-1 text-label-md font-label-md transition-all active:scale-[0.98] cursor-pointer whitespace-nowrap ${
+                    isActive
+                      ? 'text-primary-container font-semibold border-b-2 border-primary-container'
+                      : 'text-on-surface-variant hover:text-on-surface'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
         </div>
 
-        {/* Zone 2: Navigation Links */}
-        <nav className="hidden xl:flex items-center gap-6">
-          {activeNavItems.map((item) => {
-            const isActive = currentView === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                className={`font-body-md text-sm transition-colors whitespace-nowrap shrink-0 relative py-1 ${
-                  isActive
-                    ? 'text-primary font-semibold'
-                    : 'text-on-surface-variant hover:text-on-surface'
-                }`}
-              >
-                {item.label}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-container rounded-full"></span>
-                )}
-              </button>
-            );
-          })}
-        </nav>
+        {/* Center Search for Verified Registries (Authenticated Experience) */}
+        {user ? (
+          <div className="flex-1 max-w-md hidden lg:block">
+            <div className="relative flex items-center">
+              <span className="material-symbols-outlined absolute left-3.5 text-outline text-[18px]">
+                search
+              </span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    onNavigate('projects');
+                  }
+                }}
+                placeholder="Search verified registries, protocols, and documentation..."
+                className="w-full h-10 pl-10 pr-12 bg-surface-container-low rounded-lg border border-outline-variant/40 text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all"
+              />
+              <span className="absolute right-3 text-[11px] font-label-sm text-outline border border-outline-variant/50 px-1.5 py-0.5 rounded">
+                ⌘K
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="flex-1"></div>
+        )}
 
-        {/* Zone 3: Workspace Switcher & Auth Actions */}
-        <div className="hidden md:flex items-center gap-3 shrink-0">
-          {/* Architecture Suite (Diagnostic Tool) */}
-          {onOpenArchitecture && (
-            <button
-              onClick={onOpenArchitecture}
-              className="px-2.5 py-1 rounded-full bg-slate-900/90 border border-slate-700/80 hover:border-emerald-500/60 text-[11px] font-mono text-emerald-400 flex items-center gap-1.5 transition-colors cursor-pointer"
-              title="Open Architectural Verification & Test Suite"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Test Suite</span>
-            </button>
-          )}
-
+        {/* Trailing Actions */}
+        <div className="flex items-center gap-4 shrink-0">
           {user ? (
-            <div className="flex items-center gap-3">
-              {/* Workspace Switcher */}
+            <>
+              {/* Architecture Suite shortcut for diagnostics */}
+              {onOpenArchitecture && (
+                <button
+                  onClick={onOpenArchitecture}
+                  className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container border border-outline-variant/40 text-emerald-400 hover:border-emerald-500/50 text-[11px] font-mono transition-colors cursor-pointer"
+                  title="Open Architectural Verification & Test Suite"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>Test Suite</span>
+                </button>
+              )}
+
+              {/* Saved / Bookmarks button */}
+              <button
+                onClick={() => onNavigate('following')}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant/30 hover:border-primary-container/40 text-on-surface-variant hover:text-on-surface text-label-md font-label-md transition-all cursor-pointer"
+                title="View Bookmarked Protocols & Quests"
+              >
+                <span className="material-symbols-outlined text-[18px]">bookmark</span>
+                <span>Saved</span>
+              </button>
+
+              {/* User Profile Pill & Dropdown */}
               <div className="relative">
-                {workspace === 'project' ? (
-                  <button
-                    onClick={() => onSwitchWorkspace('user')}
-                    className="px-3.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high border border-slate-700 text-xs font-label-caps uppercase text-on-surface flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
-                    title="Switch to User Workspace"
-                  >
-                    <span className="material-symbols-outlined text-[16px] text-primary">person</span>
-                    <span>User Workspace</span>
-                  </button>
-                ) : userProjects.length > 0 ? (
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-3 pl-2 sm:border-l sm:border-outline-variant/30 text-left focus:outline-none cursor-pointer"
+                >
                   <div className="relative">
+                    <div className="w-9 h-9 rounded-lg bg-surface-container-high border border-primary-container/40 flex items-center justify-center text-primary-container font-headline-sm font-bold text-sm">
+                      {user.username ? user.username.slice(0, 2).toUpperCase() : 'US'}
+                    </div>
+                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-primary-container rounded-full border-2 border-surface"></span>
+                  </div>
+
+                  <div className="hidden sm:flex flex-col text-left">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-body-sm font-body-sm font-medium text-on-surface">
+                        @{user.username}
+                      </span>
+                      <span className="text-label-sm font-label-sm px-1.5 py-0.2 bg-primary-container/15 text-primary border border-primary-container/30 rounded">
+                        Member
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-body-sm text-outline">
+                      {workspace === 'project' ? 'Project Representative' : 'Verified Participant'}
+                    </span>
+                  </div>
+
+                  <span className="material-symbols-outlined text-[18px] text-on-surface-variant hover:text-on-surface">
+                    expand_more
+                  </span>
+                </button>
+
+                {/* Dropdown Menu */}
+                {userMenuOpen && (
+                  <div
+                    onMouseLeave={() => setUserMenuOpen(false)}
+                    className="absolute right-0 mt-3 w-64 bg-surface-container-low border border-outline-variant/40 rounded-xl shadow-2xl p-2 z-50 flex flex-col gap-1 text-xs"
+                  >
+                    <div className="px-3 py-2 border-b border-outline-variant/20">
+                      <div className="font-semibold text-on-surface text-sm">@{user.username}</div>
+                      <div className="text-outline text-[11px] truncate">{user.email}</div>
+                    </div>
+
                     <button
-                      onClick={() => setWorkspaceDropdownOpen(!workspaceDropdownOpen)}
-                      className="px-3.5 py-1.5 rounded-full bg-primary-container/15 hover:bg-primary-container/25 border border-primary-container/40 text-primary text-xs font-label-caps uppercase font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        onNavigate('user-dashboard');
+                      }}
+                      className="w-full p-2.5 rounded-lg text-left hover:bg-surface-container flex items-center gap-2.5 text-on-surface font-medium cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-[15px]">token</span>
-                      <span>Project Workspace</span>
-                      <span className="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+                      <span className="material-symbols-outlined text-[18px] text-primary">person</span>
+                      <span>My Profile & Dashboard</span>
                     </button>
 
-                    {workspaceDropdownOpen && (
-                      <div
-                        onMouseLeave={() => setWorkspaceDropdownOpen(false)}
-                        className="absolute right-0 mt-2 w-64 bg-surface-container-low border border-slate-800 rounded-xl shadow-2xl p-2 z-50 flex flex-col gap-1 text-xs"
+                    <button
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        onNavigate('submit-project');
+                      }}
+                      className="w-full p-2.5 rounded-lg text-left hover:bg-surface-container flex items-center gap-2.5 text-on-surface font-medium cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[18px] text-primary-container">rocket_launch</span>
+                      <span>Register Project Portal</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        onNavigate('creator-studio');
+                      }}
+                      className="w-full p-2.5 rounded-lg text-left hover:bg-surface-container flex items-center gap-2.5 text-on-surface font-medium cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[18px] text-secondary">campaign</span>
+                      <span>Creator Studio Application</span>
+                    </button>
+
+                    {isAdmin && (
+                      <button
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          onNavigate('admin-console');
+                        }}
+                        className="w-full p-2.5 rounded-lg text-left hover:bg-surface-container flex items-center gap-2.5 text-primary border-t border-outline-variant/20 mt-1 cursor-pointer font-semibold"
                       >
-                        <div className="px-3 py-1.5 text-[10px] font-label-caps uppercase text-slate-400 border-b border-slate-800">
-                          Switch Workspace
-                        </div>
-
-                        <button
-                          onClick={() => {
-                            setWorkspaceDropdownOpen(false);
-                            onSwitchWorkspace('user');
-                          }}
-                          className="w-full p-2 rounded-lg text-left hover:bg-surface-container flex items-center justify-between text-slate-300 font-medium"
-                        >
-                          <span className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-[16px] text-primary">person</span>
-                            <span>User Workspace</span>
-                          </span>
-                          <span className="text-[10px] text-slate-500 font-mono">Active</span>
-                        </button>
-
-                        <div className="px-3 py-1 text-[10px] font-label-caps uppercase text-slate-400 border-t border-slate-800/80 mt-1">
-                          Your Managed Projects
-                        </div>
-
-                        {userProjects.map((p) => (
-                          <button
-                            key={p.id}
-                            onClick={() => {
-                              setWorkspaceDropdownOpen(false);
-                              onSwitchWorkspace('project', p.id);
-                            }}
-                            className="w-full p-2 rounded-lg text-left hover:bg-surface-container flex items-center justify-between text-on-surface"
-                          >
-                            <span className="flex items-center gap-2 min-w-0">
-                              <span className="material-symbols-outlined text-[15px] text-primary">token</span>
-                              <span className="font-bold truncate">{p.name}</span>
-                            </span>
-                            <span className="text-[10px] text-primary font-mono shrink-0 uppercase">
-                              {p.myMembershipRole || 'Member'}
-                            </span>
-                          </button>
-                        ))}
-
-                        {user?.roles?.includes(UserRole.PROJECT_REPRESENTATIVE) && (
-                          <button
-                            onClick={() => {
-                              setWorkspaceDropdownOpen(false);
-                              onNavigate('submit-project');
-                            }}
-                            className="w-full p-2 rounded-lg text-left hover:bg-surface-container flex items-center gap-2 text-primary border-t border-slate-800/80 mt-1 font-label-caps uppercase text-[11px]"
-                          >
-                            <span className="material-symbols-outlined text-[15px]">add</span>
-                            <span>+ Register New Project</span>
-                          </button>
-                        )}
-                      </div>
+                        <span className="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+                        <span>Admin Verification Console</span>
+                      </button>
                     )}
+
+                    <div className="pt-1 border-t border-outline-variant/20 mt-1">
+                      <button
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          onLogout();
+                        }}
+                        className="w-full p-2.5 rounded-lg text-left hover:bg-rose-950/30 text-rose-300 flex items-center gap-2.5 font-medium cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">logout</span>
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
                   </div>
-                ) : null}
+                )}
               </div>
-
-              {/* Profile Link */}
-              <button
-                onClick={() => onNavigate('user-dashboard')}
-                className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors border border-outline-variant/30 cursor-pointer"
-                title="Open My Dashboard"
-              >
-                <img
-                  src={user.profileImage || '/src/assets/images/elysium_avatar_default_1792495691476.jpg'}
-                  alt={user.username}
-                  className="w-7 h-7 rounded-full object-cover border border-slate-700"
-                />
-                <span className="text-xs text-on-surface font-medium max-w-[100px] truncate">
-                  {user.username}
-                </span>
-              </button>
-
-              {/* Logout */}
-              <button
-                onClick={onLogout}
-                title="Log Out"
-                className="p-1.5 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[18px]">logout</span>
-              </button>
-            </div>
+            </>
           ) : (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <button
-                onClick={() => onOpenAuth('login', 'user')}
-                className="font-label-mono text-label-mono text-xs text-on-surface-variant hover:text-on-surface px-3 py-1.5 transition-colors whitespace-nowrap cursor-pointer"
+                onClick={() => onNavigate('signin')}
+                className="hidden sm:inline-flex text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-3 py-2 active:scale-[0.98] cursor-pointer"
               >
                 Sign In
               </button>
               <button
-                onClick={() => onOpenAuth('register', 'user')}
-                className="font-label-caps text-label-caps uppercase bg-primary-container text-on-primary-container px-4 py-2 rounded-full shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:bg-primary-fixed-dim hover:text-on-primary-fixed transition-all duration-200 active:scale-95 whitespace-nowrap text-xs font-semibold cursor-pointer"
+                onClick={() => onNavigate('signin')}
+                className="inline-flex items-center justify-center bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold px-5 py-2.5 rounded-lg shadow-[0_0_20px_rgba(255,87,34,0.4)] hover:shadow-[0_0_26px_rgba(255,87,34,0.65)] hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer whitespace-nowrap"
               >
                 Get Started
               </button>
             </div>
           )}
-        </div>
 
-        {/* Mobile Hamburger Toggle */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="xl:hidden p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
-          aria-label="Toggle navigation menu"
-        >
-          <span className="material-symbols-outlined text-[24px]">
-            {mobileMenuOpen ? 'close' : 'menu'}
-          </span>
-        </button>
+          {/* Mobile Menu Hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+            aria-label="Toggle navigation menu"
+          >
+            <span className="material-symbols-outlined text-[24px]">
+              {mobileMenuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="xl:hidden border-t border-slate-800 bg-surface-container-lowest px-margin-mobile py-4 flex flex-col gap-3">
-          {/* Workspace Switcher in Mobile */}
-          {user && (
-            <div className="pb-3 border-b border-slate-800 flex items-center justify-between">
-              <span className="text-xs text-slate-400 font-label-mono">Active Workspace:</span>
-              {workspace === 'project' ? (
-                <button
-                  onClick={() => {
-                    onSwitchWorkspace('user');
-                    setMobileMenuOpen(false);
-                  }}
-                  className="px-3 py-1 rounded-full bg-surface-container text-xs font-semibold text-primary"
-                >
-                  Switch to User Workspace
-                </button>
-              ) : userProjects.length > 0 ? (
-                <button
-                  onClick={() => {
-                    onSwitchWorkspace('project', userProjects[0].id);
-                    setMobileMenuOpen(false);
-                  }}
-                  className="px-3 py-1 rounded-full bg-primary-container text-on-primary-container text-xs font-semibold"
-                >
-                  Switch to Project ({userProjects[0].name})
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    onNavigate('submit-project');
-                    setMobileMenuOpen(false);
-                  }}
-                  className="px-3 py-1 rounded-full bg-surface-container text-xs text-primary"
-                >
-                  + Submit Project
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* Navigation Items */}
-          {activeNavItems.map((item) => (
+        <div className="md:hidden border-t border-outline-variant/30 bg-surface px-6 py-5 flex flex-col gap-3">
+          {navTabs.map((tab) => (
             <button
-              key={item.id}
+              key={tab.id}
               onClick={() => {
-                onNavigate(item.id);
+                onNavigate(tab.id);
                 setMobileMenuOpen(false);
               }}
               className={`text-left py-2 text-sm font-medium ${
-                currentView === item.id ? 'text-primary font-bold' : 'text-on-surface-variant'
+                currentView === tab.id ? 'text-primary-container font-bold' : 'text-on-surface-variant'
               }`}
             >
-              {item.label}
+              {tab.label}
             </button>
           ))}
 
-          {/* Mobile Auth actions */}
-          {user ? (
-            <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
-              <button
-                onClick={() => {
-                  onNavigate('user-dashboard');
-                  setMobileMenuOpen(false);
-                }}
-                className="text-xs text-on-surface font-medium flex items-center gap-2"
-              >
-                <span>{user.username}</span>
-                <span className="text-[10px] text-slate-500 font-mono">({user.email})</span>
-              </button>
-              <button
-                onClick={() => {
-                  onLogout();
-                  setMobileMenuOpen(false);
-                }}
-                className="text-xs text-rose-400 font-semibold"
-              >
-                Sign Out
-              </button>
-            </div>
-          ) : (
-            <div className="pt-3 border-t border-slate-800 flex gap-3">
-              <button
-                onClick={() => {
-                  onOpenAuth('login');
-                  setMobileMenuOpen(false);
-                }}
-                className="flex-1 py-2 rounded-lg bg-surface-container text-xs text-center font-medium"
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => {
-                  onOpenAuth('register');
-                  setMobileMenuOpen(false);
-                }}
-                className="flex-1 py-2 rounded-lg bg-primary-container text-on-primary-container text-xs text-center font-semibold"
-              >
-                Get Started
-              </button>
-            </div>
-          )}
+          <div className="pt-3 border-t border-outline-variant/30 flex flex-col gap-2">
+            {user ? (
+              <>
+                <button
+                  onClick={() => {
+                    onNavigate('user-dashboard');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-left py-2 text-sm text-on-surface flex items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px]">person</span>
+                  <span>My Profile (@{user.username})</span>
+                </button>
+                <button
+                  onClick={() => {
+                    onLogout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-left py-2 text-sm text-rose-400 font-semibold"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => {
+                    onNavigate('signin');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex-1 py-2.5 rounded-lg bg-surface-container text-xs text-center font-medium"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => {
+                    onNavigate('signin');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex-1 py-2.5 rounded-lg bg-primary-container text-on-primary-container text-xs text-center font-semibold"
+                >
+                  Get Started
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </header>

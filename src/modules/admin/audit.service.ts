@@ -3,10 +3,11 @@
  * Immutable tracking of system security events and state changes.
  */
 
-import { AuditLog, EntityId, AuditAction } from '../../types/contracts.ts';
-import { PaginationParams } from '../../types/api.ts';
-import { SecurityUserContext } from '../../types/auth.ts';
-import { getRepositories, PaginatedResult } from '../../dal/index.ts';
+import { type AuditLog, type EntityId, AuditAction } from '../../types/contracts.ts';
+import type { PaginationParams } from '../../types/api.ts';
+import type { SecurityUserContext } from '../../types/auth.ts';
+import { getRepositories } from '../../dal/index.ts';
+import type { PaginatedResult } from '../../dal/repositories.ts';
 import { assertAdmin } from '../auth/permissions.ts';
 
 export interface IAuditService {

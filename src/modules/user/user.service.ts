@@ -3,21 +3,27 @@
  * Handles user profiles, account settings, ownership rules, and activity history.
  */
 
-import { User, PublicUserProfile, EntityId, UserRole } from '../../types/contracts.ts';
-import { PaginationParams } from '../../types/api.ts';
-import { getRepositories, PaginatedResult } from '../../dal/index.ts';
+import {
+  type User,
+  type PublicUserProfile,
+  type EntityId,
+  type SocialLinks,
+  UserRole,
+  AuditAction,
+} from '../../types/contracts.ts';
+import type { PaginationParams } from '../../types/api.ts';
+import { getRepositories } from '../../dal/index.ts';
+import type { PaginatedResult } from '../../dal/repositories.ts';
 import { NotFoundError, ForbiddenError, ValidationError } from '../../core/errors.ts';
-import { SecurityUserContext } from '../../types/auth.ts';
+import type { SecurityUserContext } from '../../types/auth.ts';
 import { validateEmail, validateUrl, sanitizeString } from '../../shared/validation.ts';
-import { AuditAction } from '../../types/contracts.ts';
-
-import { SocialLinks } from '../../types/contracts.ts';
 
 export interface UpdateUserProfileDto {
   username?: string;
   name?: string;
   email?: string;
   profileImage?: string;
+  headerImage?: string;
   bio?: string;
   interests?: string[];
   xAccount?: string;
@@ -143,6 +149,19 @@ export class UserService implements IUserService {
     }
 
     const updated = await repos.users.update(targetUserId, payload);
+
+    // Synchronize profile updates to Google Cloud SQL
+    try {
+      const { updateUserProfile } = await import('../../db/users.ts');
+      await updateUserProfile(targetUserId, {
+        username: payload.username,
+        bio: payload.bio,
+        profileImage: payload.profileImage,
+        headerImage: payload.headerImage,
+      });
+    } catch (sqlErr) {
+      console.warn('Notice: Cloud SQL user profile sync:', sqlErr);
+    }
 
     await repos.auditLogs.create({
       actorId: actingUser.id,

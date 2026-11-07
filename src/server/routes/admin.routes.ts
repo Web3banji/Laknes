@@ -7,8 +7,22 @@ import { moderationService } from '../../modules/admin/moderation.service.ts';
 import { auditService } from '../../modules/admin/audit.service.ts';
 import { buildSuccessResponse } from '../../core/response.ts';
 import { requireAdmin } from '../middleware/auth.middleware.ts';
+import { getRepositories } from '../../dal/index.ts';
 
 const router = Router();
+
+router.get('/projects', requireAdmin, async (req, res, next) => {
+  try {
+    const repos = getRepositories();
+    const result = await repos.projects.findMany({
+      verificationStatus: req.query.status as any,
+      limit: Number(req.query.limit) || 100,
+    });
+    res.json(buildSuccessResponse(result.items, result.meta));
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get('/audit-logs', requireAdmin, async (req, res, next) => {
   try {
