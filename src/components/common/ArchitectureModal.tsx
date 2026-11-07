@@ -212,20 +212,20 @@ export function ArchitectureModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md overflow-y-auto font-mono text-xs text-slate-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto yo-mono text-xs text-[var(--yo-sumi-ink)]">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-5xl bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl relative overflow-hidden flex flex-col my-auto max-h-[92vh]"
+        className="w-full max-w-5xl bg-[var(--yo-sumi-surface-1)] border-[1.5px] border-[var(--yo-sumi-line)] rounded-[2px] shadow-[6px_6px_0_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col my-auto max-h-[92vh]"
       >
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 bg-slate-900/80 flex items-center justify-between gap-4">
+        <div className="p-5 border-b border-[var(--yo-sumi-line)] bg-[var(--yo-sumi)] flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[var(--yo-accent)] animate-pulse"></span>
             <div>
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+              <h2 className="text-sm font-bold text-[var(--yo-sumi-ink)] uppercase tracking-wider yo-display">
                 LAKNES Architecture & Security Verification Console
               </h2>
-              <span className="text-[11px] text-slate-400 font-sans">
+              <span className="text-[11px] text-[var(--yo-sumi-muted)]">
                 Native SQLite &bull; Salted Scrypt Cryptography &bull; Server-Authoritative RBAC
               </span>
             </div>
@@ -235,13 +235,13 @@ export function ArchitectureModal({
             <button
               onClick={runFullVerificationSuite}
               disabled={isRunningTest}
-              className="px-3 py-1.5 rounded bg-emerald-700 hover:bg-emerald-600 active:bg-emerald-500 text-white font-medium transition text-xs"
+              className="lp-button lp-button-primary text-xs py-1.5 px-3"
             >
               {isRunningTest ? 'Running Suite...' : 'Run Automated Test Suite'}
             </button>
             <button
               onClick={onClose}
-              className="p-1 rounded text-slate-400 hover:text-white"
+              className="p-1 rounded text-[var(--yo-sumi-muted)] hover:text-[var(--yo-sumi-ink)] transition-colors"
             >
               <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
@@ -249,29 +249,29 @@ export function ArchitectureModal({
         </div>
 
         {/* Status Highlights */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-slate-900/40 border-b border-slate-800">
-          <div className="p-2.5 bg-slate-950 rounded border border-slate-800">
-            <span className="text-[10px] text-slate-500 uppercase block">Persistent Database</span>
-            <span className="text-xs font-semibold text-emerald-400 mt-0.5 block">Native SQLite (data/laknes.db)</span>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-[var(--yo-sumi)] border-b border-[var(--yo-sumi-line)]">
+          <div className="p-2.5 bg-[var(--yo-sumi-surface-2)] rounded-[2px] border border-[var(--yo-sumi-line)]">
+            <span className="text-[10px] text-[var(--yo-sumi-muted)] uppercase block">Persistent Database</span>
+            <span className="text-xs font-semibold text-[var(--yo-sumi-good)] mt-0.5 block">Native SQLite (data/laknes.db)</span>
           </div>
-          <div className="p-2.5 bg-slate-950 rounded border border-slate-800">
-            <span className="text-[10px] text-slate-500 uppercase block">Cryptography</span>
-            <span className="text-xs font-semibold text-emerald-400 mt-0.5 block">Node.js Scrypt (Salted)</span>
+          <div className="p-2.5 bg-[var(--yo-sumi-surface-2)] rounded-[2px] border border-[var(--yo-sumi-line)]">
+            <span className="text-[10px] text-[var(--yo-sumi-muted)] uppercase block">Cryptography</span>
+            <span className="text-xs font-semibold text-[var(--yo-sumi-good)] mt-0.5 block">Node.js Scrypt (Salted)</span>
           </div>
-          <div className="p-2.5 bg-slate-950 rounded border border-slate-800">
-            <span className="text-[10px] text-slate-500 uppercase block">Session Protocol</span>
-            <span className="text-xs font-semibold text-emerald-400 mt-0.5 block">TTL Token in Database</span>
+          <div className="p-2.5 bg-[var(--yo-sumi-surface-2)] rounded-[2px] border border-[var(--yo-sumi-line)]">
+            <span className="text-[10px] text-[var(--yo-sumi-muted)] uppercase block">Session Protocol</span>
+            <span className="text-xs font-semibold text-[var(--yo-sumi-good)] mt-0.5 block">TTL Token in Database</span>
           </div>
-          <div className="p-2.5 bg-slate-950 rounded border border-slate-800">
-            <span className="text-[10px] text-slate-500 uppercase block">Current Session</span>
-            <span className="text-xs font-semibold text-primary mt-0.5 block truncate">
+          <div className="p-2.5 bg-[var(--yo-sumi-surface-2)] rounded-[2px] border border-[var(--yo-sumi-line)]">
+            <span className="text-[10px] text-[var(--yo-sumi-muted)] uppercase block">Current Session</span>
+            <span className="text-xs font-semibold text-[var(--yo-accent)] mt-0.5 block truncate">
               {currentUser ? `${currentUser.username} (${currentUser.roles.join(', ')})` : 'Anonymous'}
             </span>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-slate-800 px-4 pt-2 gap-2 bg-slate-900/20">
+        <div className="flex border-b border-[var(--yo-sumi-line)] px-4 pt-2 gap-2 bg-[var(--yo-sumi)]">
           {[
             { key: 'status', label: '1. Architecture & Verification Log' },
             { key: 'workflows', label: '2. Live Endpoint Tester' },
@@ -281,10 +281,10 @@ export function ArchitectureModal({
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key as any)}
-              className={`px-3 py-2 text-xs font-medium border-b-2 transition ${
+              className={`px-3 py-2 text-xs font-semibold border-b-2 transition yo-mono ${
                 activeTab === tab.key
-                  ? 'border-indigo-500 text-indigo-400 bg-slate-900/60'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
+                  ? 'border-[var(--yo-accent)] text-[var(--yo-accent)] bg-[var(--yo-sumi-surface-2)]'
+                  : 'border-transparent text-[var(--yo-sumi-muted)] hover:text-[var(--yo-sumi-ink)]'
               }`}
             >
               {tab.label}

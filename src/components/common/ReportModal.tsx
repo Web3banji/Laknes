@@ -52,39 +52,39 @@ export function ReportModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md bg-surface-container-low border border-slate-800 rounded-2xl shadow-2xl p-space-xl relative"
+        className="w-full max-w-md lp-modal-box p-6 relative"
       >
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+        <div className="flex items-center justify-between pb-3 border-b border-[var(--yo-line)] mb-4">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-rose-400 text-[20px]">flag</span>
-            <span className="font-headline-sm text-sm text-on-surface font-semibold">Report Content</span>
+            <span className="material-symbols-outlined text-[var(--yo-accent)] text-[20px]">flag</span>
+            <span className="yo-display text-sm text-[var(--yo-ink)] font-semibold tracking-wide">Report Content</span>
           </div>
-          <button onClick={onClose} className="p-1 rounded text-on-surface-variant hover:text-on-surface">
+          <button onClick={onClose} className="p-1 rounded text-[var(--yo-muted)] hover:text-[var(--yo-ink)] transition-colors">
             <span className="material-symbols-outlined text-[18px]">close</span>
           </button>
         </div>
 
-        <p className="text-xs text-on-surface-variant mb-4">
-          Reporting <span className="text-primary font-semibold">{targetName}</span> ({targetType}). Reports are submitted directly to platform administrators.
+        <p className="text-xs text-[var(--yo-muted)] mb-4 leading-relaxed">
+          Reporting <span className="text-[var(--yo-ink)] font-bold">{targetName}</span> ({targetType}). Reports are submitted directly to platform administrators.
         </p>
 
         {success ? (
-          <div className="p-4 rounded-lg bg-emerald-950/40 border border-emerald-800 text-emerald-300 text-xs text-center font-medium">
+          <div className="p-4 rounded-[2px] bg-emerald-50 border border-[var(--yo-good)] text-[var(--yo-good)] text-xs text-center font-medium">
             Thank you. Your report has been submitted for review.
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-3 rounded-lg bg-rose-950/40 border border-rose-800 text-rose-300 text-xs">
+              <div className="p-3 rounded-[2px] bg-rose-50 border border-rose-300 text-rose-700 text-xs">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="block text-[11px] font-label-caps uppercase text-on-surface-variant mb-1">
+              <label className="block text-[11px] yo-mono uppercase text-[var(--yo-muted)] mb-1 font-semibold">
                 Reason for report
               </label>
               <textarea
@@ -93,7 +93,7 @@ export function ReportModal({
                 placeholder="Explain why this content violates community guidelines, provides deceptive information, or violates standards..."
                 rows={4}
                 required
-                className="w-full px-3 py-2 bg-surface-container-lowest text-on-surface border border-outline-variant/40 rounded-lg text-xs focus:outline-none focus:border-primary-container"
+                className="w-full px-3 py-2 lp-input text-xs"
               />
             </div>
 
@@ -101,14 +101,14 @@ export function ReportModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-1.5 rounded-full text-xs text-on-surface-variant hover:text-on-surface bg-surface-container"
+                className="lp-button lp-button-secondary text-xs"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || !reason.trim()}
-                className="px-4 py-1.5 rounded-full text-xs font-semibold uppercase font-label-caps bg-rose-600 hover:bg-rose-500 text-white disabled:opacity-50"
+                className="lp-button lp-button-primary text-xs disabled:opacity-50"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Report'}
               </button>

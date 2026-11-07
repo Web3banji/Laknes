@@ -377,37 +377,34 @@ export function ProjectWorkspaceView({
   const isChangesRequested = project.verificationStatus === ProjectVerificationStatus.CHANGES_REQUESTED;
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto px-margin-mobile lg:px-margin py-space-xl">
+    <div className="lp-shell py-8">
       {/* Top Workspace Header Bar */}
-      <div className="p-6 rounded-2xl bg-surface-container-low border border-slate-800 shadow-xl mb-6 relative overflow-hidden">
-        {/* Glow */}
-        <div className="pointer-events-none absolute -right-20 -top-20 w-80 h-80 bg-primary-container/10 blur-[90px] rounded-full"></div>
-
+      <div className="p-6 rounded-[2px] bg-[var(--yo-surface-1)] border-[1.5px] border-[var(--yo-ink)] shadow-[4px_4px_0_var(--yo-ink)] mb-6 relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           {/* Identity */}
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-surface-container overflow-hidden border-2 border-slate-700/80 shadow-md shrink-0 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-[2px] bg-[var(--yo-surface-2)] overflow-hidden border border-[var(--yo-line)] shadow-[2px_2px_0_var(--yo-ink)] shrink-0 flex items-center justify-center">
               {project.logoUrl ? (
                 <img src={project.logoUrl} alt={project.name} className="w-full h-full object-cover" />
               ) : (
-                <span className="material-symbols-outlined text-primary text-3xl">token</span>
+                <span className="material-symbols-outlined text-[var(--yo-accent)] text-3xl">token</span>
               )}
             </div>
 
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-1">
-                <span className="font-label-caps text-[10px] uppercase px-2 py-0.5 rounded bg-primary-container/15 text-primary font-bold">
+                <span className="yo-mono text-[10px] uppercase px-2 py-0.5 rounded-[2px] bg-[var(--yo-surface-2)] text-[var(--yo-accent)] font-bold border border-[var(--yo-line)]">
                   Project Workspace
                 </span>
                 <StatusBadge status={project.verificationStatus} />
-                <span className="font-label-mono text-[11px] text-slate-400">Role: {dashboard.userRole}</span>
+                <span className="yo-mono text-[11px] text-[var(--yo-muted)]">Role: {dashboard.userRole}</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-on-surface tracking-tight">{project.name}</h1>
+                <h1 className="text-2xl font-bold text-[var(--yo-ink)] tracking-tight yo-display">{project.name}</h1>
                 {isVerified && (
                   <span
-                    className="material-symbols-outlined text-2xl text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]"
+                    className="material-symbols-outlined text-2xl text-[var(--yo-good)]"
                     title="Verified Checkmark: Official verified seal awarded by Laknes review team"
                   >
                     verified
@@ -423,7 +420,7 @@ export function ProjectWorkspaceView({
               <select
                 value={projectId}
                 onChange={(e) => onSelectOtherProject(e.target.value)}
-                className="bg-surface-container text-xs text-on-surface border border-slate-700 rounded-full px-3 py-2 font-label-mono focus:outline-none focus:border-primary-container"
+                className="lp-input text-xs rounded-[2px] px-3 py-1.5 yo-mono"
               >
                 {userProjects.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -435,7 +432,7 @@ export function ProjectWorkspaceView({
 
             <button
               onClick={onNavigateToSubmitNewProject}
-              className="px-3.5 py-2 rounded-full bg-surface-container hover:bg-surface-container-high border border-slate-700 text-xs text-slate-300 font-label-caps uppercase flex items-center gap-1.5 transition-colors"
+              className="lp-button lp-button-secondary text-xs flex items-center gap-1.5 cursor-pointer"
               title="Register and onboard an additional project workspace"
             >
               <span className="material-symbols-outlined text-[15px]">add</span>
@@ -444,9 +441,9 @@ export function ProjectWorkspaceView({
 
             <button
               onClick={onSwitchToUserWorkspace}
-              className="px-4 py-2 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-label-caps uppercase font-semibold flex items-center gap-2 transition-all shadow-sm border border-slate-700/60"
+              className="lp-button lp-button-primary text-xs flex items-center gap-2 cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[16px] text-primary">person</span>
+              <span className="material-symbols-outlined text-[16px]">person</span>
               <span>Switch to User Workspace</span>
             </button>
           </div>
@@ -572,7 +569,7 @@ export function ProjectWorkspaceView({
       )}
 
       {/* Project Navigation Items Bar */}
-      <div className="flex border-b border-slate-800 gap-4 mb-8 overflow-x-auto scrollbar-none pb-1">
+      <div className="flex border-b border-[var(--yo-line)] gap-4 mb-8 overflow-x-auto scrollbar-none pb-1 yo-mono">
         {[
           { id: 'overview', label: 'Overview', icon: 'dashboard' },
           { id: 'my-project', label: 'My Project', icon: 'edit_square' },
@@ -586,10 +583,10 @@ export function ProjectWorkspaceView({
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id as any)}
-              className={`pb-3 text-xs font-label-caps uppercase font-semibold border-b-2 transition-all flex items-center gap-2 whitespace-nowrap px-1 ${
+              className={`pb-3 text-xs uppercase font-bold border-b-2 transition-all flex items-center gap-2 whitespace-nowrap px-1 cursor-pointer ${
                 isActive
-                  ? 'border-primary-container text-primary'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
+                  ? 'border-[var(--yo-accent)] text-[var(--yo-accent)]'
+                  : 'border-transparent text-[var(--yo-muted)] hover:text-[var(--yo-ink)]'
               }`}
             >
               <span className="material-symbols-outlined text-[16px]">{tab.icon}</span>
@@ -1423,7 +1420,7 @@ export function ProjectWorkspaceView({
                       required
                       value={partnershipObjective}
                       onChange={(e) => setPartnershipObjective(e.target.value)}
-                      placeholder="e.g. Testnet Genesis Adoption, Token TGE, Liquidity Sprint"
+                      placeholder="e.g. Genesis Adoption, Protocol Expansion, Community Sprint"
                       className="w-full px-3 py-2 bg-surface-container-lowest text-white border border-slate-700 rounded-lg text-xs focus:outline-none focus:border-primary"
                     />
                   </div>
@@ -1467,7 +1464,7 @@ export function ProjectWorkspaceView({
                     rows={2}
                     value={partnershipLinks}
                     onChange={(e) => setPartnershipLinks(e.target.value)}
-                    placeholder="https://docs.project.xyz/deck&#10;https://app.testnet.project.xyz"
+                    placeholder="https://docs.project.xyz/deck&#10;https://app.project.xyz"
                     className="w-full px-3 py-2 bg-surface-container-lowest text-white border border-slate-700 rounded-lg text-xs font-mono focus:outline-none focus:border-primary"
                   />
                 </div>

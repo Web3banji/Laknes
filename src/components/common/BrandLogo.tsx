@@ -1,8 +1,3 @@
-/**
- * LAKNES Official Brand Logo Component
- * Incorporates the authentic brand kit golden emblem on obsidian background.
- */
-
 import React from 'react';
 
 interface BrandLogoProps {
@@ -13,33 +8,28 @@ interface BrandLogoProps {
 }
 
 export function BrandLogo({
-  size = 36,
+  size = 32,
   className = '',
-  showText = false,
-  textClassName = 'font-headline-sm text-headline-sm tracking-tight text-on-surface font-bold',
+  showText = true,
+  textClassName = 'yo-display text-xl tracking-tight text-[var(--yo-ink)] font-bold',
 }: BrandLogoProps) {
   const pixelSize = typeof size === 'number' ? `${size}px` : size;
 
   return (
-    <div className={`inline-flex items-center gap-3 select-none ${className}`}>
-      {/* Official LAKNES Orange Emblem */}
-      <div
+    <div className={`inline-flex items-center gap-2.5 select-none ${className}`}>
+      {/* Official Laknes Emblem Logo */}
+      <img
+        src="/assets/aistudio/Q67f93M1_400x400_24a7b710.jpg"
+        alt="Laknes Logo"
         style={{ width: pixelSize, height: pixelSize }}
-        className="relative shrink-0 rounded-lg overflow-hidden flex items-center justify-center p-0.5 bg-surface-container-low border border-outline-variant/40 group-hover:border-primary-container shadow-[0_0_14px_rgba(255,87,34,0.35)] transition-all duration-200"
-      >
-        <img
-          src="/laknes-brand-emblem.png"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).src =
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuBbCx-Ngfnb-71P9gWXiRQl9QYfJXesChsUORwVa8lQAmx74wJCLYHmRCtrhvhOxkbempTZ0hlp3FvhidOnFAOYl1TcCMVFrdHxBcWgq6OhoWY4tb-8laDiOHFQztpVebLwdlgdRnT-N2_QtStLeD-PsP7BRsJ95I6u2EFNclu1zI9zBuYgjfDf2Lpg9HiT1vGR8EsiBz34GPWhUYyTotU9-H2vvchOMlDYiZFDr3x6RmkS9obxDnq6';
-          }}
-          alt="LAKNES Emblem"
-          className="w-full h-full object-contain"
-        />
-      </div>
+        className="rounded-[2px] object-cover border-[1.5px] border-[var(--yo-ink)] shadow-[2px_2px_0_var(--yo-ink)] shrink-0 bg-black"
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = '/laknes-logo.jpg';
+        }}
+      />
 
       {showText && (
-        <span className={`${textClassName} group-hover:text-primary transition-colors flex items-center tracking-tight`}>
+        <span className={`flex items-center tracking-tight ${textClassName}`}>
           <span>LAKNES</span>
         </span>
       )}

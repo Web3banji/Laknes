@@ -38,57 +38,91 @@ export interface GoogleAuthResult {
 }
 
 /**
- * Initiates Google Sign-In popup with strict timeout protection.
- * If popups are blocked by browser iframe sandboxes or unauthorized domains,
- * it rejects with a descriptive error code instead of hanging.
+ * Initiates Google Sign-In popup with Google Identity Services fallback.
+ * Allows full time for user account selection without premature timeout cancellations.
  */
-export async function triggerGoogleSignIn(timeoutMs = 7000): Promise<GoogleAuthResult> {
+export async function triggerGoogleSignIn(): Promise<GoogleAuthResult> {
   const { auth } = getFirebaseInstance();
   const provider = new GoogleAuthProvider();
 
-  provider.addScope('https://www.googleapis.com/auth/userinfo.email');
-  provider.addScope('https://www.googleapis.com/auth/userinfo.profile');
+  provider.addScope('email');
+  provider.addScope('profile');
   provider.setCustomParameters({
     prompt: 'select_account',
   });
 
-  // Create a timeout race so the UI NEVER hangs indefinitely
-  const popupPromise = signInWithPopup(auth, provider);
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    setTimeout(() => {
-      reject({
-        code: 'auth/timeout-or-blocked',
-        message: 'Google Sign-In popup timed out or was blocked by the browser. Please use the direct Google Account sign-in below.',
-      });
-    }, timeoutMs);
-  });
-
   try {
-    const result = await Promise.race([popupPromise, timeoutPromise]);
+    const result = await signInWithPopup(auth, provider);
     const user = result.user;
     const idToken = await user.getIdToken();
 
     return {
       email: user.email || '',
-      name: user.displayName || user.email?.split('@')[0] || 'Elysian Member',
+      name: user.displayName || user.email?.split('@')[0] || 'Laknes Contributor',
       picture: user.photoURL || undefined,
       idToken,
       firebaseUser: user,
     };
   } catch (err: any) {
-    // Standardize error codes for iframe and sandbox environments
-    if (err?.code === 'auth/unauthorized-domain') {
-      throw {
-        code: 'auth/unauthorized-domain',
-        message: 'This domain is restricted from opening external popups in the current iframe. Please sign in with your Google email directly.',
-      };
+    // If Firebase throws auth/unauthorized-domain, attempt Google Identity Services OAuth popup
+    const clientId = firebaseConfigFile.oAuthClientId;
+    const google = typeof window !== 'undefined' ? (window as any).google : null;
+
+    if (
+      (err?.code === 'auth/unauthorized-domain' || err?.code === 'auth/popup-blocked') &&
+      clientId &&
+      google?.accounts?.oauth2
+    ) {
+      try {
+        return await new Promise<GoogleAuthResult>((resolve, reject) => {
+          const tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: clientId,
+            scope: 'email profile openid',
+            prompt: 'select_account',
+            callback: async (resp: any) => {
+              if (resp.error) {
+                return reject(resp);
+              }
+              try {
+                const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                  headers: { Authorization: `Bearer ${resp.access_token}` },
+                });
+                const profile = await res.json();
+                resolve({
+                  email: profile.email || '',
+                  name: profile.name || profile.given_name || profile.email?.split('@')[0],
+                  picture: profile.picture,
+                  idToken: resp.access_token,
+                });
+              } catch (fetchErr) {
+                reject(fetchErr);
+              }
+            },
+            error_callback: (clientErr: any) => {
+              reject(clientErr);
+            },
+          });
+          tokenClient.requestAccessToken();
+        });
+      } catch (gisErr: any) {
+        console.warn('Google Identity Services popup fallback error:', gisErr);
+      }
     }
+
     if (err?.code === 'auth/popup-blocked') {
       throw {
         code: 'auth/popup-blocked',
-        message: 'Popup window was blocked by your browser settings. Please allow popups or use direct Google email sign-in.',
+        message: 'Your browser blocked the Google popup window. Please allow popups for this site, or enter your Google email below.',
       };
     }
+
+    if (err?.code === 'auth/popup-closed-by-user' || err?.type === 'popup_closed') {
+      throw {
+        code: 'auth/popup-closed-by-user',
+        message: 'Google Sign-In window was closed before completion. Please click to try again, or enter your Google email below.',
+      };
+    }
+
     throw err;
   }
 }

@@ -1,8 +1,6 @@
 /**
- * LAKNES Quests View
- * Ecosystem-wide community quest discovery and participation.
- * Displays quest title, real project logo & name, description,
- * eligibility requirements, deadlines, rewards, and participation status.
+ * LAKNES Quests & Campaigns View (Yochi-inspired Design System)
+ * Ecosystem-wide community quest and campaign discovery with editorial layout.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -38,14 +36,12 @@ export function QuestsView({
     const loadQuests = async () => {
       setIsLoading(true);
       try {
-        // Fetch verified projects first to map project names and logos
         const projects = await laknesClient.discoverProjects({ limit: 100 });
         const pMap: Record<string, Project> = {};
         for (const p of projects) {
           pMap[p.id] = p;
         }
 
-        // Fetch quests for all projects
         const questPromises = projects.map((p) =>
           laknesClient.getProjectQuests(p.id).catch(() => [] as Quest[])
         );
@@ -71,10 +67,10 @@ export function QuestsView({
 
   const questTypes = [
     { id: 'ALL', label: 'All Types' },
-    { id: QuestType.COMMUNITY, label: 'Website & Community' },
-    { id: QuestType.FEEDBACK, label: 'Forms & Feedback' },
+    { id: QuestType.COMMUNITY, label: 'Community' },
+    { id: QuestType.FEEDBACK, label: 'Feedback' },
     { id: QuestType.SOCIAL, label: 'Social & Media' },
-    { id: QuestType.DEVELOPER, label: 'Developer & Testnet' },
+    { id: QuestType.DEVELOPER, label: 'Developer & Technical' },
     { id: QuestType.ONCHAIN, label: 'On-Chain' },
   ];
 
@@ -97,151 +93,154 @@ export function QuestsView({
   });
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto px-margin-mobile lg:px-margin py-space-xl">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-lg mb-space-xl pb-space-lg border-b border-slate-800">
-        <div>
-          <div className="inline-flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-high w-fit mb-2">
-            <span className="font-label-caps text-label-caps uppercase text-primary-fixed tracking-wider text-[11px]">
-              Elysium Quests & Opportunities
-            </span>
+    <div className="lp-page py-12">
+      <div className="lp-shell">
+        {/* Editorial Heading */}
+        <div className="border-b-[1.5px] border-[var(--yo-ink)] pb-8 mb-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+              <span className="lp-eyebrow">02 / PARTICIPATE</span>
+              <h1 className="yo-display text-3xl sm:text-5xl text-[var(--yo-ink)] mt-2">
+                Quests &amp; Campaigns
+              </h1>
+              <p className="font-body text-base text-[var(--yo-muted)] mt-2 max-w-2xl leading-relaxed">
+                Take on real initiatives, contribute technical work, publish creative content, provide product feedback, and build a lasting contribution record.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                onClick={() => onNavigate('projects')}
+                className="lp-button lp-button-secondary text-xs"
+                style={{ minHeight: '44px', padding: '10px 18px' }}
+              >
+                <span>EXPLORE PROJECTS</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
           </div>
-          <h1 className="font-headline-xl text-3xl text-on-surface font-bold tracking-tight">
-            Ecosystem Quests
-          </h1>
-          <p className="font-body-md text-on-surface-variant text-sm mt-1">
-            Discover community bounties, explore websites, complete feedback forms, and participate without wallet constraints.
-          </p>
         </div>
 
-        <button
-          onClick={() => onNavigate('projects')}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-high text-on-surface hover:bg-surface-container-highest text-xs font-label-caps uppercase transition-colors shrink-0"
-        >
-          <span className="material-symbols-outlined text-[16px]">folder_special</span>
-          Browse Projects
-        </button>
+        {/* Filter and Search Bar */}
+        <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between mb-8 p-3 bg-[var(--yo-surface-1)] border border-[var(--yo-line)]">
+          {/* Type Filters */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
+            {questTypes.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setSelectedType(t.id)}
+                className={`px-3 py-1.5 text-[10px] font-mono font-bold uppercase tracking-wider transition-colors whitespace-nowrap cursor-pointer ${
+                  selectedType === t.id
+                    ? 'bg-[var(--yo-ink)] text-[var(--yo-bg)]'
+                    : 'text-[var(--yo-muted)] hover:text-[var(--yo-ink)] bg-transparent'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {/* Enrolled vs All Toggle */}
+            <div className="flex border border-[var(--yo-line)] bg-[var(--yo-surface-2)] p-0.5 text-[10px] font-mono font-bold uppercase">
+              <button
+                type="button"
+                onClick={() => setParticipationFilter('ALL')}
+                className={`px-2.5 py-1 transition-colors cursor-pointer ${
+                  participationFilter === 'ALL'
+                    ? 'bg-[var(--yo-ink)] text-[var(--yo-bg)]'
+                    : 'text-[var(--yo-muted)] hover:text-[var(--yo-ink)]'
+                }`}
+              >
+                ALL ({quests.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setParticipationFilter('ENROLLED')}
+                className={`px-2.5 py-1 transition-colors cursor-pointer ${
+                  participationFilter === 'ENROLLED'
+                    ? 'bg-[var(--yo-ink)] text-[var(--yo-bg)]'
+                    : 'text-[var(--yo-muted)] hover:text-[var(--yo-ink)]'
+                }`}
+              >
+                ENROLLED ({quests.filter((q) => participatingQuestIds.has(q.id)).length})
+              </button>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative min-w-[220px]">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="SEARCH OPPORTUNITIES..."
+                className="w-full bg-[var(--yo-surface-2)] text-[var(--yo-ink)] placeholder:text-[var(--yo-muted)] pl-8 pr-3 py-1.5 text-[11px] font-mono border border-[var(--yo-line)] focus:outline-none focus:border-[var(--yo-ink)]"
+              />
+              <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[14px] text-[var(--yo-muted)] pointer-events-none">
+                search
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Quests Grid */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-64 bg-[var(--yo-surface-1)] border border-[var(--yo-line)] animate-pulse"></div>
+            ))}
+          </div>
+        ) : filteredQuests.length === 0 ? (
+          <div className="p-16 bg-[var(--yo-surface-1)] border border-[var(--yo-line)] text-center flex flex-col items-center justify-center">
+            <span className="w-12 h-12 border border-[var(--yo-line)] flex items-center justify-center font-mono text-xl mb-3 text-[var(--yo-muted)]">
+              &empty;
+            </span>
+            <h3 className="yo-display text-lg text-[var(--yo-ink)] mb-1">
+              {quests.length === 0 ? 'No Quests Published Yet' : 'No Quests Match Filters'}
+            </h3>
+            <p className="font-body text-xs text-[var(--yo-muted)] max-w-md mb-6 leading-relaxed">
+              {quests.length === 0
+                ? 'Verified ecosystem projects publish community campaigns, feedback forms, and activities here. Check back soon or explore verified projects.'
+                : 'Try adjusting your search query or selecting a different opportunity type.'}
+            </p>
+            {quests.length === 0 ? (
+              <button
+                onClick={() => onNavigate('projects')}
+                className="lp-button lp-button-primary text-xs"
+              >
+                <span>EXPLORE PROJECTS</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setSelectedType('ALL');
+                  setParticipationFilter('ALL');
+                  setSearchQuery('');
+                }}
+                className="lp-button lp-button-secondary text-xs"
+              >
+                <span>CLEAR FILTERS</span>
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredQuests.map((quest) => (
+              <QuestCard
+                key={quest.id}
+                quest={quest}
+                projectName={projectsMap[quest.projectId]?.name}
+                projectLogo={projectsMap[quest.projectId]?.logoUrl}
+                onSelect={onSelectQuest}
+                isParticipating={participatingQuestIds.has(quest.id)}
+                isSaved={savedQuestIds?.has(quest.id)}
+                onToggleSave={onToggleSaveQuest}
+              />
+            ))}
+          </div>
+        )}
       </div>
-
-      {/* Control Bar: Type Filters, Participation Toggle & Search */}
-      <div className="flex flex-col lg:flex-row gap-space-md items-stretch lg:items-center justify-between mb-space-xl p-space-md bg-surface-container-low rounded-xl border border-slate-800">
-        <div className="flex items-center gap-space-xs overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
-          {questTypes.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setSelectedType(t.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-label-caps uppercase transition-colors whitespace-nowrap ${
-                selectedType === t.id
-                  ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm'
-                  : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-          {/* Participation Filter */}
-          <div className="flex bg-surface-container-lowest p-1 rounded-lg border border-slate-800 text-[11px] font-label-caps uppercase">
-            <button
-              type="button"
-              onClick={() => setParticipationFilter('ALL')}
-              className={`px-2.5 py-1 rounded transition-colors ${
-                participationFilter === 'ALL'
-                  ? 'bg-surface-container-high text-primary font-bold'
-                  : 'text-on-surface-variant hover:text-on-surface'
-              }`}
-            >
-              All ({quests.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setParticipationFilter('ENROLLED')}
-              className={`px-2.5 py-1 rounded transition-colors ${
-                participationFilter === 'ENROLLED'
-                  ? 'bg-surface-container-high text-primary font-bold'
-                  : 'text-on-surface-variant hover:text-on-surface'
-              }`}
-            >
-              Enrolled ({quests.filter((q) => participatingQuestIds.has(q.id)).length})
-            </button>
-          </div>
-
-          {/* Search Input */}
-          <div className="relative min-w-[240px]">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">
-              search
-            </span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search quests or protocols..."
-              className="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline pl-9 pr-3 py-1.5 rounded-lg text-xs focus:outline-none focus:border-primary-container"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Quests Grid */}
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-64 rounded-xl bg-surface-container-low animate-pulse"></div>
-          ))}
-        </div>
-      ) : filteredQuests.length === 0 ? (
-        <div className="p-16 rounded-2xl bg-surface-container-low border border-slate-800 text-center flex flex-col items-center justify-center shadow-xl">
-          <div className="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-on-surface-variant mb-3">
-            <span className="material-symbols-outlined text-3xl">
-              {quests.length === 0 ? 'assignment_late' : 'explore_off'}
-            </span>
-          </div>
-          <h3 className="text-base font-semibold text-on-surface mb-1">
-            {quests.length === 0 ? 'No Ecosystem Quests Available Yet' : 'No Quests Match Filters'}
-          </h3>
-          <p className="text-xs text-on-surface-variant max-w-md mb-5 leading-relaxed">
-            {quests.length === 0
-              ? 'Verified ecosystem projects publish community bounties, feedback forms, and activities here. Check back soon or explore verified projects.'
-              : 'Try adjusting your search query or selecting a different quest type category.'}
-          </p>
-          {quests.length === 0 ? (
-            <button
-              onClick={() => onNavigate('projects')}
-              className="px-6 py-2.5 rounded-full bg-primary-container text-on-primary-container text-xs font-semibold uppercase font-label-caps hover:bg-primary-fixed-dim transition-all cursor-pointer shadow-md"
-            >
-              Browse Projects
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                setSelectedType('ALL');
-                setParticipationFilter('ALL');
-                setSearchQuery('');
-              }}
-              className="px-5 py-2 rounded-full bg-surface-container-high text-on-surface hover:bg-surface-container-highest text-xs uppercase font-label-caps transition-all cursor-pointer"
-            >
-              Clear Filters
-            </button>
-          )}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg">
-          {filteredQuests.map((quest) => (
-            <QuestCard
-              key={quest.id}
-              quest={quest}
-              projectName={projectsMap[quest.projectId]?.name}
-              projectLogo={projectsMap[quest.projectId]?.logoUrl}
-              onSelect={onSelectQuest}
-              isParticipating={participatingQuestIds.has(quest.id)}
-              isSaved={savedQuestIds?.has(quest.id)}
-              onToggleSave={onToggleSaveQuest}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 }

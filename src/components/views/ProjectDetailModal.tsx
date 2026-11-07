@@ -1,6 +1,6 @@
 /**
- * LAKNES Project Detail Modal
- * Full public profile, announcements, quests, and engagement triggers.
+ * LAKNES Project Detail Modal (Yochi Editorial Design System)
+ * Full public profile, announcements, quests, and engagement triggers in paper/sumi aesthetic.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -65,34 +65,35 @@ export function ProjectDetailModal({
   if (!project) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-3xl bg-surface-container-low border border-slate-800 rounded-2xl shadow-2xl relative overflow-hidden flex flex-col my-auto max-h-[92vh]"
+        className="w-full max-w-3xl lp-modal-box relative overflow-hidden flex flex-col my-auto max-h-[92vh]"
       >
         {/* Banner Area */}
-        <div className="relative w-full h-44 sm:h-56 bg-surface-container-lowest shrink-0">
+        <div className="relative w-full h-44 sm:h-56 bg-[var(--yo-surface-2)] border-b-[1.5px] border-[var(--yo-line)] shrink-0">
           {project.bannerUrl ? (
             <img src={project.bannerUrl} alt={project.name} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full bg-gradient-to-r from-surface-container-high via-surface-container to-surface-container-low flex items-center justify-center">
-              <span className="material-symbols-outlined text-5xl text-outline-variant">token</span>
+            <div className="w-full h-full bg-[var(--yo-surface-2)] flex items-center justify-center">
+              <span className="material-symbols-outlined text-4xl text-[var(--yo-muted)]">token</span>
             </div>
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/40 to-transparent pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--yo-surface-1)] via-transparent to-transparent pointer-events-none"></div>
 
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-surface-container-lowest/80 backdrop-blur-md text-on-surface hover:bg-surface-container transition-colors"
+            className="absolute top-4 right-4 p-1.5 border border-[var(--yo-ink)] bg-[var(--yo-surface-1)] text-[var(--yo-ink)] hover:bg-[var(--yo-ink)] hover:text-[var(--yo-bg)] transition-colors cursor-pointer"
+            aria-label="Close modal"
           >
-            <span className="material-symbols-outlined text-[20px]">close</span>
+            <span className="material-symbols-outlined text-[18px]">close</span>
           </button>
 
           {/* Logo & Category */}
           <div className="absolute bottom-4 left-6 flex items-end gap-3">
-            <div className="w-16 h-16 rounded-xl bg-surface-container-high border-2 border-surface-container-low overflow-hidden shadow-lg flex items-center justify-center shrink-0">
+            <div className="w-16 h-16 border-2 border-[var(--yo-ink)] bg-[var(--yo-surface-1)] overflow-hidden shadow-[2px_2px_0_var(--yo-ink)] flex items-center justify-center shrink-0">
               {project.logoUrl ? (
                 <img src={project.logoUrl} alt={project.name} className="w-full h-full object-cover" />
               ) : (
@@ -101,45 +102,45 @@ export function ProjectDetailModal({
             </div>
 
             <div className="mb-1">
-              <span className="inline-block px-2 py-0.5 rounded bg-surface-container-high/80 text-[10px] font-label-caps uppercase text-primary font-semibold mb-1">
+              <span className="lp-chip font-bold mb-1">
                 {project.category}
               </span>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl sm:text-2xl font-bold text-on-surface leading-tight">{project.name}</h2>
-                {project.verificationStatus === 'VERIFIED' ? (
+                <h2 className="yo-display text-2xl text-[var(--yo-ink)] leading-tight">{project.name}</h2>
+                {project.verificationStatus === 'VERIFIED' && (
                   <span
-                    className="material-symbols-outlined text-2xl text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]"
-                    title="Verified Checkmark: Officially reviewed and approved"
+                    className="material-symbols-outlined text-2xl text-[var(--yo-good)]"
+                    title="Verified Checkmark"
                   >
                     verified
                   </span>
-                ) : null}
+                )}
               </div>
             </div>
           </div>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 flex flex-col gap-6 overflow-y-auto">
+        <div className="p-6 flex flex-col gap-6 overflow-y-auto font-body">
           {/* Pending Verification Notice */}
           {project.verificationStatus === 'PENDING_REVIEW' && (
-            <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-500/40 flex items-start gap-3 text-xs text-amber-200">
-              <span className="material-symbols-outlined text-[20px] text-amber-400 shrink-0">hourglass_top</span>
+            <div className="p-3 border border-[var(--yo-gold)] bg-[var(--yo-surface-2)] flex items-start gap-2.5 text-xs font-mono text-[var(--yo-muted)]">
+              <span className="material-symbols-outlined text-[18px] text-[var(--yo-gold)] shrink-0">hourglass_top</span>
               <div>
-                <p className="font-bold text-amber-300 mb-0.5">Awaiting Review for Verified Checkmark</p>
-                <p className="text-amber-200/80 leading-relaxed text-[11px]">
-                  This project has been submitted and is queued for verification. The official Verified Checkmark will only be awarded after review and approval by the ecosystem maintainers.
+                <p className="font-bold text-[var(--yo-ink)] uppercase mb-0.5">Awaiting Administrator Review</p>
+                <p className="leading-relaxed text-[11px]">
+                  This project has been submitted and is queued for verification. The official Verified badge will be awarded following review.
                 </p>
               </div>
             </div>
           )}
 
           {/* Action Row & Links */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800">
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[var(--yo-line)]">
             <div className="flex items-center gap-2">
               <StatusBadge status={project.verificationStatus} size="md" />
               {project.ecosystem && (
-                <span className="text-xs font-label-mono text-primary font-semibold px-2 py-0.5 rounded bg-primary-container/10 border border-primary-container/20">
+                <span className="text-[10px] font-mono font-bold uppercase text-[var(--yo-muted)] px-2 py-0.5 border border-[var(--yo-line)] bg-[var(--yo-surface-2)]">
                   {project.ecosystem}
                 </span>
               )}
@@ -152,40 +153,34 @@ export function ProjectDetailModal({
                     onClose();
                     onOpenDashboard(project.id);
                   }}
-                  className="px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-1"
+                  className="lp-button lp-button-secondary text-xs"
+                  style={{ minHeight: '34px', padding: '6px 12px' }}
                 >
-                  <span className="material-symbols-outlined text-[15px]">dashboard</span>
-                  Dashboard
+                  <span className="material-symbols-outlined text-[14px]">dashboard</span>
+                  <span>DASHBOARD</span>
                 </button>
               )}
 
               {onToggleFollow && (
                 <button
                   onClick={() => onToggleFollow(project.id)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1 transition-all ${
+                  className={`px-3 py-1.5 font-mono text-xs font-bold uppercase border transition-colors cursor-pointer ${
                     isFollowing
-                      ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                      : 'bg-surface-container-high hover:bg-surface-container-highest text-on-surface'
+                      ? 'border-[var(--yo-good)] text-[var(--yo-good)] bg-[var(--yo-surface-2)]'
+                      : 'border-[var(--yo-line)] text-[var(--yo-ink)] hover:border-[var(--yo-ink)]'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[15px]">
-                    {isFollowing ? 'check' : 'add'}
-                  </span>
-                  {isFollowing ? 'Following' : 'Follow'}
+                  {isFollowing ? '✓ FOLLOWING' : '+ FOLLOW'}
                 </button>
               )}
 
               {onToggleSave && (
                 <button
                   onClick={() => onToggleSave(project.id)}
-                  className={`p-1.5 rounded-full text-xs transition-colors ${
-                    isSaved
-                      ? 'bg-amber-950 text-amber-400 border border-amber-800'
-                      : 'bg-surface-container-high text-on-surface hover:text-primary'
-                  }`}
+                  className="p-1.5 border border-[var(--yo-line)] hover:border-[var(--yo-ink)] text-[var(--yo-ink)] bg-[var(--yo-surface-2)] transition-colors cursor-pointer"
                   title={isSaved ? 'Saved' : 'Save'}
                 >
-                  <span className="material-symbols-outlined text-[17px]">
+                  <span className="material-symbols-outlined text-[16px]">
                     {isSaved ? 'bookmark_added' : 'bookmark'}
                   </span>
                 </button>
@@ -194,10 +189,10 @@ export function ProjectDetailModal({
               {onOpenReport && (
                 <button
                   onClick={() => onOpenReport(ContentReportTargetType.PROJECT, project.id, project.name)}
-                  className="p-1.5 rounded-full bg-surface-container-high text-on-surface-variant hover:text-rose-400 transition-colors"
+                  className="p-1.5 border border-[var(--yo-line)] hover:border-[var(--yo-bad)] text-[var(--yo-muted)] hover:text-[var(--yo-bad)] transition-colors cursor-pointer"
                   title="Report project"
                 >
-                  <span className="material-symbols-outlined text-[17px]">flag</span>
+                  <span className="material-symbols-outlined text-[16px]">flag</span>
                 </button>
               )}
 
@@ -206,10 +201,11 @@ export function ProjectDetailModal({
                   href={project.websiteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container font-label-caps text-label-caps uppercase text-xs font-semibold flex items-center gap-1"
+                  className="lp-button lp-button-primary text-xs"
+                  style={{ minHeight: '34px', padding: '6px 14px' }}
                 >
-                  <span>Visit Website</span>
-                  <span className="material-symbols-outlined text-[14px]">arrow_outward</span>
+                  <span>WEBSITE</span>
+                  <span aria-hidden="true">↗</span>
                 </a>
               )}
             </div>
@@ -217,15 +213,16 @@ export function ProjectDetailModal({
 
           {/* Social Links Row */}
           {(project.websiteUrl || project.documentationUrl || project.socialLinks) && (
-            <div className="flex flex-wrap items-center gap-2 text-xs font-label-mono text-on-surface-variant">
+            <div className="flex flex-wrap items-center gap-2 text-xs font-mono font-bold uppercase">
               {project.documentationUrl && (
                 <a
                   href={project.documentationUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container hover:text-primary"
+                  className="px-2.5 py-1 border border-[var(--yo-line)] bg-[var(--yo-surface-2)] hover:border-[var(--yo-ink)] transition-colors flex items-center gap-1"
                 >
-                  <span className="material-symbols-outlined text-[14px]">menu_book</span> Docs
+                  <span className="material-symbols-outlined text-[13px]">menu_book</span>
+                  <span>DOCS ↗</span>
                 </a>
               )}
               {project.socialLinks?.twitter && (
@@ -233,9 +230,9 @@ export function ProjectDetailModal({
                   href={project.socialLinks.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container hover:text-primary"
+                  className="px-2.5 py-1 border border-[var(--yo-line)] bg-[var(--yo-surface-2)] hover:border-[var(--yo-ink)] transition-colors"
                 >
-                  Twitter / X
+                  X (TWITTER) ↗
                 </a>
               )}
               {project.socialLinks?.discord && (
@@ -243,9 +240,9 @@ export function ProjectDetailModal({
                   href={project.socialLinks.discord}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container hover:text-primary"
+                  className="px-2.5 py-1 border border-[var(--yo-line)] bg-[var(--yo-surface-2)] hover:border-[var(--yo-ink)] transition-colors"
                 >
-                  Discord
+                  DISCORD ↗
                 </a>
               )}
               {project.socialLinks?.telegram && (
@@ -253,9 +250,9 @@ export function ProjectDetailModal({
                   href={project.socialLinks.telegram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container hover:text-primary"
+                  className="px-2.5 py-1 border border-[var(--yo-line)] bg-[var(--yo-surface-2)] hover:border-[var(--yo-ink)] transition-colors"
                 >
-                  Telegram
+                  TELEGRAM ↗
                 </a>
               )}
               {project.socialLinks?.github && (
@@ -263,44 +260,44 @@ export function ProjectDetailModal({
                   href={project.socialLinks.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container hover:text-primary"
+                  className="px-2.5 py-1 border border-[var(--yo-line)] bg-[var(--yo-surface-2)] hover:border-[var(--yo-ink)] transition-colors"
                 >
-                  GitHub
+                  GITHUB ↗
                 </a>
               )}
             </div>
           )}
 
           {/* Tabs */}
-          <div className="flex border-b border-slate-800 gap-4">
+          <div className="flex border-b border-[var(--yo-line)] gap-4">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`pb-2 text-xs font-label-caps uppercase font-semibold border-b-2 transition-colors ${
-                activeTab === 'overview' ? 'border-primary-container text-primary' : 'border-transparent text-slate-400'
+              className={`pb-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer ${
+                activeTab === 'overview' ? 'border-[var(--yo-ink)] text-[var(--yo-ink)]' : 'border-transparent text-[var(--yo-muted)]'
               }`}
             >
-              Overview
+              OVERVIEW
             </button>
             <button
               onClick={() => setActiveTab('updates')}
-              className={`pb-2 text-xs font-label-caps uppercase font-semibold border-b-2 transition-colors flex items-center gap-1.5 ${
-                activeTab === 'updates' ? 'border-primary-container text-primary' : 'border-transparent text-slate-400'
+              className={`pb-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'updates' ? 'border-[var(--yo-ink)] text-[var(--yo-ink)]' : 'border-transparent text-[var(--yo-muted)]'
               }`}
             >
-              Announcements
+              ANNOUNCEMENTS
               {updates.length > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full bg-surface-container text-[10px]">{updates.length}</span>
+                <span className="px-1.5 py-0.2 bg-[var(--yo-surface-2)] text-[10px]">{updates.length}</span>
               )}
             </button>
             <button
               onClick={() => setActiveTab('quests')}
-              className={`pb-2 text-xs font-label-caps uppercase font-semibold border-b-2 transition-colors flex items-center gap-1.5 ${
-                activeTab === 'quests' ? 'border-primary-container text-primary' : 'border-transparent text-slate-400'
+              className={`pb-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'quests' ? 'border-[var(--yo-ink)] text-[var(--yo-ink)]' : 'border-transparent text-[var(--yo-muted)]'
               }`}
             >
-              Quests
+              QUESTS
               {quests.length > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full bg-surface-container text-[10px]">{quests.length}</span>
+                <span className="px-1.5 py-0.2 bg-[var(--yo-surface-2)] text-[10px]">{quests.length}</span>
               )}
             </button>
           </div>
@@ -309,18 +306,16 @@ export function ProjectDetailModal({
           {activeTab === 'overview' && (
             <div className="space-y-4 text-xs">
               <div>
-                <h4 className="font-semibold text-slate-200 mb-1.5 uppercase font-label-caps text-[11px]">Description</h4>
-                <p className="text-on-surface-variant leading-relaxed text-sm whitespace-pre-wrap">{project.description}</p>
+                <span className="lp-eyebrow mb-1">DESCRIPTION</span>
+                <p className="text-[var(--yo-muted)] leading-relaxed text-sm whitespace-pre-wrap">{project.description}</p>
               </div>
 
               {project.contractAddresses && project.contractAddresses.length > 0 && (
                 <div>
-                  <h4 className="font-semibold text-slate-200 mb-1.5 uppercase font-label-caps text-[11px]">
-                    Verified Smart Contracts
-                  </h4>
+                  <span className="lp-eyebrow mb-1">VERIFIED SMART CONTRACTS</span>
                   <div className="space-y-1.5 font-mono">
                     {project.contractAddresses.map((addr, idx) => (
-                      <div key={idx} className="p-2 rounded bg-surface-container text-[11px] text-slate-300 break-all select-all">
+                      <div key={idx} className="p-2 border border-[var(--yo-line)] bg-[var(--yo-surface-2)] text-[11px] text-[var(--yo-ink)] break-all select-all">
                         {addr}
                       </div>
                     ))}
@@ -334,21 +329,21 @@ export function ProjectDetailModal({
           {activeTab === 'updates' && (
             <div className="space-y-3">
               {loadingExtras ? (
-                <div className="text-xs text-slate-400">Loading announcements...</div>
+                <div className="text-xs font-mono text-[var(--yo-muted)]">Loading announcements...</div>
               ) : updates.length === 0 ? (
-                <div className="p-8 text-center text-xs text-on-surface-variant bg-surface-container rounded-xl">
-                  No public updates posted yet by project maintainers.
+                <div className="p-8 text-center text-xs text-[var(--yo-muted)] bg-[var(--yo-surface-2)] border border-[var(--yo-line)]">
+                  No public announcements posted yet by project maintainers.
                 </div>
               ) : (
                 updates.map((upd) => (
-                  <div key={upd.id} className="p-4 rounded-xl bg-surface-container border border-slate-800">
+                  <div key={upd.id} className="p-4 bg-[var(--yo-surface-2)] border border-[var(--yo-line)]">
                     <div className="flex items-center justify-between gap-2 mb-1">
-                      <h4 className="font-semibold text-on-surface text-sm">{upd.title}</h4>
-                      <span className="text-[11px] text-slate-500 font-mono">
+                      <h4 className="yo-display text-sm text-[var(--yo-ink)]">{upd.title}</h4>
+                      <span className="text-[10px] text-[var(--yo-muted)] font-mono">
                         {upd.publishedAt ? new Date(upd.publishedAt).toLocaleDateString() : 'Recent'}
                       </span>
                     </div>
-                    <p className="text-xs text-on-surface-variant leading-relaxed mt-2 whitespace-pre-wrap">
+                    <p className="text-xs text-[var(--yo-muted)] leading-relaxed mt-2 whitespace-pre-wrap">
                       {upd.content}
                     </p>
                   </div>
@@ -361,26 +356,26 @@ export function ProjectDetailModal({
           {activeTab === 'quests' && (
             <div className="space-y-3">
               {loadingExtras ? (
-                <div className="text-xs text-slate-400">Loading quests...</div>
+                <div className="text-xs font-mono text-[var(--yo-muted)]">Loading quests...</div>
               ) : quests.length === 0 ? (
-                <div className="p-8 text-center text-xs text-on-surface-variant bg-surface-container rounded-xl">
+                <div className="p-8 text-center text-xs text-[var(--yo-muted)] bg-[var(--yo-surface-2)] border border-[var(--yo-line)]">
                   No active community quests for this project right now.
                 </div>
               ) : (
                 quests.map((q) => (
-                  <div key={q.id} className="p-4 rounded-xl bg-surface-container border border-slate-800 flex flex-col justify-between gap-2">
+                  <div key={q.id} className="p-4 bg-[var(--yo-surface-2)] border border-[var(--yo-line)] flex flex-col justify-between gap-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-label-caps text-[10px] uppercase px-2 py-0.5 rounded bg-surface-container-high text-primary">
+                      <span className="lp-chip font-bold">
                         {q.questType}
                       </span>
                       {q.rewardConfiguration && (
-                        <span className="font-mono text-[11px] text-tertiary">
+                        <span className="font-mono text-[10px] font-bold text-[var(--yo-accent-text)]">
                           {q.rewardConfiguration.amount} {q.rewardConfiguration.rewardType}
                         </span>
                       )}
                     </div>
-                    <h4 className="font-semibold text-on-surface text-sm mt-1">{q.title}</h4>
-                    <p className="text-xs text-on-surface-variant line-clamp-2">{q.description}</p>
+                    <h4 className="yo-display text-base text-[var(--yo-ink)] mt-1">{q.title}</h4>
+                    <p className="text-xs text-[var(--yo-muted)] line-clamp-2">{q.description}</p>
                   </div>
                 ))
               )}

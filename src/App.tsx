@@ -533,7 +533,7 @@ export default function App() {
     (userProjects.length > 0 ? userProjects[0] : null);
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+    <div className="min-h-screen flex flex-col yochi-paper lp-page antialiased selection:bg-[var(--yo-accent)] selection:text-white">
       {/* Top Role-Aware Navbar */}
       <Navbar
         currentView={currentView}
@@ -621,19 +621,19 @@ export default function App() {
           />
         ) : workspace === 'project' && !activeProject ? (
           <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 py-24 text-center">
-            <div className="p-10 rounded-3xl bg-[#141820] border border-slate-800 flex flex-col items-center shadow-2xl">
-              <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4">
-                <span className="material-symbols-outlined text-4xl">shield_person</span>
+            <div className="p-10 rounded-[2px] bg-[var(--yo-surface-1)] border-[1.5px] border-[var(--yo-ink)] flex flex-col items-center shadow-[4px_4px_0_var(--yo-ink)]">
+              <div className="w-14 h-14 rounded-[2px] bg-[var(--yo-surface-2)] border border-[var(--yo-line)] flex items-center justify-center text-[var(--yo-accent)] mb-4 shadow-[2px_2px_0_var(--yo-ink)]">
+                <span className="material-symbols-outlined text-3xl">shield_person</span>
               </div>
-              <h2 className="text-xl font-bold text-white mb-2">Project Account Required</h2>
-              <p className="text-xs text-slate-300 max-w-md mb-6 leading-relaxed">
+              <h2 className="text-xl font-bold text-[var(--yo-ink)] mb-2 yo-display">Project Account Required</h2>
+              <p className="text-xs text-[var(--yo-muted)] max-w-md mb-6 leading-relaxed">
                 Project workspaces are reserved for verified protocol representatives.
                 If you are a founder or protocol team, sign in with your project Google (Gmail) or submit your credentials for review.
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
                 <button
                   onClick={() => handleNavigate('signin')}
-                  className="px-6 py-2.5 rounded-full bg-primary-container text-on-primary-container font-label-caps uppercase font-bold text-xs shadow-md hover:bg-primary-fixed-dim transition-all cursor-pointer"
+                  className="lp-button lp-button-primary text-xs cursor-pointer"
                 >
                   Sign In with Google (Project)
                 </button>
@@ -642,7 +642,7 @@ export default function App() {
                     setWorkspace('user');
                     setCurrentView('explore');
                   }}
-                  className="px-6 py-2.5 rounded-full bg-slate-800 text-slate-300 hover:text-white font-label-caps uppercase text-xs transition-colors cursor-pointer"
+                  className="lp-button lp-button-secondary text-xs cursor-pointer"
                 >
                   Return to Explorer
                 </button>

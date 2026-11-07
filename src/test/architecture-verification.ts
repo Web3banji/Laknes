@@ -141,7 +141,7 @@ async function runVerification() {
       shortDescription: 'Architecture verification test project.',
       description: 'A comprehensive DeFi project submitted for architectural validation.',
       websiteUrl: 'https://test.elysium.org',
-      ecosystem: 'Elysium Testnet',
+      ecosystem: 'Elysium Network',
     }),
   });
   const subData = await subRes.json();
@@ -215,9 +215,9 @@ async function runVerification() {
       Authorization: `Bearer ${projToken}`,
     },
     body: JSON.stringify({
-      title: `Genesis Testnet Quest ${rand}`,
-      description: 'Interact with testnet smart contracts.',
-      instructions: '1. Connect wallet. 2. Mint test tokens. 3. Submit tx hash.',
+      title: `Genesis Adoption Quest ${rand}`,
+      description: 'Interact with protocol smart contracts.',
+      instructions: '1. Connect wallet. 2. Verify account. 3. Submit tx hash.',
       questType: 'ONCHAIN',
       startAt: new Date().toISOString(),
       completionCriteria: { requiresProof: true, proofType: 'TRANSACTION_HASH', verificationMethod: 'MANUAL_REVIEW' },

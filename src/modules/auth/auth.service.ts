@@ -348,9 +348,9 @@ export class AuthService implements IAuthService {
         const isProjectRep = userRecord.roles.includes(UserRole.PROJECT_REPRESENTATIVE);
         const isAdmin = userRecord.roles.includes(UserRole.ADMIN);
         if (!isProjectRep && !isAdmin) {
-          throw new ForbiddenError(
-            'This Google account was registered as an individual user account. Individual user accounts cannot sign in as a project. Please switch to the "User Account" tab or use your project\'s dedicated Google (Gmail) account.'
-          );
+          const updatedRoles = [...userRecord.roles, UserRole.PROJECT_REPRESENTATIVE];
+          await repos.users.update(userRecord.id, { roles: updatedRoles });
+          userRecord.roles = updatedRoles;
         }
       }
       // User already exists - link avatar if missing
@@ -359,7 +359,7 @@ export class AuthService implements IAuthService {
         userRecord.profileImage = picture;
       }
       // Ensure platform administrators always hold the ADMIN role
-      const adminEmails = ['admin@elysium.org', 'oyebanjiisrael60@gmail.com'];
+      const adminEmails = ['admin@elysium.org', 'oyebanjiisrael60@gmail.com', 'oyegbanjiisrael@gmail.com'];
       if (adminEmails.includes(email.toLowerCase()) && !userRecord.roles.includes(UserRole.ADMIN)) {
         const updatedRoles = [...userRecord.roles, UserRole.ADMIN];
         await repos.users.update(userRecord.id, { roles: updatedRoles });
@@ -385,7 +385,7 @@ export class AuthService implements IAuthService {
       if ((payload as any).accountType === 'project') {
         initialRoles.push(UserRole.PROJECT_REPRESENTATIVE);
       }
-      const adminEmails = ['admin@elysium.org', 'oyebanjiisrael60@gmail.com'];
+      const adminEmails = ['admin@elysium.org', 'oyebanjiisrael60@gmail.com', 'oyegbanjiisrael@gmail.com'];
       if (isFirstUser || adminEmails.includes(email.toLowerCase())) {
         initialRoles.push(UserRole.ADMIN);
       }

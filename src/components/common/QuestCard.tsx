@@ -1,6 +1,6 @@
 /**
- * LAKNES Standardized Quest Card
- * Adheres to Stitch design system with rewards, deadlines, task types, and action triggers.
+ * LAKNES Standardized Quest Card (Yochi Editorial Design System)
+ * Editorial opportunity card with mono rewards, deadlines, task types, and action triggers.
  */
 
 import React from 'react';
@@ -32,30 +32,30 @@ export function QuestCard({
   return (
     <div
       onClick={() => onSelect(quest)}
-      className="group flex flex-col justify-between bg-surface-container-low rounded-xl p-space-lg hover:bg-surface-container transition-all duration-300 shadow-lg hover:shadow-2xl border border-slate-800/80 cursor-pointer relative"
+      className="group flex flex-col justify-between bg-[var(--yo-surface-1)] border-[1.5px] border-[var(--yo-line)] hover:border-[var(--yo-ink)] p-5 transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--yo-ink)] cursor-pointer rounded-[2px]"
     >
       <div>
-        {/* Top Meta Line: Project Info, Quest Type & Save Button */}
+        {/* Top Meta Line: Project Info, Quest Type & Reward */}
         <div className="flex items-start justify-between gap-2 mb-3">
           <div className="flex items-center gap-2.5 min-w-0">
             {projectLogo ? (
               <img
                 src={projectLogo}
                 alt={projectName || 'Project'}
-                className="w-7 h-7 rounded-lg object-cover border border-slate-700/60 shrink-0 bg-surface-container-high"
+                className="w-6 h-6 rounded-[2px] object-cover border border-[var(--yo-line)] shrink-0 bg-[var(--yo-surface-2)]"
               />
             ) : (
-              <div className="w-7 h-7 rounded-lg bg-surface-container-high border border-slate-700/60 flex items-center justify-center shrink-0 text-primary">
-                <span className="material-symbols-outlined text-[15px]">token</span>
+              <div className="w-6 h-6 border border-[var(--yo-line)] bg-[var(--yo-surface-2)] flex items-center justify-center shrink-0 font-mono text-[10px] font-bold text-[var(--yo-ink)]">
+                {projectName ? projectName.slice(0, 1).toUpperCase() : 'Q'}
               </div>
             )}
             <div className="min-w-0">
               {projectName && (
-                <span className="text-xs text-on-surface font-semibold truncate block">
+                <span className="text-xs font-bold text-[var(--yo-ink)] truncate block font-body">
                   {projectName}
                 </span>
               )}
-              <span className="font-label-caps text-[10px] uppercase text-primary-fixed tracking-wider">
+              <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--yo-muted)] font-bold">
                 {quest.questType}
               </span>
             </div>
@@ -63,7 +63,7 @@ export function QuestCard({
 
           <div className="flex items-center gap-1.5 shrink-0">
             {quest.rewardConfiguration && (
-              <span className="font-label-mono text-[11px] px-2 py-0.5 rounded-full bg-tertiary-container/20 text-tertiary border border-tertiary-container/30">
+              <span className="font-mono text-[10px] font-bold px-2 py-0.5 border border-[var(--yo-line)] bg-[var(--yo-surface-2)] text-[var(--yo-accent-text)]">
                 {quest.rewardConfiguration.amount ? `${quest.rewardConfiguration.amount} ` : ''}
                 {quest.rewardConfiguration.rewardType}
               </span>
@@ -76,14 +76,10 @@ export function QuestCard({
                   e.stopPropagation();
                   onToggleSave(quest.id, e);
                 }}
-                className={`p-1.5 rounded-lg transition-colors ${
-                  isSaved
-                    ? 'text-primary bg-primary-container/20'
-                    : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'
-                }`}
+                className="p-1 border border-[var(--yo-line)] bg-[var(--yo-surface-1)] text-[var(--yo-ink)] hover:border-[var(--yo-ink)] transition-colors cursor-pointer"
                 title={isSaved ? 'Remove from Saved Quests' : 'Save Quest'}
               >
-                <span className="material-symbols-outlined text-[16px]">
+                <span className="material-symbols-outlined text-[14px]">
                   {isSaved ? 'bookmark' : 'bookmark_border'}
                 </span>
               </button>
@@ -92,29 +88,29 @@ export function QuestCard({
         </div>
 
         {/* Quest Title */}
-        <h3 className="font-headline-sm text-base text-on-surface group-hover:text-primary transition-colors mb-2 font-bold leading-snug">
+        <h3 className="yo-display text-base text-[var(--yo-ink)] group-hover:text-[var(--yo-accent-text)] transition-colors mb-2 leading-snug">
           {quest.title}
         </h3>
 
         {/* Description */}
-        <p className="font-body-sm text-xs text-on-surface-variant line-clamp-3 mb-4 leading-relaxed">
+        <p className="font-body text-xs text-[var(--yo-muted)] line-clamp-3 mb-4 leading-relaxed">
           {quest.description}
         </p>
 
         {/* Eligibility Rule Tag if present */}
         {quest.eligibilityRules?.ecosystemSpecificCondition && (
-          <div className="mb-3 px-2.5 py-1 rounded-md bg-surface-container-lowest/80 border border-slate-800 text-[10px] text-slate-400 font-label-mono flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[13px] text-primary">rule</span>
+          <div className="mb-3 px-2.5 py-1 bg-[var(--yo-surface-2)] border border-[var(--yo-line)] text-[10px] text-[var(--yo-muted)] font-mono flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[12px] text-[var(--yo-accent)]">rule</span>
             <span className="truncate">{quest.eligibilityRules.ecosystemSpecificCondition}</span>
           </div>
         )}
       </div>
 
       {/* Bottom Action Footer */}
-      <div className="pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs font-label-mono">
-        <div className="flex items-center gap-1 text-[11px] text-on-surface-variant">
-          <span className="material-symbols-outlined text-[14px]">schedule</span>
-          <span>{quest.deadline ? `Due ${new Date(quest.deadline).toLocaleDateString()}` : 'Continuous'}</span>
+      <div className="pt-3 border-t border-[var(--yo-line)] flex items-center justify-between font-mono text-[10px]">
+        <div className="flex items-center gap-1 text-[var(--yo-muted)]">
+          <span className="material-symbols-outlined text-[13px]">schedule</span>
+          <span>{quest.deadline ? `DUE ${new Date(quest.deadline).toLocaleDateString()}` : 'CONTINUOUS'}</span>
         </div>
 
         <button
@@ -123,30 +119,30 @@ export function QuestCard({
             onSelect(quest);
           }}
           disabled={isExpired}
-          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full font-label-caps text-label-caps uppercase transition-all text-xs font-semibold ${
+          className={`inline-flex items-center gap-1.5 px-3 py-1 font-mono font-bold uppercase tracking-wider text-[10px] transition-all cursor-pointer ${
             participationStatus === 'VERIFIED'
-              ? 'bg-emerald-950 text-emerald-300 border border-emerald-700'
+              ? 'bg-[var(--yo-good)] text-white border border-[var(--yo-good)]'
               : participationStatus === 'PENDING_VERIFICATION'
-              ? 'bg-amber-950/70 text-amber-300 border border-amber-700'
+              ? 'bg-[var(--yo-gold)] text-white border border-[var(--yo-gold)]'
               : isParticipating
-              ? 'bg-primary-container/20 text-primary border border-primary-container/50'
+              ? 'border-[1.5px] border-[var(--yo-ink)] bg-[var(--yo-ink)] text-[var(--yo-bg)]'
               : isExpired
-              ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-              : 'bg-primary-container text-on-primary-container group-hover:bg-primary-fixed-dim'
+              ? 'border border-[var(--yo-line)] text-[var(--yo-muted)] cursor-not-allowed'
+              : 'border-[1.5px] border-[var(--yo-ink)] bg-[var(--yo-cta)] text-[var(--yo-on-cta)] shadow-[2px_2px_0_var(--yo-ink)] hover:translate-x-[-1px] hover:translate-y-[-1px]'
           }`}
         >
           <span>
             {participationStatus === 'VERIFIED'
-              ? 'Verified'
+              ? 'VERIFIED'
               : participationStatus === 'PENDING_VERIFICATION'
-              ? 'In Review'
+              ? 'IN REVIEW'
               : isParticipating
-              ? 'In Progress'
+              ? 'IN PROGRESS'
               : isExpired
-              ? 'Expired'
-              : 'Start Quest'}
+              ? 'EXPIRED'
+              : 'PARTICIPATE'}
           </span>
-          <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
+          <span aria-hidden="true">↗</span>
         </button>
       </div>
     </div>

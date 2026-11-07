@@ -1,17 +1,18 @@
 /**
- * LAKNES Explore View & Public Platform Gateway
+ * LAKNES Explore View & Public Platform Gateway (Yochi-inspired Design System)
  * 
- * - Unauthenticated: Focused, professional landing page centered on the LAKNES logo,
- *   highlighting what LAKNES does:
- *   1. Explore Projects (discover Web3 projects & quests)
- *   2. Register a Project (project profile, verification & quest publishing)
- *   3. Creator Studio (campaign opportunities & distribution)
- * - Authenticated: Explore Projects directory showing officially verified projects
- *   with clearly visible Verified badges, category filters, and search.
- * - Strictly real database records only; clean professional empty states when empty.
+ * Implements the Yochi paper/sumi editorial layout:
+ * - 1280px shell (`lp-shell`), 1.5px ink borders, hard editorial corners, generous whitespace.
+ * - Bold display typography (`Dela Gothic One`), clean grotesk body (`Zen Kaku Gothic New`), mono caps stats/labels (`JetBrains Mono`).
+ * - 1.2fr copy / 1fr interactive demo grid (`#practice`) with contribution path selection.
+ * - Ecosystem 3-card grid (Discover, Participate, Build) with lead card spanning two rows.
+ * - 3-step editorial process ("Every contribution goes somewhere").
+ * - Dark record & proof section (`yochi-sumi`) with collaboration record card, stamp, and reputation columns.
+ * - Editorial FAQ accordion with rotate indicator.
+ * - Verified Projects directory with search & category filters using real database records.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Project, User } from '../../types/contracts.ts';
 import { ProjectCard } from '../common/ProjectCard.tsx';
 
@@ -43,7 +44,6 @@ export function ExploreView({
     { id: 'INFRASTRUCTURE', label: 'Infrastructure' },
     { id: 'NFT', label: 'NFT' },
     { id: 'LAUNCHPAD', label: 'Launchpad' },
-    { id: 'MEMECOIN', label: 'Memecoin' },
     { id: 'GAMING', label: 'Gaming' },
     { id: 'SOCIAL', label: 'Social' },
   ];
@@ -63,98 +63,444 @@ export function ExploreView({
     return matchesCategory && matchesSearch;
   });
 
-  // ========================================================
-  // A. AUTHENTICATED EXPLORE DIRECTORY (REAL DATA ONLY)
-  // ========================================================
-  if (user) {
-    return (
-      <div className="w-full min-h-[calc(100vh-80px)] flex flex-col font-body-md text-on-surface bg-background pb-16">
-        <div className="relative z-10 flex-1 max-w-7xl mx-auto w-full px-6 lg:px-12 py-10 space-y-8">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/20 pb-6">
-            <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[13px]">verified</span>
-                  <span>Verified Registry</span>
-                </span>
-                <span className="text-outline text-xs">@{user.username}</span>
+  return (
+    <div className="lp-page">
+      {/* 1. HERO SECTION */}
+      <div className="lp-shell">
+        <section className="lp-hero" aria-labelledby="landing-title">
+          <div className="lp-hero-copy">
+            <span className="lp-eyebrow lp-hero-eyebrow">
+              <span className="lp-dot" /> WEB3 ECOSYSTEM PLATFORM
+            </span>
+            <h1 id="landing-title" className="yo-display">
+              Find the right.<br />Build your record.
+            </h1>
+            <p className="lp-hero-pitch">Discover projects. Contribute real work.</p>
+            <p className="lp-hero-description">
+              Discover verified Web3 projects, join quests and campaigns, submit real work, and grow with the ecosystems shaping Web3.
+            </p>
+            <div className="lp-actions">
+              <button
+                type="button"
+                onClick={() => onNavigate('projects')}
+                className="lp-button lp-button-primary"
+              >
+                <span>EXPLORE OPPORTUNITIES</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate('quests')}
+                className="lp-button lp-button-secondary"
+              >
+                <span>VIEW QUESTS</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <div className="lp-hero-facts">
+              <span><strong>VERIFIED</strong> PROJECTS</span>
+              <span><strong>LIVE</strong> QUESTS &amp; CAMPAIGNS</span>
+              <span><strong>OPEN</strong> TO CREATORS</span>
+            </div>
+          </div>
+
+          {/* Real Platform Ecosystem Core Showcase */}
+          <div className="lp-practice">
+            <div className="lp-practice-intro">
+              <span className="lp-eyebrow">WEB3 ECOSYSTEM DIRECTORY</span>
+              <span className="lp-practice-arrow" aria-hidden="true">↙</span>
+            </div>
+            <section aria-label="Laknes Platform Core" className="yochi-sumi">
+              <div className="lp-practice-head">
+                <span>LAKNES PLATFORM &middot; REAL DIRECTORY</span>
+                <span className="live">LIVE ECOSYSTEM</span>
               </div>
-              <h1 className="text-headline-lg font-headline-lg text-on-surface font-bold tracking-tight">
-                Explore Projects
-              </h1>
-              <p className="text-body-sm text-on-surface-variant max-w-xl mt-1">
-                Discover officially verified Web3 protocols, decentralized applications, and ecosystem infrastructure.
+              <div className="lp-practice-body">
+                <div className="lp-op">
+                  <div className="lp-op-top">
+                    <span><strong>Laknes Network</strong></span>
+                    <span className="reward">ECOSYSTEM</span>
+                  </div>
+                  <h3>Direct Web3 Connection</h3>
+                  <p>
+                    Connecting verified Web3 projects with active contributors and creators. Discover registries, launch opportunities, and track verified contribution records.
+                  </p>
+                  <div className="lp-meta">
+                    <span className="lp-chip">VERIFIED DIRECTORY</span>
+                    <span className="lp-chip">ACTIVE CAMPAIGNS</span>
+                    <span className="lp-chip">CONTRIBUTION RECORDS</span>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-[var(--yo-line)] space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => onNavigate('submit-project')}
+                      className="w-full p-2.5 bg-[var(--yo-surface-2)] border border-[var(--yo-line)] hover:border-[var(--yo-ink)] text-xs flex items-center justify-between text-left transition-colors cursor-pointer"
+                    >
+                      <div>
+                        <strong className="block text-[var(--yo-ink)] font-mono text-xs">REGISTER A PROJECT</strong>
+                        <span className="text-[10px] text-[var(--yo-muted)] font-mono uppercase">Submit your ecosystem to the verified registry</span>
+                      </div>
+                      <span className="font-mono text-xs font-bold text-[var(--yo-accent-text)]">APPLY ↗</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onNavigate('creator-studio')}
+                      className="w-full p-2.5 bg-[var(--yo-surface-2)] border border-[var(--yo-line)] hover:border-[var(--yo-ink)] text-xs flex items-center justify-between text-left transition-colors cursor-pointer"
+                    >
+                      <div>
+                        <strong className="block text-[var(--yo-ink)] font-mono text-xs">OPEN CREATOR STUDIO</strong>
+                        <span className="text-[10px] text-[var(--yo-muted)] font-mono uppercase">Manage briefs, submissions, and portfolio</span>
+                      </div>
+                      <span className="font-mono text-xs font-bold text-[var(--yo-accent-text)]">ENTER ↗</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <p className="lp-practice-caption">
+              Discover verified Web3 ecosystems &middot; Real campaigns &middot; Built on proof of contribution.
+            </p>
+          </div>
+        </section>
+
+        {/* 2. THE ECOSYSTEM: THREE WAYS TO BUILD */}
+        <section id="ecosystem" className="lp-games lp-section" aria-labelledby="games-title">
+          <div className="lp-section-heading">
+            <div>
+              <span className="lp-eyebrow">THE ECOSYSTEM</span>
+              <h2 id="games-title" className="yo-display">One platform, three ways to build.</h2>
+            </div>
+            <p>
+              Discover projects, take on real opportunities, and grow through the work you contribute.<br />
+              Discovery is the easiest place to start.
+            </p>
+          </div>
+
+          <div className="lp-game-grid">
+            {/* 01: Discover Projects */}
+            <div
+              onClick={() => onNavigate('projects')}
+              className="lp-game lp-game-ffa"
+              role="button"
+              tabIndex={0}
+              aria-label="Explore Project Discovery"
+            >
+              <div className="lp-game-top">
+                <span className="lp-eyebrow">01 / DISCOVER</span>
+                <span className="lp-example-label">PROJECTS</span>
+              </div>
+              <div className="lp-game-main">
+                <span className="lp-eyebrow">THE ONE TO START WITH</span>
+                <h3>Project Discovery</h3>
+                <p className="lp-game-tagline">Verified projects and ecosystems.</p>
+                <p>
+                  Explore Web3 projects, registries, and active opportunities worth your time. Find the ecosystems where your contribution fits.
+                </p>
+              </div>
+              <div className="lp-pool-preview" aria-label="Ecosystem directory state">
+                <div className="lp-preview-top">
+                  <span>DIRECTORY STATUS</span>
+                  <span>VERIFIED <span aria-hidden="true">&#9635;</span></span>
+                </div>
+                <div className="lp-pool-picks">
+                  <div>
+                    <span>REGISTRY</span>
+                    <strong>ECOSYSTEM<span> DIRECTORY</span></strong>
+                  </div>
+                  <span className="lp-pool-versus">+</span>
+                  <div>
+                    <span>OPPORTUNITIES</span>
+                    <strong>LIVE<span> CAMPAIGNS</span></strong>
+                  </div>
+                </div>
+                <div className="lp-pool-bar" aria-hidden="true">
+                  <span />
+                  <span />
+                </div>
+                <div className="lp-pool-total">
+                  <span>ECOSYSTEM STATUS</span>
+                  <strong>OPEN FOR REGISTRATION</strong>
+                </div>
+              </div>
+              <div className="lp-game-bottom">
+                <span>VERIFIED PROJECTS &middot; LIVE OPPORTUNITIES</span>
+                <span>EXPLORE PROJECTS ↗</span>
+              </div>
+            </div>
+
+            {/* 02: Participate in Quests & Campaigns */}
+            <div
+              onClick={() => onNavigate('quests')}
+              className="lp-game lp-game-duels"
+              role="button"
+              tabIndex={0}
+              aria-label="Open Quests and Campaigns"
+            >
+              <div className="lp-game-top">
+                <span className="lp-eyebrow">02 / PARTICIPATE</span>
+                <span className="lp-example-label">OPPORTUNITIES</span>
+              </div>
+              <div className="lp-game-main">
+                <h3>Quests &amp; Campaigns</h3>
+                <p>
+                  Join community initiatives, campaigns, and quests &mdash; then submit proof, content, or feedback to the right project.
+                </p>
+              </div>
+              <div className="lp-duel-preview">
+                <div className="lp-mini-list">
+                  <div className="lp-mini-row">
+                    <span>Initiative</span>
+                    <strong>Ecosystem Content &amp; Growth</strong>
+                  </div>
+                  <div className="lp-mini-row">
+                    <span>Category</span>
+                    <strong>Creator &amp; Community</strong>
+                  </div>
+                  <div className="lp-mini-row">
+                    <span>Submissions</span>
+                    <strong>Open to verified contributors</strong>
+                  </div>
+                </div>
+              </div>
+              <div className="lp-game-bottom">
+                <span>SUBMIT WORK &middot; EARN CREDIT</span>
+                <span>VIEW OPPORTUNITIES ↗</span>
+              </div>
+            </div>
+
+            {/* 03: Creator Studio & Registry */}
+            <div
+              onClick={() => onNavigate('creator-studio')}
+              className="lp-game lp-game-royale"
+              role="button"
+              tabIndex={0}
+              aria-label="Open Creator Studio"
+            >
+              <div className="lp-game-top">
+                <span className="lp-eyebrow">03 / BUILD</span>
+                <span className="lp-example-label">STUDIO</span>
+              </div>
+              <div className="lp-game-main">
+                <h3>Creator Studio</h3>
+                <p>
+                  Build your creator profile, manage submissions, collaborate with projects, and register ecosystems on Laknes.
+                </p>
+              </div>
+              <div className="lp-royale-preview">
+                <div className="lp-mini-list">
+                  <div className="lp-mini-row">
+                    <span>Profile</span>
+                    <strong>Creator record</strong>
+                  </div>
+                  <div className="lp-mini-row">
+                    <span>Work</span>
+                    <strong>Submissions tracked</strong>
+                  </div>
+                  <div className="lp-mini-row">
+                    <span>Projects</span>
+                    <strong>Register &amp; launch</strong>
+                  </div>
+                </div>
+              </div>
+              <div className="lp-game-bottom">
+                <span>FOR CREATORS &middot; FOR PROJECTS</span>
+                <span>OPEN CREATOR STUDIO ↗</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. HOW IT WORKS */}
+        <section id="how" className="lp-how lp-section" aria-labelledby="how-title">
+          <div className="lp-how-heading">
+            <span className="lp-eyebrow">THE PATH IS ONLY THE BEGINNING</span>
+            <h2 id="how-title" className="yo-display">
+              Every contribution<br />goes somewhere.
+            </h2>
+          </div>
+          <ol className="lp-steps">
+            <li>
+              <span className="lp-step-number">01</span>
+              <h3 className="yo-display">Discover the opportunity.</h3>
+              <p>
+                Find verified projects, quests, campaigns, and community initiatives that match how you want to contribute.
+              </p>
+            </li>
+            <li>
+              <span className="lp-step-number">02</span>
+              <h3 className="yo-display">Participate and submit.</h3>
+              <p>
+                Create content, join a campaign, complete a quest, or share feedback. Submit your work to the right project.
+              </p>
+            </li>
+            <li>
+              <span className="lp-step-number">03</span>
+              <h3 className="yo-display">Grow your record.</h3>
+              <p>
+                Build visibility, trust, and relationships across ecosystems. One contribution is a start; a track record opens doors.
+              </p>
+            </li>
+          </ol>
+        </section>
+      </div>
+
+      {/* 4. RECORD / PROOF SECTION (Yochi Sumi Dark Edition) */}
+      <section id="record" className="yochi-sumi lp-personal" aria-labelledby="personal-title">
+        <div className="lp-shell">
+          <div className="lp-personal-main">
+            <div className="lp-personal-copy">
+              <span className="lp-eyebrow">IT GETS REAL</span>
+              <h2 id="personal-title" className="yo-display">
+                The work ends.<br />The record doesn’t.
+              </h2>
+              <p>
+                Laknes is about meaningful participation. Contributions, submissions, and collaborations can build a record that follows you across projects.
+              </p>
+              <button
+                type="button"
+                onClick={() => onNavigate(user ? 'user-dashboard' : 'signin')}
+                className="lp-text-link"
+              >
+                <span>Build your profile</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+
+            <div className="lp-rivalry-record" aria-label="Example collaboration record">
+              <div className="lp-record-header">
+                <span className="lp-eyebrow">COLLABORATION RECORD</span>
+                <span className="lp-example-label">EXAMPLE</span>
+              </div>
+              <div className="lp-rivalry-players">
+                <div className="lp-player">
+                  <div className="lp-avatar">CR</div>
+                  <strong className="yo-display">@creator</strong>
+                  <span>CONTRIBUTOR PROFILE</span>
+                </div>
+                <div className="lp-record-score">
+                  <span className="lp-eyebrow">CONTRIBUTIONS</span>
+                  <strong className="yo-display">12</strong>
+                  <span>ACROSS 5 PROJECTS</span>
+                </div>
+                <div className="lp-player">
+                  <div className="lp-avatar">PR</div>
+                  <strong className="yo-display">Projects</strong>
+                  <span>ECOSYSTEMS JOINED</span>
+                </div>
+              </div>
+              <div className="lp-record-history">
+                <span className="lp-eyebrow">RECENT WORK</span>
+                <span className="lp-history-marks" aria-hidden="true">
+                  <span className="lp-mark on">&#10003;</span>
+                  <span className="lp-mark on">&#10003;</span>
+                  <span className="lp-mark">&middot;</span>
+                  <span className="lp-mark on">&#10003;</span>
+                  <span className="lp-mark on">&#10003;</span>
+                </span>
+              </div>
+              <div className="lp-record-result">
+                <span>
+                  <span className="lp-eyebrow">LATEST SUBMISSION &middot; VERIFIED</span>
+                  <strong>Campaign <span>COMPLETED</span></strong>
+                </span>
+                <span className="lp-stamp" aria-hidden="true">
+                  ON<br />RECORD
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="lp-reputation">
+            <div>
+              <span className="lp-eyebrow">01 / EARN IT</span>
+              <h3 className="yo-display">A record built on real work.</h3>
+              <p>
+                Quests, campaigns, feedback, and collaborations add up to visible participation &mdash; not empty activity.
+              </p>
+            </div>
+            <div>
+              <span className="lp-eyebrow">02 / SHOW IT</span>
+              <h3 className="yo-display">Proof you can point to.</h3>
+              <p>
+                Profiles, submissions, and project registrations make it easier for ecosystems to understand what you’ve done.
+              </p>
+            </div>
+            <div>
+              <span className="lp-eyebrow">03 / BUILD IT</span>
+              <h3 className="yo-display">Turn attention into contribution.</h3>
+              <p>
+                Communities and campaigns become places to participate, connect, and grow with projects over time.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. VERIFIED ECOSYSTEM DIRECTORY (LIVE DATABASE RECORDS) */}
+      <div className="lp-shell">
+        <section id="directory" className="lp-section border-t-[1.5px] border-[var(--yo-ink)]">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+            <div>
+              <span className="lp-eyebrow">OFFICIAL DIRECTORY</span>
+              <h2 className="yo-display text-3xl sm:text-4xl mt-2">
+                Verified Projects
+              </h2>
+              <p className="text-sm text-[var(--yo-muted)] mt-1.5 max-w-xl leading-relaxed">
+                Explore officially vetted Web3 protocols and ecosystems listed on Laknes.
               </p>
             </div>
 
-            <button
-              onClick={() => onNavigate('submit-project')}
-              className="self-start sm:self-center px-4 py-2.5 rounded-xl bg-primary-container text-on-primary-container font-label-md text-xs font-bold hover:brightness-110 transition-all flex items-center gap-2 cursor-pointer shadow-md"
-            >
-              <span className="material-symbols-outlined text-[18px]">add_circle</span>
-              <span>Register Project</span>
-            </button>
-          </div>
- 
-          {/* Ecosystem Visual Spotlight */}
-          <div className="relative w-full rounded-2xl overflow-hidden border border-outline-variant/30 bg-surface-container-low shadow-xl">
-            <div className="h-44 sm:h-48 w-full relative">
-              <img
-                src="/assets/images/explore_ecosystem.jpg"
-                alt="Ecosystem Registry"
-                className="w-full h-full object-cover object-center"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/95 via-surface-container-lowest/70 to-transparent"></div>
-              <div className="absolute inset-0 flex flex-col justify-center px-6 sm:px-10 max-w-xl">
-                <span className="text-[11px] font-mono uppercase tracking-wider text-primary font-semibold mb-1 flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[14px]">travel_explore</span>
-                  <span>Ecosystem Directory</span>
-                </span>
-                <h2 className="text-headline-md font-bold text-on-surface">
-                  Verified Protocol Discovery
-                </h2>
-                <p className="text-xs sm:text-sm text-on-surface-variant mt-1.5 leading-relaxed">
-                  Every listed project is verified and backed by genuine creators and protocols. Follow projects to track campaigns and updates.
-                </p>
-              </div>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => onNavigate('projects')}
+                className="lp-button lp-button-secondary text-xs"
+                style={{ minHeight: '44px', padding: '10px 18px' }}
+              >
+                <span>VIEW ALL ({projects.length})</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate('submit-project')}
+                className="lp-button lp-button-primary text-xs"
+                style={{ minHeight: '44px', padding: '10px 18px' }}
+              >
+                <span>REGISTER PROTOCOL</span>
+                <span aria-hidden="true">+</span>
+              </button>
             </div>
           </div>
 
-          {/* Search & Category Filter Chips */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            {/* Category Filter Chips */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-              {categoryFilters.map((cat) => {
-                const isActive = selectedCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all shrink-0 cursor-pointer ${
-                      isActive
-                        ? 'bg-primary-container text-on-primary-container font-semibold shadow-sm'
-                        : 'bg-surface-container-low text-on-surface-variant hover:text-on-surface border border-outline-variant/30 hover:border-outline-variant/60'
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                );
-              })}
+          {/* Filters & Search */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-3 bg-[var(--yo-surface-1)] border border-[var(--yo-line)] mb-8">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+              {categoryFilters.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors whitespace-nowrap cursor-pointer ${
+                    selectedCategory === cat.id
+                      ? 'bg-[var(--yo-ink)] text-[var(--yo-bg)]'
+                      : 'text-[var(--yo-muted)] hover:text-[var(--yo-ink)]'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
             </div>
 
-            {/* Search Input */}
-            <div className="relative min-w-[240px]">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[16px]">
-                search
-              </span>
+            <div className="relative min-w-[220px]">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search verified projects..."
-                className="w-full bg-surface-container-low text-on-surface placeholder:text-outline text-xs pl-9 pr-3.5 py-2 rounded-xl border border-outline-variant/30 focus:outline-none focus:border-primary-container"
+                placeholder="SEARCH PROJECTS..."
+                className="w-full h-8 pl-8 pr-3 text-[11px] font-mono tracking-wider bg-[var(--yo-surface-2)] border border-[var(--yo-line)] text-[var(--yo-ink)] placeholder:text-[var(--yo-muted)] focus:outline-none focus:border-[var(--yo-ink)]"
               />
+              <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[14px] text-[var(--yo-muted)] pointer-events-none">
+                search
+              </span>
             </div>
           </div>
 
@@ -162,26 +508,28 @@ export function ExploreView({
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-64 rounded-2xl bg-surface-container-low animate-pulse"></div>
+                <div key={i} className="h-64 bg-[var(--yo-surface-1)] border border-[var(--yo-line)] animate-pulse"></div>
               ))}
             </div>
           ) : filteredProjects.length === 0 ? (
-            <div className="py-20 px-6 rounded-2xl bg-surface-container-low border border-dashed border-outline-variant/40 flex flex-col items-center text-center">
-              <div className="w-14 h-14 rounded-2xl bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-outline mb-4">
-                <span className="material-symbols-outlined text-[28px]">domain_verification</span>
-              </div>
-              <h3 className="text-headline-sm font-headline-sm text-on-surface font-semibold mb-1.5">
-                No verified projects found
+            <div className="py-16 px-6 bg-[var(--yo-surface-1)] border border-[var(--yo-line)] text-center flex flex-col items-center">
+              <span className="w-12 h-12 border border-[var(--yo-line)] flex items-center justify-center font-mono text-xl mb-3 text-[var(--yo-muted)]">
+                &empty;
+              </span>
+              <h3 className="yo-display text-base text-[var(--yo-ink)] mb-1">
+                No matching verified projects found
               </h3>
-              <p className="text-body-sm text-on-surface-variant max-w-md mb-6 leading-relaxed">
-                Only projects that have successfully completed administrator review appear in the public Explore directory with a Verified badge.
+              <p className="font-body text-xs text-[var(--yo-muted)] max-w-md mb-6 leading-relaxed">
+                Only projects that have successfully completed verification appear in the public registry.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-3">
+              <div className="flex gap-3">
                 <button
                   onClick={() => onNavigate('submit-project')}
-                  className="px-5 py-2.5 rounded-xl bg-primary-container text-on-primary-container text-xs font-bold hover:brightness-110 transition-all cursor-pointer shadow-md"
+                  className="lp-button lp-button-primary text-xs"
+                  style={{ minHeight: '40px', padding: '8px 16px' }}
                 >
-                  Register a Project for Review
+                  <span>REGISTER PROJECT</span>
+                  <span aria-hidden="true">↗</span>
                 </button>
                 {(searchQuery || selectedCategory !== 'ALL') && (
                   <button
@@ -189,16 +537,17 @@ export function ExploreView({
                       setSearchQuery('');
                       setSelectedCategory('ALL');
                     }}
-                    className="px-4 py-2.5 rounded-xl bg-surface-container text-xs text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer border border-outline-variant/30"
+                    className="lp-button lp-button-secondary text-xs"
+                    style={{ minHeight: '40px', padding: '8px 16px' }}
                   >
-                    Clear Filters
+                    <span>RESET FILTERS</span>
                   </button>
                 )}
               </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProjects.map((p) => (
+              {filteredProjects.slice(0, 6).map((p) => (
                 <ProjectCard
                   key={p.id}
                   project={p}
@@ -209,240 +558,107 @@ export function ExploreView({
               ))}
             </div>
           )}
-        </div>
-      </div>
-    );
-  }
+        </section>
 
-  // ========================================================
-  // B. CLEAN, LOGO-FOCUSED PUBLIC LANDING PAGE
-  // ========================================================
-  return (
-    <div className="flex flex-col w-full font-body-md text-on-surface selection:bg-primary-container selection:text-on-primary-container">
-      {/* 1. HERO SECTION: LOGO CENTERPIECE */}
-      <section className="relative min-h-[70vh] flex flex-col items-center justify-center px-6 lg:px-12 py-16 overflow-hidden bg-surface-container-lowest text-center">
-        {/* Ambient radial glow centered behind the logo */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[340px] bg-primary-container/15 blur-[130px] rounded-full pointer-events-none"></div>
-
-        <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
-          {/* Main Centerpiece Logo */}
-          <div className="relative mb-6 group">
-            <div className="absolute inset-0 bg-primary-container/30 blur-2xl rounded-3xl scale-110 pointer-events-none group-hover:bg-primary-container/45 transition-all"></div>
-            <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-2xl bg-surface-container-low border-2 border-primary-container/50 p-4 shadow-[0_0_36px_rgba(255,87,34,0.4)] flex items-center justify-center transition-transform hover:scale-105 duration-300">
-              <img
-                src="/laknes-brand-emblem.png"
-                alt="LAKNES Logo"
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src =
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuBbCx-Ngfnb-71P9gWXiRQl9QYfJXesChsUORwVa8lQAmx74wJCLYHmRCtrhvhOxkbempTZ0hlp3FvhidOnFAOYl1TcCMVFrdHxBcWgq6OhoWY4tb-8laDiOHFQztpVebLwdlgdRnT-N2_QtStLeD-PsP7BRsJ95I6u2EFNclu1zI9zBuYgjfDf2Lpg9HiT1vGR8EsiBz34GPWhUYyTotU9-H2vvchOMlDYiZFDr3x6RmkS9obxDnq6';
-                }}
-              />
-            </div>
-          </div>
-
-          <h1 className="text-display-mobile md:text-display font-display text-on-surface tracking-tight font-bold leading-tight max-w-2xl">
-            Discover, Participate, and Build Web3.
-          </h1>
-
-          <p className="text-body-md md:text-body-lg font-body-lg text-on-surface-variant max-w-lg mt-3 leading-relaxed">
-            LAKNES connects verified ecosystem projects with active community members and creators through transparent participation and quests.
-          </p>
-
-          {/* Primary 3 Action Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-8 w-full">
+        {/* 6. FAQ ACCORDION */}
+        <section id="faq" className="lp-faq" aria-labelledby="faq-title">
+          <div className="lp-faq-heading">
+            <span className="lp-eyebrow">BEFORE YOU JOIN</span>
+            <h2 id="faq-title" className="yo-display">Clear answers.</h2>
+            <p>Everything worth knowing before your first contribution.</p>
             <button
-              onClick={() => onNavigate('explore')}
-              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary-container to-secondary-container text-surface-container-lowest font-headline-sm text-xs font-bold px-6 py-3 rounded-xl shadow-[0_0_24px_rgba(255,87,34,0.4)] hover:shadow-[0_0_32px_rgba(255,87,34,0.6)] active:scale-[0.98] transition-all cursor-pointer whitespace-nowrap"
+              type="button"
+              onClick={() => onNavigate('projects')}
+              className="lp-text-link mt-4"
             >
-              <span>Explore Projects</span>
-              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-            </button>
-
-            <button
-              onClick={() => onNavigate('submit-project')}
-              className="inline-flex items-center justify-center gap-2 bg-surface-container-low hover:bg-surface-container border border-primary-container/40 hover:border-primary-container text-on-surface font-headline-sm text-xs px-5 py-3 rounded-xl backdrop-blur-sm active:scale-[0.98] transition-all cursor-pointer font-medium whitespace-nowrap"
-            >
-              <span>Register a Project</span>
-            </button>
-
-            <button
-              onClick={() => onNavigate('creator-studio')}
-              className="inline-flex items-center justify-center gap-2 bg-surface-container-low hover:bg-surface-container border border-outline-variant/40 hover:border-primary-container text-on-surface font-headline-sm text-xs px-5 py-3 rounded-xl backdrop-blur-sm active:scale-[0.98] transition-all cursor-pointer font-medium whitespace-nowrap"
-            >
-              <span>Creator Studio</span>
+              <span>Explore the directory</span>
+              <span aria-hidden="true">↗</span>
             </button>
           </div>
-        </div>
-      </section>
-
-      {/* 2. THE THREE CORE ENTRY POINTS WITH RICH VISUALS */}
-      <section className="px-6 lg:px-12 py-16 max-w-6xl mx-auto w-full border-t border-outline-variant/20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Pillar 1: Explore Projects */}
-          <div
-            onClick={() => onNavigate('explore')}
-            className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/60 transition-all cursor-pointer flex flex-col justify-between group shadow-xl overflow-hidden"
-          >
-            <div>
-              <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden mb-5 bg-surface-container-lowest border border-outline-variant/30">
-                <img
-                  src="/assets/images/explore_ecosystem.jpg"
-                  alt="Explore Ecosystem Projects"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/20 to-transparent pointer-events-none"></div>
-                <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-container-lowest/80 backdrop-blur-md text-[11px] font-mono text-primary font-semibold">
-                  <span className="material-symbols-outlined text-[14px]">travel_explore</span>
-                  <span>Ecosystem Directory</span>
-                </div>
-              </div>
-
-              <h3 className="text-headline-sm font-headline-sm text-on-surface font-semibold mb-2 group-hover:text-primary transition-colors">
-                Explore Projects
-              </h3>
-              <p className="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
-                Discover verified blockchain protocols, follow project updates, and participate in ecosystem quests.
+          <div className="lp-faq-list">
+            <details open>
+              <summary>
+                <span>What is Laknes?</span>
+                <span className="lp-faq-plus" aria-hidden="true">+</span>
+              </summary>
+              <p>
+                Laknes is a Web3 ecosystem platform where people discover projects, join quests and campaigns, submit contributions, and build relationships with the ecosystems they care about.
               </p>
-            </div>
-            <div className="pt-5 mt-5 border-t border-outline-variant/20 flex items-center justify-between text-xs text-primary font-semibold">
-              <span>Discover Ecosystem</span>
-              <span className="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">
-                arrow_forward
-              </span>
-            </div>
-          </div>
-
-          {/* Pillar 2: Register a Project */}
-          <div
-            onClick={() => onNavigate('submit-project')}
-            className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/60 transition-all cursor-pointer flex flex-col justify-between group shadow-xl overflow-hidden"
-          >
-            <div>
-              <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden mb-5 bg-surface-container-lowest border border-outline-variant/30">
-                <img
-                  src="/assets/images/project_registry.jpg"
-                  alt="Register Web3 Project"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/20 to-transparent pointer-events-none"></div>
-                <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-container-lowest/80 backdrop-blur-md text-[11px] font-mono text-primary font-semibold">
-                  <span className="material-symbols-outlined text-[14px]">verified_user</span>
-                  <span>Verification Portal</span>
-                </div>
-              </div>
-
-              <h3 className="text-headline-sm font-headline-sm text-on-surface font-semibold mb-2 group-hover:text-primary transition-colors">
-                Register a Project
-              </h3>
-              <p className="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
-                Create an official project profile, gain visibility in Explore, and publish community quests.
+            </details>
+            <details>
+              <summary>
+                <span>Who is Laknes for?</span>
+                <span className="lp-faq-plus" aria-hidden="true">+</span>
+              </summary>
+              <p>
+                Creators, contributors, community members, and Web3 projects. Creators and users can find opportunities and build a record; projects can register, launch initiatives, and connect with participants.
               </p>
-            </div>
-            <div className="pt-5 mt-5 border-t border-outline-variant/20 flex items-center justify-between text-xs text-primary font-semibold">
-              <span>Register Protocol</span>
-              <span className="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">
-                arrow_forward
-              </span>
-            </div>
-          </div>
-
-          {/* Pillar 3: Creator Studio */}
-          <div
-            onClick={() => onNavigate('creator-studio')}
-            className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary-container/60 transition-all cursor-pointer flex flex-col justify-between group shadow-xl overflow-hidden"
-          >
-            <div>
-              <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden mb-5 bg-surface-container-lowest border border-outline-variant/30">
-                <img
-                  src="/assets/images/creator_campaigns.jpg"
-                  alt="Creator Studio & Campaigns"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/20 to-transparent pointer-events-none"></div>
-                <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-container-lowest/80 backdrop-blur-md text-[11px] font-mono text-secondary font-semibold">
-                  <span className="material-symbols-outlined text-[14px]">campaign</span>
-                  <span>Creator Program</span>
-                </div>
-              </div>
-
-              <h3 className="text-headline-sm font-headline-sm text-on-surface font-semibold mb-2 group-hover:text-primary transition-colors">
-                Creator Studio
-              </h3>
-              <p className="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
-                Participate in sponsored campaigns, publish content on social channels, submit post URLs, and earn rewards.
+            </details>
+            <details>
+              <summary>
+                <span>Do I need a wallet to explore?</span>
+                <span className="lp-faq-plus" aria-hidden="true">+</span>
+              </summary>
+              <p>
+                You can explore the platform and understand opportunities before taking wallet-specific actions. Some quests, campaigns, or verification flows may require an account or wallet depending on how the project runs them.
               </p>
-            </div>
-            <div className="pt-5 mt-5 border-t border-outline-variant/20 flex items-center justify-between text-xs text-secondary font-semibold">
-              <span>Access Studio</span>
-              <span className="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">
-                arrow_forward
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. VERIFIED PROJECTS PREVIEW (REAL DATABASE DATA ONLY) */}
-      {projects.length > 0 && (
-        <section className="px-6 lg:px-12 py-12 max-w-6xl mx-auto w-full border-t border-outline-variant/20">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-headline-md font-headline-md text-on-surface font-bold">
-                Verified Projects
-              </h2>
-              <p className="text-body-sm font-body-sm text-on-surface-variant mt-1">
-                Protocols verified on the LAKNES network.
+            </details>
+            <details>
+              <summary>
+                <span>How do quests, campaigns, and submissions work?</span>
+                <span className="lp-faq-plus" aria-hidden="true">+</span>
+              </summary>
+              <p>
+                Projects and initiatives publish opportunities with requirements. Participants complete the work &mdash; content, community, on-chain, developer, or feedback tasks &mdash; and submit proof or deliverables through Laknes where supported.
               </p>
-            </div>
-            <button
-              onClick={() => onNavigate('explore')}
-              className="inline-flex items-center gap-1 text-primary hover:text-on-surface text-xs font-semibold transition-colors cursor-pointer"
-            >
-              <span>View All ({projects.length})</span>
-              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.slice(0, 3).map((p) => (
-              <ProjectCard
-                key={p.id}
-                project={p}
-                onSelect={onSelectProject}
-                isSaved={savedProjectIds?.has(p.id)}
-                onToggleSave={onToggleSave}
-              />
-            ))}
+            </details>
+            <details>
+              <summary>
+                <span>What does &ldquo;verified project&rdquo; mean?</span>
+                <span className="lp-faq-plus" aria-hidden="true">+</span>
+              </summary>
+              <p>
+                Laknes surfaces project information and verification status to help users evaluate ecosystems. Always review project details, requirements, and external links before participating.
+              </p>
+            </details>
+            <details>
+              <summary>
+                <span>How can a project launch on Laknes?</span>
+                <span className="lp-faq-plus" aria-hidden="true">+</span>
+              </summary>
+              <p>
+                Projects can register through the project portal, provide ecosystem details, and use Laknes to publish updates, quests, campaigns, and opportunities for the community.
+              </p>
+            </details>
           </div>
         </section>
-      )}
 
-      {/* 4. CALL TO ACTION */}
-      <section className="px-6 lg:px-12 py-16 max-w-4xl mx-auto w-full text-center">
-        <div className="p-8 rounded-2xl bg-surface-container-low border border-primary-container/30 shadow-xl space-y-4">
-          <h3 className="text-headline-md font-headline-md font-bold text-on-surface">
-            Get Started on LAKNES
-          </h3>
-          <p className="text-body-sm text-on-surface-variant max-w-md mx-auto">
-            Sign in with Google to explore verified projects, participate in quests, submit content, or register your Web3 protocol.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+        {/* 7. CLOSER CTA BAND */}
+        <section className="lp-closer" aria-labelledby="closer-title">
+          <div>
+            <span className="lp-eyebrow">YOU ALREADY HAVE SOMETHING TO CONTRIBUTE.</span>
+            <h2 id="closer-title" className="yo-display">Find where it belongs.</h2>
+          </div>
+          <div className="lp-closer-actions">
             <button
-              onClick={() => onNavigate('signin')}
-              className="px-6 py-2.5 rounded-xl bg-primary-container text-on-primary-container font-label-md text-xs font-bold hover:brightness-110 transition-all shadow-md cursor-pointer"
+              type="button"
+              onClick={() => onNavigate('projects')}
+              className="lp-button lp-button-primary"
             >
-              Sign In with Google
+              <span>EXPLORE OPPORTUNITIES</span>
+              <span aria-hidden="true">↗</span>
             </button>
             <button
-              onClick={() => onNavigate('explore')}
-              className="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-xs text-on-surface font-medium border border-outline-variant/30 transition-colors cursor-pointer"
+              type="button"
+              onClick={() => onNavigate('submit-project')}
+              className="lp-text-link"
             >
-              Explore Projects
+              <span>Register your project</span>
+              <span aria-hidden="true">↗</span>
             </button>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 }

@@ -410,20 +410,22 @@ export function AdminView({
   // =========================================================================
   if (!isAdmin) {
     return (
-      <div className="w-full min-h-[calc(100vh-140px)] flex flex-col items-center justify-center px-6 py-16 text-center bg-background text-on-surface">
-        <div className="w-16 h-16 rounded-2xl bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface-variant mb-4">
-          <span className="material-symbols-outlined text-[32px]">shield</span>
+      <div className="lp-shell min-h-[calc(100vh-140px)] flex flex-col items-center justify-center py-16 text-center">
+        <div className="max-w-md p-10 rounded-[2px] bg-[var(--yo-surface-1)] border-[1.5px] border-[var(--yo-ink)] shadow-[4px_4px_0_var(--yo-ink)] flex flex-col items-center">
+          <div className="w-14 h-14 rounded-[2px] bg-[var(--yo-surface-2)] border border-[var(--yo-line)] flex items-center justify-center text-[var(--yo-accent)] mb-4 shadow-[2px_2px_0_var(--yo-ink)]">
+            <span className="material-symbols-outlined text-[32px]">shield</span>
+          </div>
+          <h2 className="text-xl font-bold text-[var(--yo-ink)] mb-2 yo-display">Access Restricted</h2>
+          <p className="text-xs text-[var(--yo-muted)] max-w-sm mb-6 leading-relaxed">
+            The requested console is reserved for verified administrators. Please return to the ecosystem explorer.
+          </p>
+          <button
+            onClick={() => onNavigate('explore')}
+            className="lp-button lp-button-primary text-xs"
+          >
+            Return to Explore
+          </button>
         </div>
-        <h2 className="text-xl font-bold text-on-surface mb-2">Access Restricted</h2>
-        <p className="text-sm text-on-surface-variant max-w-sm mb-6 leading-relaxed">
-          The requested page is not accessible. Please return to the ecosystem explorer.
-        </p>
-        <button
-          onClick={() => onNavigate('explore')}
-          className="px-5 py-2.5 rounded-xl bg-primary-container text-on-primary-container text-xs font-bold hover:brightness-110 transition-all cursor-pointer shadow-md"
-        >
-          Return to Explore
-        </button>
       </div>
     );
   }
@@ -432,28 +434,26 @@ export function AdminView({
   // MAIN ADMIN CONSOLE (Authenticated)
   // =========================================================================
   return (
-    <div className="w-full max-w-[1440px] mx-auto px-margin-mobile lg:px-margin py-space-xl">
+    <div className="lp-shell py-8">
       {/* Admin Top Header Bar */}
-      <div className="p-6 rounded-3xl bg-[#0a1310] border border-amber-500/40 shadow-[0_0_50px_rgba(212,163,39,0.15)] mb-8 relative overflow-hidden">
-        <div className="pointer-events-none absolute -right-20 -top-20 w-80 h-80 bg-primary-container/10 blur-[90px] rounded-full"></div>
-
+      <div className="p-6 rounded-[2px] bg-[var(--yo-sumi)] border-[1.5px] border-[var(--yo-sumi-line)] shadow-[4px_4px_0_var(--yo-ink)] mb-8 relative overflow-hidden text-[var(--yo-sumi-ink)]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-primary shadow-inner shrink-0">
+            <div className="w-14 h-14 rounded-[2px] bg-[var(--yo-sumi-surface-2)] border border-[var(--yo-sumi-line)] flex items-center justify-center text-[var(--yo-accent)] shrink-0 shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
               <BrandLogo size={36} showText={false} />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-mono text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-amber-500/15 text-primary border border-amber-500/30">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <span className="yo-mono text-[10px] uppercase font-bold px-2 py-0.5 rounded-[2px] bg-[var(--yo-sumi-surface-1)] text-[var(--yo-accent)] border border-[var(--yo-sumi-line)]">
                   Master Protocol Administrator
                 </span>
-                <span className="font-mono text-[10px] text-emerald-400 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="yo-mono text-[10px] text-[var(--yo-sumi-good)] flex items-center gap-1 font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--yo-sumi-good)] animate-pulse"></span>
                   Active Clearance
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                Elysium Foundation Administration Center
+              <h1 className="text-2xl sm:text-3xl font-bold text-[var(--yo-sumi-ink)] tracking-tight yo-display">
+                Laknes Administration Center
               </h1>
             </div>
           </div>
@@ -461,14 +461,14 @@ export function AdminView({
           <div className="flex items-center gap-3">
             <button
               onClick={() => loadAllAdminData()}
-              className="px-4 py-2 rounded-full bg-surface-container hover:bg-surface-container-high border border-slate-700 text-xs text-slate-300 font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="lp-button lp-button-secondary text-xs flex items-center gap-1.5 cursor-pointer"
             >
               <span className="material-symbols-outlined text-[16px]">refresh</span>
               <span>Sync Telemetry</span>
             </button>
             <button
               onClick={() => onNavigate('explore')}
-              className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 border border-slate-700 transition-colors cursor-pointer"
+              className="lp-button lp-button-primary text-xs cursor-pointer"
             >
               View Public Site
             </button>

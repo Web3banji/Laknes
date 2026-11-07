@@ -1,6 +1,6 @@
 /**
- * LAKNES Standardized Status Badge
- * Reusable visual indicator for verification, publication, and membership states.
+ * LAKNES Standardized Status Badge (Yochi Design System)
+ * Crisp editorial badges with JetBrains Mono caps, tracking, and ink/accent borders.
  */
 
 import React from 'react';
@@ -20,16 +20,16 @@ export function VerifiedCheckmarkBadge({
   className?: string;
   showLabel?: boolean;
 }) {
-  const iconSize = size === 'sm' ? 'text-[14px]' : size === 'md' ? 'text-[16px]' : 'text-[20px]';
-  const padding = size === 'sm' ? 'px-2 py-0.5 text-[11px]' : size === 'md' ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-sm';
+  const iconSize = size === 'sm' ? 'text-[12px]' : size === 'md' ? 'text-[14px]' : 'text-[16px]';
+  const padding = size === 'sm' ? 'px-2 py-0.5 text-[9px]' : size === 'md' ? 'px-2.5 py-1 text-[10px]' : 'px-3 py-1.5 text-xs';
 
   return (
     <span
-      className={`inline-flex items-center gap-1 font-label-mono ${padding} rounded-full bg-emerald-950/70 text-emerald-400 border border-emerald-500/40 shadow-[0_0_12px_rgba(52,211,153,0.3)] select-none ${className}`}
-      title="Verified Checkmark: Official seal awarded by Laknes maintainers following security & authenticity review"
+      className={`inline-flex items-center gap-1 font-mono uppercase tracking-wider font-bold ${padding} border border-[var(--yo-good)] text-[var(--yo-good)] bg-[var(--yo-surface-1)] select-none ${className}`}
+      title="Verified Checkmark: Official seal awarded by Laknes maintainers"
     >
-      <span className={`material-symbols-outlined ${iconSize} text-emerald-400 shrink-0`}>verified</span>
-      {showLabel && <span className="font-semibold tracking-wide">Verified</span>}
+      <span className={`material-symbols-outlined ${iconSize} shrink-0`}>verified</span>
+      {showLabel && <span>VERIFIED</span>}
     </span>
   );
 }
@@ -43,22 +43,22 @@ export function PendingReviewBadge({
   className?: string;
   showLabel?: boolean;
 }) {
-  const iconSize = size === 'sm' ? 'text-[13px]' : 'text-[15px]';
-  const padding = size === 'sm' ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs';
+  const iconSize = size === 'sm' ? 'text-[12px]' : 'text-[14px]';
+  const padding = size === 'sm' ? 'px-2 py-0.5 text-[9px]' : 'px-2.5 py-1 text-[10px]';
 
   return (
     <span
-      className={`inline-flex items-center gap-1 font-label-mono ${padding} rounded-full bg-amber-950/50 text-amber-300 border border-amber-500/30 select-none ${className}`}
-      title="Awaiting Review: This project will receive the official Verified Checkmark once approved by our review team"
+      className={`inline-flex items-center gap-1 font-mono uppercase tracking-wider font-bold ${padding} border border-[var(--yo-gold)] text-[var(--yo-gold)] bg-[var(--yo-surface-1)] select-none ${className}`}
+      title="Awaiting Review: Under evaluation by Laknes verification team"
     >
-      <span className={`material-symbols-outlined ${iconSize} text-amber-400 shrink-0`}>hourglass_top</span>
-      {showLabel && <span className="font-medium">Awaiting Review</span>}
+      <span className={`material-symbols-outlined ${iconSize} shrink-0`}>hourglass_top</span>
+      {showLabel && <span>AWAITING REVIEW</span>}
     </span>
   );
 }
 
 export function StatusBadge({ status, size = 'sm' }: StatusBadgeProps) {
-  const sizeClasses = size === 'sm' ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs';
+  const sizeClasses = size === 'sm' ? 'px-2 py-0.5 text-[9px]' : 'px-2.5 py-1 text-[10px]';
 
   switch (status) {
     case ProjectVerificationStatus.VERIFIED:
@@ -69,56 +69,56 @@ export function StatusBadge({ status, size = 'sm' }: StatusBadgeProps) {
 
     case ProjectVerificationStatus.CHANGES_REQUESTED:
       return (
-        <span className={`inline-flex items-center gap-1 font-label-mono ${sizeClasses} rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-sky-400 border border-sky-500/20 shadow-sm`}>
-          <span className="material-symbols-outlined text-[13px]">edit_note</span>
-          Changes Requested
+        <span className={`inline-flex items-center gap-1 font-mono uppercase tracking-wider font-bold ${sizeClasses} border border-[var(--yo-accent)] text-[var(--yo-accent-text)] bg-[var(--yo-surface-1)]`}>
+          <span className="material-symbols-outlined text-[12px]">edit_note</span>
+          CHANGES REQUESTED
         </span>
       );
 
     case ProjectVerificationStatus.REJECTED:
       return (
-        <span className={`inline-flex items-center gap-1 font-label-mono ${sizeClasses} rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-rose-400 border border-rose-500/20 shadow-sm`}>
-          <span className="material-symbols-outlined text-[13px]">cancel</span>
-          Rejected
+        <span className={`inline-flex items-center gap-1 font-mono uppercase tracking-wider font-bold ${sizeClasses} border border-[var(--yo-bad)] text-[var(--yo-bad)] bg-[var(--yo-surface-1)]`}>
+          <span className="material-symbols-outlined text-[12px]">cancel</span>
+          REJECTED
         </span>
       );
 
     case PublicationStatus.PUBLISHED:
       return (
-        <span className={`inline-flex items-center gap-1 font-label-mono ${sizeClasses} rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-emerald-400 border border-emerald-500/20`}>
-          <span className="material-symbols-outlined text-[13px]">check_circle</span>
-          Published
+        <span className={`inline-flex items-center gap-1 font-mono uppercase tracking-wider font-bold ${sizeClasses} border border-[var(--yo-good)] text-[var(--yo-good)] bg-[var(--yo-surface-1)]`}>
+          <span className="material-symbols-outlined text-[12px]">check_circle</span>
+          PUBLISHED
         </span>
       );
 
     case PublicationStatus.DRAFT:
       return (
-        <span className={`inline-flex items-center gap-1 font-label-mono ${sizeClasses} rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-on-surface-variant border border-outline-variant/30`}>
-          <span className="material-symbols-outlined text-[13px]">draft</span>
-          Draft
+        <span className={`inline-flex items-center gap-1 font-mono uppercase tracking-wider font-bold ${sizeClasses} border border-[var(--yo-line)] text-[var(--yo-muted)] bg-[var(--yo-surface-2)]`}>
+          <span className="material-symbols-outlined text-[12px]">draft</span>
+          DRAFT
         </span>
       );
 
     case MembershipRole.OWNER:
       return (
-        <span className={`inline-flex items-center gap-1 font-label-mono ${sizeClasses} rounded-full bg-surface-container-high text-primary-fixed border border-primary-fixed-dim/30`}>
-          <span className="material-symbols-outlined text-[13px]">workspace_premium</span>
-          Owner
+        <span className={`inline-flex items-center gap-1 font-mono uppercase tracking-wider font-bold ${sizeClasses} border border-[var(--yo-ink)] text-[var(--yo-ink)] bg-[var(--yo-surface-2)]`}>
+          <span className="material-symbols-outlined text-[12px]">workspace_premium</span>
+          OWNER
         </span>
       );
 
     case MembershipRole.MAINTAINER:
       return (
-        <span className={`inline-flex items-center gap-1 font-label-mono ${sizeClasses} rounded-full bg-surface-container-high text-secondary border border-secondary/30`}>
-          <span className="material-symbols-outlined text-[13px]">shield</span>
-          Maintainer
+        <span className={`inline-flex items-center gap-1 font-mono uppercase tracking-wider font-bold ${sizeClasses} border border-[var(--yo-line)] text-[var(--yo-muted)] bg-[var(--yo-surface-2)]`}>
+          <span className="material-symbols-outlined text-[12px]">shield</span>
+          MAINTAINER
         </span>
       );
 
     default:
       return (
-        <span className={`inline-flex items-center gap-1 font-label-mono ${sizeClasses} rounded-full bg-surface-container-high text-on-surface-variant border border-outline-variant/30`}>
-          {status}
+        <span className={`inline-flex items-center gap-1 font-mono uppercase tracking-wider font-bold ${sizeClasses} border border-[var(--yo-line)] text-[var(--yo-muted)] bg-[var(--yo-surface-2)]`}>
+          {String(status).toUpperCase()}
         </span>
       );
   }
